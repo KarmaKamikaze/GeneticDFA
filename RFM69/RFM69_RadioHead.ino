@@ -23,9 +23,9 @@ void setup()
   // manual reset
   digitalWrite(RFM69_RST, LOW);
   digitalWrite(RFM69_RST, HIGH);
-  delay(10);
+  delay(100);
   digitalWrite(RFM69_RST, LOW);
-  delay(10);
+  delay(100);
   
   if (!rf69.init()) {
     Serial.println("RFM69 radio init failed");
