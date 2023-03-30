@@ -1,0 +1,1 @@
+To simulate a blackbox system open up the arduino file blackbox.ino, and run the prefered DFA. all libaries needed are included in the liberaries folder
