@@ -38,7 +38,7 @@ void RunBrigdeDFA(char input[]) {
           DFA.transitionTo(WB);
         }
       }
-      else{Serial.println("Failed because false state"); break;}
+      else{Serial.println("Failed because non-accepting state"); break;}
     }
     else if(input[i] == 'E'){
       if(input[i+1] == 'w'){
@@ -63,7 +63,7 @@ void RunBrigdeDFA(char input[]) {
           DFA.transitionTo(BB);
         }
       }
-      else{Serial.println("Failed because false state"); break;}
+      else{Serial.println("Failed because non-accepting state"); break;}
     }
     else if(input[i] == 'L'){
       if(input[i+1] == 'w'){
@@ -82,7 +82,7 @@ void RunBrigdeDFA(char input[]) {
           DFA.transitionTo(AA);            
         }
       }
-      else{Serial.println("Failed because false state"); break;}
+      else{Serial.println("Failed because non-accepting state"); break;}
     }
 
     // if char of input is not 1 | 0 we break and check if we are in final state.

@@ -21,7 +21,7 @@ void RunCarAlarmDFA(char input[]) {
         else if(DFA.isInState(UC)){
           DFA.transitionTo(LC);
         }
-        else{Serial.println("Failed because false state"); break;}
+        else{Serial.println("Failed because non-accepting state"); break;}
       }
       else if(input[i] == 'u'){
         if(DFA.isInState(LO)){
@@ -33,7 +33,7 @@ void RunCarAlarmDFA(char input[]) {
         else if(DFA.isInState(AC)){
           DFA.transitionTo(UC);
         }
-        else{Serial.println("Failed because false state"); break;}
+        else{Serial.println("Failed because non-accepting state"); break;}
       }
       else if(input[i] == 'c'){
         if(DFA.isInState(UO)){
@@ -42,7 +42,7 @@ void RunCarAlarmDFA(char input[]) {
         else if(DFA.isInState(LO)){
           DFA.transitionTo(LC);
         }
-        else{Serial.println("Failed because false state"); break;}
+        else{Serial.println("Failed because non-accepting state"); break;}
       }
       else if(input[i] == 'o'){
         if(DFA.isInState(UC)){
@@ -54,13 +54,13 @@ void RunCarAlarmDFA(char input[]) {
         else if(DFA.isInState(AC)){
           DFA.transitionTo(AO);
         }
-        else{Serial.println("Failed because false state"); break;}
+        else{Serial.println("Failed because non-accepting state"); break;}
       }
       else if(input[i] == 'a'){
         if(DFA.isInState(LC)){
           DFA.transitionTo(AC);
         }
-        else{Serial.println("Failed because false state"); break;}
+        else{Serial.println("Failed because non-accepting state"); break;}
       }
       // if char of input is not expected we break and check if we are in final state.
       else{        
