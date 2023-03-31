@@ -1,4 +1,4 @@
-// states for Car Alarm
+// States for Car Alarm
 State UO = State(Foo);
 State LO = State(Foo);
 State UC = State(Foo);
@@ -62,11 +62,10 @@ void RunCarAlarmDFA(char input[]) {
         }
         else{Serial.println("Failed because non-accepting state"); break;}
       }
-      // if char of input is not expected we break and check if we are in final state.
+      // If char of input is not acceptable we break and check if we are in final state.
       else{        
         stringComplete = false;
         break;
-        //Trash State when input is not 1 or 0
       }
       // if we are at end of input
       if(i == strlen(input) - 1){
@@ -76,19 +75,16 @@ void RunCarAlarmDFA(char input[]) {
       DFA.update();
     }
 
-    //if we finish in a final state report back that we have passed
+    //If we finish in a final state report back that we have passed
     if(stringComplete && !DFA.isInState(AO)){
       Serial.println("Success \n");
       SendTracePassed();
-      //resets the dfa
       DFA.transitionTo(UO);
       DFA.update();     
-
     }
     else{
       Serial.println("Failure \n");
       SendTraceFailed();
-      //resets the dfa
       DFA.transitionTo(UO);
       DFA.update();
     }

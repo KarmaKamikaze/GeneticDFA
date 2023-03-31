@@ -1,4 +1,4 @@
-// brigde states
+// Bridge states
 State AA = State(Foo);
 State AW = State(Foo);
 State WA = State(Foo);
@@ -85,23 +85,21 @@ void RunBridgeDFA(char input[]) {
       else{Serial.println("Failed because non-accepting state"); break;}
     }
 
-    // if char of input is not 1 | 0 we break and check if we are in final state.
+    // If char of input is not acceptable we break and check if we are in final state.
     else{
       stringComplete = false;
       DFA.transitionTo(AA);
       DFA.update();
       break;
-      //Trash State when input is not 1 or 0
     }
 
     if(i == ((strlen(input) - 2))) {
       stringComplete = true;
     }
-
     DFA.update();
   }
 
-  //if we finish in a final state report back that we have passed
+  //If we finish in a final state report back that we have passed
   if(stringComplete && !DFA.isInState(BB)){
     Serial.println("Success \n");
     DFA.transitionTo(AA);

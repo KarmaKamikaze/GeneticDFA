@@ -34,11 +34,10 @@ void RunSmallDFA(char input[]){
           DFA.transitionTo(A);
         }
       }
-      // if char of input is not 1 | 0 we break and check if we are in final state.
+      // If char of input is not 1 | 0 we break and check if we are in final state.
       else{        
         stringComplete = false;
         break;
-        //Trash State when input is not 1 or 0
       };
       //If we are at end of string
       if(i == strlen(input) - 1){

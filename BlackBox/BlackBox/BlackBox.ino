@@ -19,17 +19,16 @@ void RunCarAlarmDFA(char input[]);
 void RunBridgeDFA(char input[]);
 char input[20];
 
-
 void setup() {
   //Setup for RFM69 chipset
   Serial.begin(SERIAL_BAUD);
-  while (!Serial) { delay(1); } // wait until serial console is open
+  while (!Serial) { delay(1); } // Wait until serial console is open
 
-/*  pinMode(RFM69_RST, OUTPUT);
+  pinMode(RFM69_RST, OUTPUT);
   Serial.println("RFM69HW Transmission Test!");
   Serial.println();
 
-  // manual reset
+  // Manual reset
   digitalWrite(RFM69_RST, LOW);
   digitalWrite(RFM69_RST, HIGH);
   delay(10);
@@ -46,25 +45,24 @@ void setup() {
   }
   else {Serial.println("Listening at 868 MHz.");}
   // RFM69HW *requires* that the Tx power flag is set!
-  rf69.setTxPower(20); // range from 14-20 for power  */
+  rf69.setTxPower(20); // range from 14-20 for power 
 }
 
 void loop() {
-  // WE NEED A WHILE HERE THAT WAITS FOR MESSAGDE
-  /*while(!rf69.available()){
+    while(!rf69.available()){
     Serial.print("Waiting for signal");
     delay(2000);
-  }*/
+  }
   
   //If signal is received
   if (rf69.available()) {
     Serial.print("The message is: ");
     // put message here
-    char input[] = "01011"; //MAKE THIS THE INPUT OF RADIO PLZ
+    char input[] = ""; //THIS INPUT NEEDS TO BE WHATEVER IT RECEIVES FROM THE CHIP
   }
-    char input[] = "01011";
+
   //Call correct simulation
-  // Comment out the onces not in use
+  // OBS - WE NEED TO FIGURE OUT HOW WE CHOOSE THE CORRECT DFA + HOW WE INPUT
   RunSmallDFA(input);
   //RunCarAlarmDFA(input);
   //RunBridgeDFA(input);
