@@ -16,7 +16,7 @@ int packetnum = 0;
 
 void RunSmallDFA(char input[]);
 void RunCarAlarmDFA(char input[]);
-void RunBrigdeDFA(char input[]);
+void RunBridgeDFA(char input[]);
 char input[20];
 
 
@@ -51,10 +51,10 @@ void setup() {
 
 void loop() {
   // WE NEED A WHILE HERE THAT WAITS FOR MESSAGDE
-  while(!rf69.available()){
+  /*while(!rf69.available()){
     Serial.print("Waiting for signal");
     delay(2000);
-  }
+  }*/
   
   //If signal is received
   if (rf69.available()) {
@@ -62,12 +62,12 @@ void loop() {
     // put message here
     char input[] = "01011"; //MAKE THIS THE INPUT OF RADIO PLZ
   }
-
+    char input[] = "01011";
   //Call correct simulation
   // Comment out the onces not in use
   RunSmallDFA(input);
-  RunCarAlarmDFA(input);
-  RunBridgeDFA(input);
+  //RunCarAlarmDFA(input);
+  //RunBridgeDFA(input);
 }
 
 

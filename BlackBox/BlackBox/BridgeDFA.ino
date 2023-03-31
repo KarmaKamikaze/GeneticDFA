@@ -9,7 +9,7 @@ State WB = State(Foo);
 State BW = State(Foo);
 State BB = State(Foo);
 
-void RunBrigdeDFA(char input[]) {
+void RunBridgeDFA(char input[]) {
   FSM DFA = FSM(AA);
   bool stringComplete = false;
   DFA.update();
