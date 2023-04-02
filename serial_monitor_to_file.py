@@ -19,7 +19,7 @@ value = f'COM{input("Select Port: COM")}'
 #searches the list of ports matching the one picked
 for i in range(0, len(port_list)):
     if str(port_list[i]).startswith(value):
-        port_variable = "COM" + value
+        active_port = value
         print(port_list[i])
 
 #must be the same baudrate as arduino
