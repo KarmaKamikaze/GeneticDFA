@@ -34,7 +34,7 @@ while 1:
     arduino_data = serial_instance.readline()
     #if we read STOP we stop streaming data to file
     if 'STOP' in str(arduino_data.decode()):
-        print("A stop have been read: The program will now close and save the file under name: ")
+        print("A STOP token has been received. The program will now close and save the file.")
         k = input("press enter to close")
         break
     
