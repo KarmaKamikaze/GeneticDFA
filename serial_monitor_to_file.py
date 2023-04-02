@@ -6,7 +6,7 @@ from datetime import datetime
 ports = serial.tools.list_ports.comports()
 serial_instance = serial.Serial()
 port_list = []
-port_variable = ""
+active_port= ""
 
 for port in ports:
     #append each port to the list of ports
