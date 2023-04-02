@@ -42,5 +42,5 @@ while 1:
     print(arduino_data.decode().rstrip())
     file.write(arduino_data.decode().rstrip())
     
-#close file when arduino no longer connected
+#close file when arduino is no longer connected
 file.close()
