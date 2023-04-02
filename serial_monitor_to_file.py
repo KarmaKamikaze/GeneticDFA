@@ -43,4 +43,5 @@ while 1:
     file.write(arduino_data.decode().rstrip())
     
 #close file when arduino is no longer connected
+serial_instance.close()
 file.close()
