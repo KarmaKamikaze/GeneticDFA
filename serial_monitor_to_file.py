@@ -15,7 +15,7 @@ for port in ports:
     print(port)
 
 
-value = input("select Port: COM")
+value = f'COM{input("Select Port: COM")}'
 #searches the list of ports matching the one picked
 for i in range(0, len(port_list)):
     if str(port_list[i]).startswith("COM" +value):
