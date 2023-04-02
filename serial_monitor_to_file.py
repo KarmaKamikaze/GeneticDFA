@@ -27,7 +27,7 @@ serial_instance.baudrate = 9600
 serial_instance.port = active_port
 serial_instance.open()
 
-#Creat a new file to steam serial data to.
+#Create a new file for the received serial data.
 file = open(datetime.now()+".txt", "w")
 
 while 1:
