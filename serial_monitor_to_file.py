@@ -35,7 +35,7 @@ while 1:
     #if we read STOP we stop streaming data to file
     if 'STOP' in str(arduino_data.decode()):
         print("A STOP token has been received. The program will now close and save the file.")
-        k = input("press enter to close")
+        input("Press any key to close.")
         break
     
     #save line to file, with decoded from byte to string.
