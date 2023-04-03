@@ -3,24 +3,24 @@ import serial.tools.list_ports
 from datetime import datetime
 
 #list out all ports in use
-ports = serial.tools.list_ports.comports()
+ports: list = serial.tools.list_ports.comports()
 serial_instance = serial.Serial()
-port_list = []
-active_port= ""
+active_port: str = ""
+list_of_recieved_messagdes: str = ""
+messagdes_read: int = 0
+
 
 for port in ports:
-    #append each port to the list of ports
-    port_list.append(port)
     #print out all ports
     print(port)
 
 
 value = f'COM{input("Select Port: COM")}'
 #searches the list of ports matching the one picked
-for i in range(0, len(port_list)):
-    if str(port_list[i]).startswith(value):
+for i in range(0, len(ports)):
+    if str(ports[i]).startswith(value):
         active_port = value
-        print(port_list[i])
+        print(ports[i])
 
 #must be the same baudrate as arduino
 serial_instance.baudrate = 9600
@@ -32,15 +32,23 @@ file = open(datetime.now()+".txt", "w")
 
 while 1:
     arduino_data = serial_instance.readline()
+    #add read message to list
+    list_of_recieved_messagdes += str(arduino_data.decode().rstrip()+"\n")
+    #increase number of messagdes stored
+    messagdes_read +=1
+    
     #if we read STOP we stop streaming data to file
     if 'STOP' in str(arduino_data.decode()):
+        file.write(list_of_recieved_messagdes)
         print("A STOP token has been received. The program will now close and save the file.")
         input("Press any key to close.")
         break
     
-    #save line to file, with decoded from byte to string.
-    print(arduino_data.decode().rstrip())
-    file.write(arduino_data.decode().rstrip())
+    #if we have more than 9 messagdes appended by newline, we write them to file. And clears
+    if messagdes_read > 9:
+        file.write(list_of_recieved_messagdes)
+        list_of_recieved_messagdes = ""
+        messagdes_read = 0
     
 #close file when arduino is no longer connected
 serial_instance.close()
