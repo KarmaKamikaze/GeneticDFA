@@ -11,6 +11,10 @@ public class DFAChromosome : ChromosomeBase
         CreateGenes();
     }
 
+    public List<DFAStateModel> States = new List<DFAStateModel>();
+    public List<DFAEdgeModel> Edges = new List<DFAEdgeModel>();
+    public int StartStateID;
+    
     public override Gene GenerateGene(int geneIndex)
     {
         throw new NotImplementedException("// TODO: Generate a gene base on DFAChromosome representation.");

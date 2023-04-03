@@ -23,7 +23,6 @@ class Program
         DFAChromosome chromosome = new DFAChromosome(chromosomeBase);
 
         Population population = new Population(minPopulation, maxPopulation, chromosome);
-
         
         OrTermination stoppingCriterion = new OrTermination(new GenerationNumberTermination(maximumGenerationNumber), 
             new AndTermination(new FitnessStagnationTermination(convergenceGenerationNumber), new FitnessThresholdTermination(fitnessLowerBound)));
