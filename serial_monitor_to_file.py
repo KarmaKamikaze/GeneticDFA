@@ -43,7 +43,7 @@ while 1:
         for message in received_messages:
             file.write(message)
             
-        print(f"A STOP token has been received. And all messages have been written to file: {file_name}")
+        print(f'A STOP token has been received. All messages have been written to file: {file_name}.')
         input("Press any key to close.")
         break
     
