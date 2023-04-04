@@ -8,7 +8,7 @@ serial_instance = serial.Serial()
 active_port: str = ""
 received_messages: list = []
 
-#print a list of active ports to user.
+#print a list of active ports to user
 for port in ports:
     print(port)
 
