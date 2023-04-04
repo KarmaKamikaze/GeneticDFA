@@ -21,7 +21,7 @@ for i in range(0, len(ports)):
         active_port = value
         print(ports[i])
 
-#must be the same baudrate as arduino.
+#must be the same baudrate as arduino
 serial_instance.baudrate = 9600
 serial_instance.port = active_port
 serial_instance.open()
