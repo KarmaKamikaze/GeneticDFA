@@ -63,7 +63,8 @@ public class DFAChromosome : IChromosome
     
     
     
-    
+    //Code below here will not be used and is simply here to satisfy the interface.
+    //Other classes dependent on these properties and methods are going to be rewritten.
     
     public int Length { get; }
     
