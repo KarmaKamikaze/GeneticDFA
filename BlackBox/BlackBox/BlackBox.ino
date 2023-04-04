@@ -2,29 +2,31 @@
 #include <SPI.h>
 #include <RH_RF69.h>
 
-//Radio stuff
-#define RF69_FREQ 868 // Frequency
-#define RFM69_INT 2 // DIO0 Pin
-#define RFM69_CS 10 // Select Signal Pin
-#define RFM69_RST 3 // RST Pin
-#define LED 9 // Test LED
+// Radio stuff
+#define RF69_FREQ 868       // Frequency
+#define RFM69_INT 2         // DIO0 Pin
+#define RFM69_CS 10         // Select Signal Pin
+#define RFM69_RST 3         // RST Pin
+#define LED 9               // Test LED
 #define SERIAL_BAUD 9600
 
 // Singleton instance of the radio driver
 RH_RF69 rf69(RFM69_CS, RFM69_INT);
 
+// DFA prototypes
 void RunSmallDFA(char input[]);
 void RunCarAlarmDFA(char input[]);
 void RunBridgeDFA(char input[]);
 char input[20];
 
 void setup() {
-  //Setup for RFM69 chipset
+  // Setup for RFM69 chipset
   Serial.begin(SERIAL_BAUD);
+  // Uncomment the following line, if used without serial connection
   while (!Serial) { delay(1); } // Wait until serial console is open
 
   pinMode(RFM69_RST, OUTPUT);
-  Serial.println("RFM69HW Transmission Test!");
+  Serial.println("RFM69HW Arduino DFA Blackbox System!");
   Serial.println();
 
   // Manual reset
@@ -49,18 +51,18 @@ void setup() {
 
 void loop() {
     while(!rf69.available()){
-    Serial.print("Waiting for signal");
+    Serial.print("Waiting for signal.");
     delay(2000);
   }
   
-  //If signal is received
+  // If signal is received
   if (rf69.available()) {
     Serial.print("The message is: ");
     // put message here
     char input[] = ""; //THIS INPUT NEEDS TO BE WHATEVER IT RECEIVES FROM THE CHIP
   }
 
-  //Call correct simulation
+  // Call correct simulation
   // OBS - WE NEED TO FIGURE OUT HOW WE CHOOSE THE CORRECT DFA + HOW WE INPUT
   RunSmallDFA(input);
   //RunCarAlarmDFA(input);
