@@ -38,7 +38,7 @@ while 1:
     #add read message to list
     received_messages.append(arduino_data.decode().rstrip())
     
-    #if we read STOP we streaming all data to file.
+    #if we read STOP, we stream all data to file
     if 'STOP' in str(arduino_data.decode()):
         for message in received_messages:
             file.write(message)
