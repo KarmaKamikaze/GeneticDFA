@@ -45,10 +45,10 @@ while 1:
         break
     
     #if we have more than 9 messagdes appended by newline, we write them to file. And clears
-    if messagdes_read > 9:
-        file.write(list_of_recieved_messagdes)
-        list_of_recieved_messagdes = ""
-        messagdes_read = 0
+    if messages_read > 9:
+        file.write(received_messages)
+        received_messages = ""
+        messages_read = 0
     
 #close file when arduino is no longer connected
 serial_instance.close()
