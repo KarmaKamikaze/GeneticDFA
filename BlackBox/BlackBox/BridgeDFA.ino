@@ -1,13 +1,13 @@
 // Bridge states
-State AA = State(Foo);
-State AW = State(Foo);
-State WA = State(Foo);
-State AB = State(Foo);
-State WW = State(Foo);
-State BA = State(Foo);
-State WB = State(Foo);
-State BW = State(Foo);
-State BB = State(Foo);
+State AA = State(CurrentState);
+State AW = State(CurrentState);
+State WA = State(CurrentState);
+State AB = State(CurrentState);
+State WW = State(CurrentState);
+State BA = State(CurrentState);
+State WB = State(CurrentState);
+State BW = State(CurrentState);
+State BB = State(CurrentState);
 
 void RunBridgeDFA(char input[]) {
   FSM DFA = FSM(AA);

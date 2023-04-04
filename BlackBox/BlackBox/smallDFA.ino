@@ -1,7 +1,7 @@
 //States for Small DFA
-State A = State(Foo);
-State B = State(Foo);
-State C = State(Foo);
+State A = State(CurrentState);
+State B = State(CurrentState);
+State C = State(CurrentState);
 
 
 void RunSmallDFA(char input[]){

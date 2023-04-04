@@ -87,5 +87,5 @@ void SendTraceFailed(){
   rf69.waitPacketSent();
 }
 
-void Foo(){
+void CurrentState(){
 }
