@@ -15,7 +15,7 @@ for port in ports:
 #user selects a port.
 value = f'COM{input("Select Port: COM")}'
 
-#searches the list of ports matching the one selected by the user.
+#searches the list of ports matching the one selected by the user
 for i in range(0, len(ports)):
     if str(ports[i]).startswith(value):
         active_port = value
