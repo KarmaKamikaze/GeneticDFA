@@ -84,5 +84,5 @@ void SendTraceFailed(){
   rf69.waitPacketSent();
 }
 
-void CurrentState(){
+void InStateAction(){
 }

@@ -1,10 +1,10 @@
 // States for Car Alarm
-State UO = State(CurrentState);
-State LO = State(CurrentState);
-State UC = State(CurrentState);
-State LC = State(CurrentState);
-State AC = State(CurrentState);
-State AO = State(CurrentState);
+State UO = State(InStateAction);
+State LO = State(InStateAction);
+State UC = State(InStateAction);
+State LC = State(InStateAction);
+State AC = State(InStateAction);
+State AO = State(InStateAction);
 
 
 void RunCarAlarmDFA(char input[]) {
