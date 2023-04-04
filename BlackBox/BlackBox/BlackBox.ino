@@ -12,7 +12,6 @@
 
 // Singleton instance of the radio driver
 RH_RF69 rf69(RFM69_CS, RFM69_INT);
-int packetnum = 0;
 
 void RunSmallDFA(char input[]);
 void RunCarAlarmDFA(char input[]);
@@ -71,7 +70,6 @@ void loop() {
 
 void SendTracePassed(){
   char radiopacket[20] = "Trace Passed";
-  itoa(packetnum++, radiopacket+12, 10);
   Serial.print("Sending "); Serial.println(radiopacket);
 
   rf69.send((uint8_t *)radiopacket, strlen(radiopacket));
@@ -80,7 +78,6 @@ void SendTracePassed(){
 
 void SendTraceFailed(){
   char radiopacket[20] = "Trace Failed";
-  itoa(packetnum++, radiopacket+12, 10);
   Serial.print("Sending "); Serial.println(radiopacket);
 
   rf69.send((uint8_t *)radiopacket, strlen(radiopacket));
