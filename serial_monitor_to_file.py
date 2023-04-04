@@ -33,9 +33,9 @@ file = open(datetime.now()+".txt", "w")
 while 1:
     arduino_data = serial_instance.readline()
     #add read message to list
-    list_of_recieved_messagdes += str(arduino_data.decode().rstrip()+"\n")
-    #increase number of messagdes stored
-    messagdes_read +=1
+    received_messages += str(arduino_data.decode().rstrip()+"\n")
+    #increase number of messages stored
+    messages_read +=1
     
     #if we read STOP we stop streaming data to file
     if 'STOP' in str(arduino_data.decode()):
