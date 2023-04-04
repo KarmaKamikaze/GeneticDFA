@@ -1,4 +1,4 @@
-#imports.
+#imports
 import serial.tools.list_ports
 from datetime import datetime
 
