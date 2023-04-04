@@ -28,7 +28,7 @@ serial_instance.open()
 
 file_name = datetime.now()
 
-#Create a new file for the received serial data.
+#create a new file for the received serial data
 file = open(file_name+".txt", "w")
 
 while 1:
