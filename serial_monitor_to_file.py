@@ -36,7 +36,7 @@ while 1:
     arduino_data = serial_instance.readline()
     
     #add read message to list.
-    received_messages.append((arduino_data.decode().rstrip()))
+    received_messages.append(arduino_data.decode().rstrip())
     
     #if we read STOP we streaming all data to file.
     if 'STOP' in str(arduino_data.decode()):
