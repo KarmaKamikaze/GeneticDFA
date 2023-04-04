@@ -12,7 +12,7 @@ received_messages: list = []
 for port in ports:
     print(port)
 
-#user selects a port.
+#user selects a port
 value = f'COM{input("Select Port: COM")}'
 
 #searches the list of ports matching the one selected by the user
