@@ -44,7 +44,6 @@ while 1:
             file.write(message)
             
         print(f"A STOP token has been received. And all messages have been written to file: {file_name}")
-        print("The program will now close and save the file.")
         input("Press any key to close.")
         break
     
