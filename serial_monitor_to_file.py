@@ -47,6 +47,6 @@ while 1:
         input("Press any key to close.")
         break
     
-#close file and serial stream when arduino is no longer connected.
+#close file and serial stream when arduino is no longer connected
 serial_instance.close()
 file.close()
