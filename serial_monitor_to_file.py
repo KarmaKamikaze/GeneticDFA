@@ -6,8 +6,8 @@ from datetime import datetime
 ports: list = serial.tools.list_ports.comports()
 serial_instance = serial.Serial()
 active_port: str = ""
-list_of_recieved_messagdes: str = ""
-messagdes_read: int = 0
+received_messages: str = ""
+messages_read: int = 0
 
 
 for port in ports:
