@@ -32,7 +32,7 @@ file_name = datetime.now()
 file = open(file_name+".txt", "w")
 
 while 1:
-    #message is read from serial.
+    #message is read from serial
     arduino_data = serial_instance.readline()
     
     #add read message to list
