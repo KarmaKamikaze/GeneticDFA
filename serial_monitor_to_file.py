@@ -2,7 +2,7 @@
 import serial.tools.list_ports
 from datetime import datetime
 
-#variables.
+#variables
 ports: list = serial.tools.list_ports.comports()
 serial_instance = serial.Serial()
 active_port: str = ""
