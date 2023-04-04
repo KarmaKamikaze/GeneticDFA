@@ -37,6 +37,7 @@ void RunSmallDFA(char input[]){
       // If char of input is not 1 | 0 we break and check if we are in final state.
       else{        
         stringComplete = false;
+        Serial.println("Failed because it enters the trash state");
         break;
       };
       //If we are at end of string

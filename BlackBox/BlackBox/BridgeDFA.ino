@@ -38,7 +38,7 @@ void RunBridgeDFA(char input[]) {
           DFA.transitionTo(WB);
         }
       }
-      else{Serial.println("Failed because non-accepting state"); break;}
+      else{Serial.println("Failed because it enters the trash state"); break;}
     }
     else if(input[i] == 'E'){
       if(input[i+1] == 'w'){
@@ -63,7 +63,7 @@ void RunBridgeDFA(char input[]) {
           DFA.transitionTo(BB);
         }
       }
-      else{Serial.println("Failed because non-accepting state"); break;}
+      else{Serial.println("Failed because it enters the trash state"); break;}
     }
     else if(input[i] == 'L'){
       if(input[i+1] == 'w'){
@@ -82,7 +82,7 @@ void RunBridgeDFA(char input[]) {
           DFA.transitionTo(AA);            
         }
       }
-      else{Serial.println("Failed because non-accepting state"); break;}
+      else{Serial.println("Failed because it enters the trash state"); break;}
     }
 
     // If char of input is not acceptable we break and check if we are in final state.
