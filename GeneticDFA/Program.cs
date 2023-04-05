@@ -21,7 +21,7 @@ class Program
         const int weightSize = 1;
         
         List<TraceModel> traces = new List<TraceModel>();
-        List<string> alphabet = new List<string>() {"A", "B", "C"};
+        List<string> alphabet = new List<string>() {"A", "B", "C", "D"};
         
         EliteSelection selection = new EliteSelection();
         UniformCrossover crossover = new UniformCrossover();
@@ -69,7 +69,10 @@ class Program
         {
             new DFAStateModel(1, false),
             new DFAStateModel(2, false),
-            new DFAStateModel(3, true)
+            new DFAStateModel(3, true),
+            new DFAStateModel(4, true),
+            new DFAStateModel(5, true),
+            new DFAStateModel(6, true),
         };
         List<DFAEdgeModel> edges = new List<DFAEdgeModel>()
         {
@@ -84,6 +87,23 @@ class Program
             new DFAEdgeModel(9, states[0], states[0], "D"),
             new DFAEdgeModel(10, states[2], states[2], "D"),
             new DFAEdgeModel(11, states[1], states[1], "A"),
+            new DFAEdgeModel(12, states[1], states[0], "D"),
+            new DFAEdgeModel(12, states[1], states[0], "D"),
+            new DFAEdgeModel(12, states[1], states[0], "D"),
+            new DFAEdgeModel(12, states[1], states[0], "D"),
+            new DFAEdgeModel(12, states[1], states[0], "D"),
+            new DFAEdgeModel(12, states[1], states[0], "D"),
+            new DFAEdgeModel(12, states[1], states[0], "D"),
+            new DFAEdgeModel(12, states[1], states[0], "D"),
+            new DFAEdgeModel(12, states[1], states[0], "D"),
+            new DFAEdgeModel(12, states[1], states[0], "D"),
+            new DFAEdgeModel(12, states[1], states[0], "D"),
+            new DFAEdgeModel(12, states[1], states[0], "D"),
+            new DFAEdgeModel(12, states[1], states[0], "D"),
+            new DFAEdgeModel(12, states[1], states[0], "D"),
+            new DFAEdgeModel(12, states[1], states[0], "D"),
+            new DFAEdgeModel(12, states[1], states[0], "D"),
+            new DFAEdgeModel(12, states[1], states[0], "D"),
             new DFAEdgeModel(12, states[1], states[0], "D"),
         };
 

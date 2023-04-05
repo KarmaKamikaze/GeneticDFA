@@ -39,83 +39,37 @@ public class DFAFitness : IFitness
     {
         DFAChromosome chromosome = (DFAChromosome) paramChromosome;
 
-        return FindNonDeterministicEdges(chromosome).Count;
+        return NumberOfMissingDeterministicEdges(chromosome);
     }
 
-    //Can be moved to the Chromosome class.
-    private int NumberOfNonDeterministicEdges(DFAChromosome chromosome)
-    {
-        List<DFAEdgeModel> edges = chromosome.Edges;
-        //var query = edges.GroupBy(x => new {x.Source.ID, x.Input}).Where(y => y.Count()>1);
-
-        //return query.Sum(element => element.Count());
-        
-        edges.Sort(delegate(DFAEdgeModel edge1, DFAEdgeModel edge2)
-        {
-            int areSourcesEqual = edge1.Source.ID.CompareTo(edge2.Source.ID);
-            return areSourcesEqual == 0 ? string.Compare(edge1.Input, edge2.Input, StringComparison.Ordinal) : areSourcesEqual;
-        });
-
-        int nonDeterministicEdgesCounter = 0;
-        List<string> nonDeterministicEdgesFound = new List<string>();
-
-        for (int i = 0; i < edges.Count-1; i++)
-        {
-            if (edges[i].Source.ID == edges[i + 1].Source.ID && edges[i].Input == edges[i + 1].Input)
-            {
-                nonDeterministicEdgesCounter++;
-                if(!nonDeterministicEdgesFound.Contains(edges[i].Source.ID + edges[i].Input))
-                    nonDeterministicEdgesFound.Add(edges[i].Source.ID + edges[i].Input);
-            }
-        }
-
-        nonDeterministicEdgesCounter += nonDeterministicEdgesFound.Count;
-        
-        return nonDeterministicEdgesCounter;
-    }
-    
-    
     //Can be moved to the Chromosome class.
     private List<DFAEdgeModel> FindNonDeterministicEdges(DFAChromosome chromosome)
     {
         List<DFAEdgeModel> edges = chromosome.Edges;
-
+        List<DFAEdgeModel> nonDeterministicEdges = new List<DFAEdgeModel>();
+        
         edges.Sort(delegate(DFAEdgeModel edge1, DFAEdgeModel edge2)
         {
             int areSourcesEqual = edge1.Source.ID.CompareTo(edge2.Source.ID);
             return areSourcesEqual == 0 ? string.Compare(edge1.Input, edge2.Input, StringComparison.Ordinal) : areSourcesEqual;
         });
 
-        List<DFAEdgeModel> nonDetEdges = new List<DFAEdgeModel>();
-
-        
         if(edges[0].Source.ID == edges[1].Source.ID && edges[0].Input == edges[1].Input)
-            nonDetEdges.Add(edges[0]);
+            nonDeterministicEdges.Add(edges[0]);
         
         for (int i = 1; i < edges.Count-1; i++)
         {
             if ((edges[i].Source.ID == edges[i + 1].Source.ID && edges[i].Input == edges[i + 1].Input) ||
                 (edges[i].Source.ID == edges[i - 1].Source.ID && edges[i].Input == edges[i - 1].Input))
             {
-                nonDetEdges.Add(edges[i]);
+                nonDeterministicEdges.Add(edges[i]);
             }
         }
 
         if(edges[^1].Source.ID == edges[^2].Source.ID && edges[^1].Input == edges[^2].Input)
-            nonDetEdges.Add(edges[^1]);
+            nonDeterministicEdges.Add(edges[^1]);
         
-        /*
-        for (int i = 0; i < edges.Count-1; i++)
-        {
-            if (edges[i].Source.ID == edges[i + 1].Source.ID && edges[i].Input == edges[i + 1].Input)
-            {
-                if (!nonDetEdges.Contains(edges[i]))
-                    nonDetEdges.Add(edges[i]);
-                nonDetEdges.Add(edges[i+1]);
-            }
-        }
-        */
-        return nonDetEdges;
+        return nonDeterministicEdges;
     }
     
     
@@ -127,12 +81,20 @@ public class DFAFitness : IFitness
         
         foreach (DFAStateModel state in chromosome.States)
         {
+            List<DFAEdgeModel> edgesWithCurrentStateAsSource = chromosome.Edges.Where(e => e.Source.ID == state.ID).ToList();
+            foreach (string symbol in Alphabet)
+            {
+                if (edgesWithCurrentStateAsSource.Any(e => e.Input == symbol))
+                    missingDeterministicEdgesForState -= 1;
+            }
+            
+            /*
             foreach (string symbol in Alphabet)
             {
                 if (chromosome.Edges.Any(e => e.Source.ID == state.ID && e.Input == symbol))
                     missingDeterministicEdgesForState -= 1;
             }
-
+            */
             missingDeterministicEdgesCounter += missingDeterministicEdgesForState;
             missingDeterministicEdgesForState = Alphabet.Count;
         }
