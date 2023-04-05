@@ -1,4 +1,5 @@
-﻿using GeneticSharp;
+﻿using System.Diagnostics;
+using GeneticSharp;
 
 namespace GeneticDFA;
 
@@ -79,11 +80,26 @@ class Program
             new DFAEdgeModel(5, states[2], states[1], "C"),
             new DFAEdgeModel(6, states[0], states[2], "B"),
             new DFAEdgeModel(7, states[2], states[2], "C"),
+            new DFAEdgeModel(8, states[0], states[0], "A"),
         };
 
         chromosome.States = states;
         chromosome.Edges = edges;
 
-        fitness.Evaluate(chromosome);
+        Stopwatch stopWatch = new Stopwatch();
+        stopWatch.Start();
+        for (int i = 0; i < 50000; i++)
+        {
+            fitness.Evaluate(chromosome);
+        }
+        stopWatch.Stop();
+        // Get the elapsed time as a TimeSpan value.
+        TimeSpan ts = stopWatch.Elapsed;
+
+        // Format and display the TimeSpan value.
+        int elapsedTime = ts.Milliseconds;
+        Console.WriteLine("RunTime " + elapsedTime);
+        
+        
     }
 }
