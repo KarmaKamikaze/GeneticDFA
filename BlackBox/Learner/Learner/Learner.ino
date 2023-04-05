@@ -9,7 +9,7 @@
 #define RFM69_RST 3         // RST Pin
 #define LED 9               // Test LED
 #define SERIAL_BAUD 9600
-
+String array_of_traces[3] = {"100100110", "011010", "101010"}
 // Singleton instance of the radio driver
 RH_RF69 rf69(RFM69_CS, RFM69_INT);
 
@@ -46,7 +46,7 @@ void setup() {
 void loop() {
   
   while(!HandShake())
-    HandShake();
+    Serial.println("HandShake have yet to be acknoglaged");
   }
 
   /*SEND AN ENTIRE TRACE OVER RADIO*/
