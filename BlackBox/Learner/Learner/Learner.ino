@@ -13,12 +13,6 @@
 // Singleton instance of the radio driver
 RH_RF69 rf69(RFM69_CS, RFM69_INT);
 
-// DFA prototypes
-void RunSmallDFA(char input[]);
-void RunCarAlarmDFA(char input[]);
-void RunBridgeDFA(char input[]);
-char input[20];
-
 void setup() {
   // Setup for RFM69 chipset
   Serial.begin(SERIAL_BAUD);
@@ -55,16 +49,22 @@ void loop() {
     HandShake();
   }
 
-
+  /*SEND AN ENTIRE TRACE OVER RADIO*/
+  /*WAIT FOR ACK THAT TRACE WAS RECHIEVED*/
+  /*IF ACK SAYS ACK: SUCESS WE SERIAL PRINT TRACE: SUCESS, ELSE TRACE:FAILED*/
+  /*LOOP TO NEXT TRACE TO TEST*/
+  /*WHEN NO MORE TRACES SERIAL PRINT "STOP" TO STOP PYTHON*/
 
 
 void HandShake(){
 
+  //Setup for sending ACK Request
   char radiopacket[20] = "ACK?";
   Serial.print("Sending handshake"); Serial.println(radiopacket);
   rf69.send((uint8_t *)radiopacket, strlen(radiopacket));
   rf69.waitPacketSent();
 
+  //While we dont get ACK we delay
   while(!rf69.available()){
 
     Serial.print("Waiting for handshake ack");
@@ -72,6 +72,7 @@ void HandShake(){
 
   }
 
+  //If ACK recieved we return true
   if (rf69.available() && /*INSERT MESSAGE HERE*/ == "ACK!") {
     Serial.print("ACK recieved");
   }
