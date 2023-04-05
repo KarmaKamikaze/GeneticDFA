@@ -89,19 +89,6 @@ void loop() {
       // RunBridgeDFA((char*)buffer);
     }
   }
-
-  while (!rf69.available()) {
-    Serial.print("Waiting for signal.");
-    delay(2000);
-  }
-
-  // If signal is received
-  if (rf69.available()) {
-    Serial.print("The message is: ");
-    // put message here
-    char input[] =
-        ""; // THIS INPUT NEEDS TO BE WHATEVER IT RECEIVES FROM THE CHIP
-  }
 }
 
 void TransmitVerdict(uint8_t reply[]) {
