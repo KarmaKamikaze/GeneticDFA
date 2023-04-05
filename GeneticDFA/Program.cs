@@ -53,12 +53,12 @@ class Program
 
         // Begin learning.
         Console.WriteLine("GA is learning the DFA...");
-        ga.Start();
+        /*ga.Start();
 
         Console.WriteLine();
         Console.WriteLine($"Best solution found has fitness: {ga.BestChromosome.Fitness}");
         Console.WriteLine($"Elapsed time: {ga.TimeEvolving}");
-        Console.ReadKey();
+        Console.ReadKey();*/
     }
 
 
@@ -81,6 +81,10 @@ class Program
             new DFAEdgeModel(6, states[0], states[2], "B"),
             new DFAEdgeModel(7, states[2], states[2], "C"),
             new DFAEdgeModel(8, states[0], states[0], "A"),
+            new DFAEdgeModel(9, states[0], states[0], "D"),
+            new DFAEdgeModel(10, states[2], states[2], "D"),
+            new DFAEdgeModel(11, states[1], states[1], "A"),
+            new DFAEdgeModel(12, states[1], states[0], "D"),
         };
 
         chromosome.States = states;
