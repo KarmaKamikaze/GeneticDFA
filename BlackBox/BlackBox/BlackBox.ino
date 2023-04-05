@@ -25,7 +25,6 @@ RHReliableDatagram rf69_manager(rf69, MY_ADDRESS);
 void RunSmallDFA(char input[]);
 void RunCarAlarmDFA(char input[]);
 void RunBridgeDFA(char input[]);
-char input[20];
 
 void setup() {
   // Setup for RFM69 chipset
@@ -88,10 +87,6 @@ void loop() {
       RunSmallDFA((char *)buffer);
       // RunCarAlarmDFA((char*)buffer);
       // RunBridgeDFA((char*)buffer);
-
-      // Send a reply back to the learner arduino
-      if (!rf69_manager.sendtoWait(reply, sizeof(reply), from))
-        Serial.println("sendtoWait failed.");
     }
   }
 
