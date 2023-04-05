@@ -11,6 +11,7 @@ public class DFAChromosome : IChromosome
     public double? Fitness { get; set; }
     private int _nextStateID = 0;
     private int _nextEdgeID = 0;
+    public int Size => States.Count + Edges.Count;
 
     public IChromosome CreateNew()
     {
@@ -24,7 +25,6 @@ public class DFAChromosome : IChromosome
         chromosome.Fitness = Fitness;
         return chromosome;
     }
-    
 
     public int CompareTo(IChromosome? other)
     {

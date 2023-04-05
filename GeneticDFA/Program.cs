@@ -11,15 +11,25 @@ class Program
         const int convergenceGenerationNumber = 100;
         const int maximumGenerationNumber = 1000;
         const int fitnessLowerBound = 100;
-
+        const int weightTruePositive = 1;
+        const int weightTrueNegative = 1;
+        const int weightFalsePositive = -1;
+        const int weightFalseNegative = -1;
+        const int weightNonDeterministicEdges = 1;
+        const int weightMissingDeterministicEdges = 1;
+        const int weightSize = 1;
+        
         List<TraceModel> traces = new List<TraceModel>();
-
+        List<string> alphabet = new List<string>() {"A", "B", "C"};
+        
         EliteSelection selection = new EliteSelection();
         UniformCrossover crossover = new UniformCrossover();
         UniformMutation mutation = new UniformMutation(true);
 
         // Specific fitness function for the DFA learning problem.
-        DFAFitness fitness = new DFAFitness();
+        DFAFitness fitness = new DFAFitness(traces, alphabet, weightTruePositive, weightTrueNegative, 
+            weightFalsePositive, weightFalseNegative, weightNonDeterministicEdges, weightMissingDeterministicEdges,
+            weightSize);
         TestFitness(fitness);
         // Specific chromosome (gene) function for the DFA learning problem.
         DFAChromosome chromosome = new DFAChromosome();
