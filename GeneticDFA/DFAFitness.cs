@@ -88,17 +88,33 @@ public class DFAFitness : IFitness
 
         List<DFAEdgeModel> nonDetEdges = new List<DFAEdgeModel>();
 
+        
+        if(edges[0].Source.ID == edges[1].Source.ID && edges[0].Input == edges[1].Input)
+            nonDetEdges.Add(edges[0]);
+        
+        for (int i = 1; i < edges.Count-1; i++)
+        {
+            if ((edges[i].Source.ID == edges[i + 1].Source.ID && edges[i].Input == edges[i + 1].Input) ||
+                (edges[i].Source.ID == edges[i - 1].Source.ID && edges[i].Input == edges[i - 1].Input))
+            {
+                nonDetEdges.Add(edges[i]);
+            }
+        }
+
+        if(edges[^1].Source.ID == edges[^2].Source.ID && edges[^1].Input == edges[^2].Input)
+            nonDetEdges.Add(edges[^1]);
+        
+        /*
         for (int i = 0; i < edges.Count-1; i++)
         {
             if (edges[i].Source.ID == edges[i + 1].Source.ID && edges[i].Input == edges[i + 1].Input)
             {
-                
                 if (!nonDetEdges.Contains(edges[i]))
                     nonDetEdges.Add(edges[i]);
                 nonDetEdges.Add(edges[i+1]);
             }
         }
-
+        */
         return nonDetEdges;
     }
     
