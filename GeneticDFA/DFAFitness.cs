@@ -27,7 +27,7 @@ public class DFAFitness : IFitness
     private double WeightMissingDeterministicEdges { get; set; }
     private double WeightSize { get; set; }
     
-    private enum Verdicts
+    private enum Verdict
     {
         TruePositive,
         TrueNegative,
@@ -38,14 +38,35 @@ public class DFAFitness : IFitness
     public double Evaluate(IChromosome paramChromosome)
     {
         DFAChromosome chromosome = (DFAChromosome) paramChromosome;
-
+        double fitnessScore = 0;
+        
+        foreach (TraceModel trace in Traces)
+        {
+            Verdict verdict = CheckTrace(chromosome, trace);
+            switch (verdict)
+            {
+                case Verdict.TruePositive:
+                    fitnessScore += WeightTruePositive;
+                    break;
+                case Verdict.TrueNegative:
+                    fitnessScore += WeightTrueNegative;
+                    break;
+                case Verdict.FalsePositive:
+                    fitnessScore += WeightFalsePositive;
+                    break;
+                default:
+                    fitnessScore += WeightFalseNegative;
+                    break;
+            }
+        }
+        
         //THIS CALL SHOULD BE MOVED TO THE END OF MUTATION AND CROSSOVERS!
         chromosome.FindAndAssignNonDeterministicEdges();
 
-        return chromosome.NonDeterministicEdges.Count - NumberOfMissingDeterministicEdges(chromosome) - chromosome.Size;
+        return fitnessScore - chromosome.NonDeterministicEdges.Count - NumberOfMissingDeterministicEdges(chromosome) - chromosome.Size;
     }
 
-    private Verdicts CheckTrace(DFAChromosome chromosome, TraceModel trace)
+    private Verdict CheckTrace(DFAChromosome chromosome, TraceModel trace)
     {
         DFAStateModel startState = chromosome.StartState;
         bool isTraceAccepted = ExploreState(chromosome, startState, trace.Trace);
@@ -53,13 +74,13 @@ public class DFAFitness : IFitness
         switch (isTraceAccepted)
         {
             case true when trace.IsAccepting:
-                return Verdicts.TruePositive;
+                return Verdict.TruePositive;
             case false when trace.IsAccepting:
-                return Verdicts.FalseNegative;
+                return Verdict.FalseNegative;
             case true when !trace.IsAccepting:
-                return Verdicts.FalsePositive;
+                return Verdict.FalsePositive;
             default:
-                return Verdicts.TrueNegative;
+                return Verdict.TrueNegative;
         }
     }
 
