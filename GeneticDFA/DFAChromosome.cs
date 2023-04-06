@@ -4,20 +4,49 @@ namespace GeneticDFA;
 
 public class DFAChromosome : IChromosome
 {
-    
-    public List<DFAStateModel> States = new List<DFAStateModel>();
-    public List<DFAEdgeModel> Edges = new List<DFAEdgeModel>();
-    public int StartStateID;
+    public List<DFAStateModel> States { get; set; } = new List<DFAStateModel>();
+    public List<DFAEdgeModel> Edges { get; set; } = new List<DFAEdgeModel>();
+    public List<DFAEdgeModel> NonDeterministicEdges { get; set; } = new List<DFAEdgeModel>();
+    public int StartStateID { get; set; }
     public double? Fitness { get; set; }
+    public int Size => States.Count + Edges.Count;
     private int _nextStateID = 0;
     private int _nextEdgeID = 0;
-    public int Size => States.Count + Edges.Count;
+    
 
     public IChromosome CreateNew()
     {
         return new DFAChromosome();
     }
 
+    public void FindAndAssignNonDeterministicEdges()
+    {
+        List<DFAEdgeModel> edges = Edges;
+        NonDeterministicEdges = new List<DFAEdgeModel>();
+        
+        edges.Sort(delegate(DFAEdgeModel edge1, DFAEdgeModel edge2)
+        {
+            int areSourcesEqual = edge1.Source.ID.CompareTo(edge2.Source.ID);
+            return areSourcesEqual == 0 ? string.Compare(edge1.Input, edge2.Input, StringComparison.Ordinal) : areSourcesEqual;
+        });
+
+        if(edges[0].Source.ID == edges[1].Source.ID && edges[0].Input == edges[1].Input)
+            NonDeterministicEdges.Add(edges[0]);
+        
+        for (int i = 1; i < edges.Count-1; i++)
+        {
+            if ((edges[i].Source.ID == edges[i + 1].Source.ID && edges[i].Input == edges[i + 1].Input) ||
+                (edges[i].Source.ID == edges[i - 1].Source.ID && edges[i].Input == edges[i - 1].Input))
+            {
+                NonDeterministicEdges.Add(edges[i]);
+            }
+        }
+
+        if(edges[^1].Source.ID == edges[^2].Source.ID && edges[^1].Input == edges[^2].Input)
+            NonDeterministicEdges.Add(edges[^1]);
+    }
+    
+    
     public IChromosome Clone()
     {
         IChromosome chromosome = CreateNew();
