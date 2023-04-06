@@ -14,6 +14,5 @@ public class DFAEdgeModel
     public DFAStateModel Source { get; set; }
     public DFAStateModel Target { get; set; }
     public string Input { get; set; } //Can maybe be made a char, depends on how input alphabet will be defined.
-    public bool IsNonDet { get; set; }
-    
+
 }

@@ -7,7 +7,7 @@ public class DFAChromosome : IChromosome
     public List<DFAStateModel> States { get; set; } = new List<DFAStateModel>();
     public List<DFAEdgeModel> Edges { get; set; } = new List<DFAEdgeModel>();
     public List<DFAEdgeModel> NonDeterministicEdges { get; set; } = new List<DFAEdgeModel>();
-    public int StartStateID { get; set; }
+    public DFAStateModel StartState { get; set; }
     public double? Fitness { get; set; }
     public int Size => States.Count + Edges.Count;
     private int _nextStateID = 0;

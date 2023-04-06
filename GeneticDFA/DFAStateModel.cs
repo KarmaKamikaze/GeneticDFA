@@ -10,6 +10,5 @@ public class DFAStateModel
 
     public int ID { get; }
     public bool IsAccept { get; set; }
-    public bool IsNonDet { get; set; }
 
 }

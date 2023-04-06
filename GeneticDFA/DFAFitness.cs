@@ -45,6 +45,29 @@ public class DFAFitness : IFitness
         return chromosome.NonDeterministicEdges.Count - NumberOfMissingDeterministicEdges(chromosome) - chromosome.Size;
     }
 
+    private Verdicts CheckTrace(DFAChromosome chromosome, TraceModel trace)
+    {
+        DFAStateModel startState = chromosome.StartState;
+        bool isTraceAccepted = ExploreState(chromosome, startState, trace.Trace);
+
+        switch (isTraceAccepted)
+        {
+            case true when trace.IsAccepting:
+                return Verdicts.TruePositive;
+            case false when trace.IsAccepting:
+                return Verdicts.FalseNegative;
+            case true when !trace.IsAccepting:
+                return Verdicts.FalsePositive;
+            default:
+                return Verdicts.TrueNegative;
+        }
+    }
+
+    private bool ExploreState(DFAChromosome chromosome, DFAStateModel state, string traceString)
+    {
+        return true;
+    }
+    
     
     //Can be moved to chromosome class, but it requires passing of the alphabet.
     private int NumberOfMissingDeterministicEdges(DFAChromosome chromosome)
