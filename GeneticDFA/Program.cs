@@ -20,8 +20,20 @@ class Program
         const int weightMissingDeterministicEdges = 1;
         const int weightSize = 1;
         
-        List<TraceModel> traces = new List<TraceModel>();
-        List<string> alphabet = new List<string>() {"A", "B", "C", "D"};
+        List<TraceModel> traces = new List<TraceModel>()
+        {
+            new TraceModel("11", 2, true),
+            new TraceModel("00011", 5, true),
+            new TraceModel("110011", 6, true),
+            new TraceModel("1011", 4, true),
+            new TraceModel("0101101011", 10, true),
+            new TraceModel("110", 3, false),
+            new TraceModel("0", 1, false),
+            new TraceModel("00111", 5, false),
+            new TraceModel("1010", 4, false),
+            new TraceModel("00000000000111", 14, false),
+        };
+        List<char> alphabet = new List<char>() {'1', '0'};
         
         EliteSelection selection = new EliteSelection();
         UniformCrossover crossover = new UniformCrossover();
@@ -65,54 +77,55 @@ class Program
     private static void TestFitness(DFAFitness fitness)
     {
         DFAChromosome chromosome = new DFAChromosome();
+        
+        /*
         List<DFAStateModel> states = new List<DFAStateModel>()
         {
             new DFAStateModel(1, false),
             new DFAStateModel(2, false),
             new DFAStateModel(3, true),
-            new DFAStateModel(4, true),
-            new DFAStateModel(5, true),
-            new DFAStateModel(6, true),
+            new DFAStateModel(4, false),
         };
+        
         List<DFAEdgeModel> edges = new List<DFAEdgeModel>()
         {
-            new DFAEdgeModel(1, states[0], states[1], "A"),
-            new DFAEdgeModel(2, states[1], states[2], "A"),
-            new DFAEdgeModel(3, states[2], states[1], "B"),
-            new DFAEdgeModel(4, states[0], states[2], "A"),
-            new DFAEdgeModel(5, states[2], states[1], "C"),
-            new DFAEdgeModel(6, states[0], states[2], "B"),
-            new DFAEdgeModel(7, states[2], states[2], "C"),
-            new DFAEdgeModel(8, states[0], states[0], "A"),
-            new DFAEdgeModel(9, states[0], states[0], "D"),
-            new DFAEdgeModel(10, states[2], states[2], "D"),
-            new DFAEdgeModel(11, states[1], states[1], "A"),
-            new DFAEdgeModel(12, states[1], states[0], "D"),
-            new DFAEdgeModel(12, states[1], states[0], "D"),
-            new DFAEdgeModel(12, states[1], states[0], "D"),
-            new DFAEdgeModel(12, states[1], states[0], "D"),
-            new DFAEdgeModel(12, states[1], states[0], "D"),
-            new DFAEdgeModel(12, states[1], states[0], "D"),
-            new DFAEdgeModel(12, states[1], states[0], "D"),
-            new DFAEdgeModel(12, states[1], states[0], "D"),
-            new DFAEdgeModel(12, states[1], states[0], "D"),
-            new DFAEdgeModel(12, states[1], states[0], "D"),
-            new DFAEdgeModel(12, states[1], states[0], "D"),
-            new DFAEdgeModel(12, states[1], states[0], "D"),
-            new DFAEdgeModel(12, states[1], states[0], "D"),
-            new DFAEdgeModel(12, states[1], states[0], "D"),
-            new DFAEdgeModel(12, states[1], states[0], "D"),
-            new DFAEdgeModel(12, states[1], states[0], "D"),
-            new DFAEdgeModel(12, states[1], states[0], "D"),
-            new DFAEdgeModel(12, states[1], states[0], "D"),
+            new DFAEdgeModel(1, states[0], states[1], '1'),
+            new DFAEdgeModel(2, states[0], states[3], '0'),
+            new DFAEdgeModel(3, states[1], states[1], '0'),
+            new DFAEdgeModel(4, states[1], states[2], '0'),
+            new DFAEdgeModel(5, states[2], states[3], '1'),
+            new DFAEdgeModel(6, states[2], states[3], '0'),
+            new DFAEdgeModel(7, states[3], states[0], '1'),
+            new DFAEdgeModel(8, states[3], states[1], '0'),
+            new DFAEdgeModel(9, states[3], states[2], '1'),
         };
-
+        */
+        
+        //SmallDFA
+        List<DFAStateModel> states = new List<DFAStateModel>()
+        {
+            new DFAStateModel(1, false),
+            new DFAStateModel(2, false),
+            new DFAStateModel(3, true),
+        };
+        
+        List<DFAEdgeModel> edges = new List<DFAEdgeModel>()
+        {
+            new DFAEdgeModel(1, states[0], states[0], '0'),
+            new DFAEdgeModel(2, states[0], states[1], '1'),
+            new DFAEdgeModel(3, states[1], states[0], '0'),
+            new DFAEdgeModel(4, states[1], states[2], '1'),
+            new DFAEdgeModel(5, states[2], states[0], '1'),
+            new DFAEdgeModel(6, states[2], states[0], '0'),
+        };
+        
         chromosome.States = states;
         chromosome.Edges = edges;
-
+        chromosome.StartState = states[0];
+        
         Stopwatch stopWatch = new Stopwatch();
         stopWatch.Start();
-        for (int i = 0; i < 50000; i++)
+        for (int i = 0; i < 1; i++)
         {
             fitness.Evaluate(chromosome);
         }

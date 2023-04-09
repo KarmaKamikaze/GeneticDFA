@@ -4,7 +4,7 @@ namespace GeneticDFA;
 
 public class DFAFitness : IFitness
 {
-    public DFAFitness(List<TraceModel> traces, List<string> alphabet, double weightTruePositive, double weightTrueNegative, double weightFalsePositive, double weightFalseNegative, double weightNonDeterministicEdges, double weightMissingDeterministicEdges, double weightSize)
+    public DFAFitness(List<TraceModel> traces, List<char> alphabet, double weightTruePositive, double weightTrueNegative, double weightFalsePositive, double weightFalseNegative, double weightNonDeterministicEdges, double weightMissingDeterministicEdges, double weightSize)
     {
         Traces = traces;
         Alphabet = alphabet;
@@ -18,7 +18,7 @@ public class DFAFitness : IFitness
     }
 
     private List<TraceModel> Traces { get; set; }
-    private List<string> Alphabet { get; set; }
+    private List<char> Alphabet { get; set; }
     private double WeightTruePositive { get; set; }
     private double WeightTrueNegative { get; set; }
     private double WeightFalsePositive { get; set; }
@@ -46,15 +46,19 @@ public class DFAFitness : IFitness
             switch (verdict)
             {
                 case Verdict.TruePositive:
+                    Console.WriteLine(trace.Trace + ": True Positive");
                     fitnessScore += WeightTruePositive;
                     break;
                 case Verdict.TrueNegative:
+                    Console.WriteLine(trace.Trace + ": True Negative");
                     fitnessScore += WeightTrueNegative;
                     break;
                 case Verdict.FalsePositive:
+                    Console.WriteLine(trace.Trace + ": False Positive");
                     fitnessScore += WeightFalsePositive;
                     break;
                 default:
+                    Console.WriteLine(trace.Trace + ": False Negative");
                     fitnessScore += WeightFalseNegative;
                     break;
             }
@@ -84,9 +88,26 @@ public class DFAFitness : IFitness
         }
     }
 
+    //Can be moved to chromosome class
     private bool ExploreState(DFAChromosome chromosome, DFAStateModel state, string traceString)
     {
-        return true;
+        if (traceString == "")
+        {
+            return state.IsAccept;
+        }
+
+        char nextInput = traceString[0];
+        string remainingTrace = traceString[1..];
+        foreach (DFAEdgeModel edge in chromosome.Edges)
+        {
+            if (edge.Source.ID == state.ID && edge.Input == nextInput)
+            {
+                if (ExploreState(chromosome, edge.Target, remainingTrace))
+                    return true;
+            }    
+        }
+
+        return false;
     }
     
     
@@ -99,7 +120,7 @@ public class DFAFitness : IFitness
         foreach (DFAStateModel state in chromosome.States)
         {
             List<DFAEdgeModel> edgesWithCurrentStateAsSource = chromosome.Edges.Where(e => e.Source.ID == state.ID).ToList();
-            foreach (string symbol in Alphabet)
+            foreach (char symbol in Alphabet)
             {
                 if (edgesWithCurrentStateAsSource.Any(e => e.Input == symbol))
                     missingDeterministicEdgesForState -= 1;

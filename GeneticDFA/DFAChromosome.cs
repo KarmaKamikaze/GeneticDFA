@@ -27,7 +27,7 @@ public class DFAChromosome : IChromosome
         edges.Sort(delegate(DFAEdgeModel edge1, DFAEdgeModel edge2)
         {
             int areSourcesEqual = edge1.Source.ID.CompareTo(edge2.Source.ID);
-            return areSourcesEqual == 0 ? string.Compare(edge1.Input, edge2.Input, StringComparison.Ordinal) : areSourcesEqual;
+            return areSourcesEqual == 0 ? edge1.Input.CompareTo(edge2.Input) : areSourcesEqual;
         });
 
         if(edges[0].Source.ID == edges[1].Source.ID && edges[0].Input == edges[1].Input)
@@ -68,28 +68,6 @@ public class DFAChromosome : IChromosome
         nullable1 = fitness1;
         return !(fitness2.GetValueOrDefault() > nullable1.GetValueOrDefault() & fitness2.HasValue & nullable1.HasValue) ? -1 : 1;
     }
-    
-    
-    public static bool operator ==(DFAChromosome first, DFAChromosome second)
-    {
-        if ((object) first == (object) second)
-            return true;
-        return (object) first != null && (object) second != null && first.CompareTo((IChromosome) second) == 0;
-    }
-
-    public static bool operator !=(DFAChromosome first, DFAChromosome second) => !(first == second);
-
-    public static bool operator <(DFAChromosome first, DFAChromosome second)
-    {
-        if ((object) first == (object) second)
-            return false;
-        if ((object) first == null)
-            return true;
-        return (object) second != null && first.CompareTo((IChromosome) second) < 0;
-    }
-
-    public static bool operator >(DFAChromosome first, DFAChromosome second) => !(first == second) && !(first < second);
-    
     
     
     //Code below here will not be used and is simply here to satisfy the interface.
