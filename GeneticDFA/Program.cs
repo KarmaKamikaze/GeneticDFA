@@ -79,7 +79,7 @@ class Program
     {
         DFAChromosome chromosome = new DFAChromosome();
         
-        /*
+        
         List<DFAStateModel> states = new List<DFAStateModel>()
         {
             new DFAStateModel(1, false),
@@ -100,17 +100,17 @@ class Program
             new DFAEdgeModel(8, states[3], states[1], '0'),
             new DFAEdgeModel(9, states[3], states[2], '1'),
         };
-        */
+        
         
         //SmallDFA
-        List<DFAStateModel> states = new List<DFAStateModel>()
+        List<DFAStateModel> statesSmallDFA = new List<DFAStateModel>()
         {
             new DFAStateModel(1, false),
             new DFAStateModel(2, false),
             new DFAStateModel(3, true),
         };
         
-        List<DFAEdgeModel> edges = new List<DFAEdgeModel>()
+        List<DFAEdgeModel> edgesSmallDFA = new List<DFAEdgeModel>()
         {
             new DFAEdgeModel(1, states[0], states[0], '0'),
             new DFAEdgeModel(2, states[0], states[1], '1'),
@@ -120,15 +120,15 @@ class Program
             new DFAEdgeModel(6, states[2], states[0], '0'),
         };
         
-        chromosome.States = states;
-        chromosome.Edges = edges;
-        chromosome.StartState = states[0];
+        chromosome.States.AddRange(states);
+        chromosome.Edges.AddRange(edges);
+        //chromosome.StartState = states[0];
         
         Stopwatch stopWatch = new Stopwatch();
         stopWatch.Start();
         for (int i = 0; i < 1; i++)
         {
-            fitness.Evaluate(chromosome);
+            Console.WriteLine(fitness.Evaluate(chromosome));
         }
         stopWatch.Stop();
         // Get the elapsed time as a TimeSpan value.

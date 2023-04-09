@@ -17,15 +17,15 @@ public class DFAFitness : IFitness
         WeightSize = weightSize;
     }
 
-    private List<TraceModel> Traces { get; set; }
-    private List<char> Alphabet { get; set; }
-    private double WeightTruePositive { get; set; }
-    private double WeightTrueNegative { get; set; }
-    private double WeightFalsePositive { get; set; }
-    private double WeightFalseNegative { get; set; }
-    private double WeightNonDeterministicEdges { get; set; }
-    private double WeightMissingDeterministicEdges { get; set; }
-    private double WeightSize { get; set; }
+    private List<TraceModel> Traces { get; }
+    private List<char> Alphabet { get; }
+    private double WeightTruePositive { get; }
+    private double WeightTrueNegative { get; }
+    private double WeightFalsePositive { get; }
+    private double WeightFalseNegative { get; }
+    private double WeightNonDeterministicEdges { get; }
+    private double WeightMissingDeterministicEdges { get; }
+    private double WeightSize { get; }
     
     private enum Verdict
     {
@@ -63,7 +63,9 @@ public class DFAFitness : IFitness
         //THIS CALL SHOULD BE MOVED TO THE END OF MUTATION AND CROSSOVERS!
         chromosome.FindAndAssignNonDeterministicEdges();
 
-        return fitnessScore - chromosome.NonDeterministicEdges.Count - NumberOfMissingDeterministicEdges(chromosome) - chromosome.Size;
+        return fitnessScore - WeightNonDeterministicEdges*chromosome.NonDeterministicEdges.Count - 
+               WeightMissingDeterministicEdges*NumberOfMissingDeterministicEdges(chromosome) -
+               WeightSize*chromosome.Size;
     }
 
     private Verdict CheckTrace(DFAChromosome chromosome, TraceModel trace)

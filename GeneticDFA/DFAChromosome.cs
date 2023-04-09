@@ -4,10 +4,10 @@ namespace GeneticDFA;
 
 public class DFAChromosome : IChromosome
 {
-    public List<DFAStateModel> States { get; set; } = new List<DFAStateModel>();
-    public List<DFAEdgeModel> Edges { get; set; } = new List<DFAEdgeModel>();
-    public List<DFAEdgeModel> NonDeterministicEdges { get; set; } = new List<DFAEdgeModel>();
-    public DFAStateModel StartState { get; set; }
+    public List<DFAStateModel> States { get; } = new List<DFAStateModel>();
+    public List<DFAEdgeModel> Edges { get; } = new List<DFAEdgeModel>();
+    public List<DFAEdgeModel> NonDeterministicEdges { get; private set; } = new List<DFAEdgeModel>();
+    public DFAStateModel StartState { get; }
     public double? Fitness { get; set; }
     public int Size => States.Count + Edges.Count;
     private int _nextStateID = 0;
@@ -23,6 +23,9 @@ public class DFAChromosome : IChromosome
     {
         List<DFAEdgeModel> edges = Edges;
         NonDeterministicEdges = new List<DFAEdgeModel>();
+
+        if (edges.Count < 2)
+            return;
         
         edges.Sort(delegate(DFAEdgeModel edge1, DFAEdgeModel edge2)
         {
