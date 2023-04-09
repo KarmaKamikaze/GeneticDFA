@@ -20,6 +20,7 @@ class Program
         const int weightMissingDeterministicEdges = 1;
         const int weightSize = 1;
         
+        //Sample traces of SmallDFA
         List<TraceModel> traces = new List<TraceModel>()
         {
             new TraceModel("11", 2, true),

@@ -46,19 +46,15 @@ public class DFAFitness : IFitness
             switch (verdict)
             {
                 case Verdict.TruePositive:
-                    Console.WriteLine(trace.Trace + ": True Positive");
                     fitnessScore += WeightTruePositive;
                     break;
                 case Verdict.TrueNegative:
-                    Console.WriteLine(trace.Trace + ": True Negative");
                     fitnessScore += WeightTrueNegative;
                     break;
                 case Verdict.FalsePositive:
-                    Console.WriteLine(trace.Trace + ": False Positive");
                     fitnessScore += WeightFalsePositive;
                     break;
                 default:
-                    Console.WriteLine(trace.Trace + ": False Negative");
                     fitnessScore += WeightFalseNegative;
                     break;
             }
