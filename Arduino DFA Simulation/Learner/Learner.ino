@@ -9,7 +9,7 @@
 #define RFM69_CS 10    // Select Signal Pin
 #define RFM69_RST 3    // RST Pin
 #define LED 9          // Test LED
-#define MY_ADDRESS 2   // Blackbox arduino address
+#define MY_ADDRESS 2   // Learner arduino address
 #define DEST_ADDRESS 1 // Where to send packets to
 #define TIMEOUT 2000   // Timeout in milliseconds
 
@@ -35,7 +35,7 @@ void setup() {
 
   pinMode(LED, OUTPUT);
   pinMode(RFM69_RST, OUTPUT);
-  Serial.println("RFM69HW Arduino DFA Blackbox System!");
+  Serial.println("RFM69HW Arduino DFA Learner System!");
   Serial.println();
 
   // Manual reset
