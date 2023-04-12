@@ -9,9 +9,14 @@
 #define RFM69_RST 3         // RST Pin
 #define LED 9               // Test LED
 #define SERIAL_BAUD 9600
-String array_of_traces[3] = {"100100110", "011010", "101010"}
+
+const char* array_of_traces[3] = {"100100110", "011010", "101010"};
 // Singleton instance of the radio driver
 RH_RF69 rf69(RFM69_CS, RFM69_INT);
+
+String radiopacket;
+
+bool Handshake();
 
 void setup() {
   // Setup for RFM69 chipset
@@ -20,8 +25,6 @@ void setup() {
   while (!Serial) { delay(1); } // Wait until serial console is open
 
   pinMode(RFM69_RST, OUTPUT);
-  Serial.println("RFM69HW Arduino DFA Blackbox System!");
-  Serial.println();
 
   // Manual reset
   digitalWrite(RFM69_RST, LOW);
@@ -31,12 +34,12 @@ void setup() {
   delay(10);
 
   if (!rf69.init()) {
-    Serial.println("RFM69HW radio init failed");
+    //Radio init failed
     while (1);
   }
-  Serial.println("RFM69HW radio init OK!");
+  //init was sucessfull
   if (!rf69.setFrequency(RF69_FREQ)) {
-    Serial.println("setFrequency failed");
+    //Frequency failed
   }
   else {Serial.println("Listening at 868 MHz.");}
   // RFM69HW *requires* that the Tx power flag is set!
@@ -45,18 +48,36 @@ void setup() {
 
 void loop() {
   
-  while(!HandShake())
-    Serial.println("HandShake have yet to be acknoglaged");
+  while(!HandShake()){
+  //We wait for handshake to be true
   }
-
   /*SEND AN ENTIRE TRACE OVER RADIO*/
-  /*WAIT FOR ACK THAT TRACE WAS RECHIEVED*/
-  /*IF ACK SAYS ACK: SUCESS WE SERIAL PRINT TRACE: SUCESS, ELSE TRACE:FAILED*/
-  /*LOOP TO NEXT TRACE TO TEST*/
+  for (int i=0; i<sizeof(array_of_traces)/sizeof(array_of_traces[0]); i++){
+
+    rf69.send((uint8_t *)array_of_traces[i], strlen(array_of_traces[i]));
+    rf69.waitPacketSent();
+
+    /*WAIT FOR ACK THAT TRACE WAS RECHIEVED*/
+    while(!rf69.available()){
+    delay(10);
+    }
+
+    /*Print answer from blackbox*/
+    if (rf69.available() && rf69.BeskedFraBlackBox == "Trace Accepted!") {
+      Serial.print(array_of_traces[i] +":SUCESS");
+    }
+    else if(rf69.available() && rf69.BeskedFraBlackBox == "Trace Failed!"){
+      Serial.print(array_of_traces[i] +":FAILED");
+    }
+  }
   /*WHEN NO MORE TRACES SERIAL PRINT "STOP" TO STOP PYTHON*/
+  Serial.print("STOP");
+  }
+  
 
 
-void HandShake(){
+//This one is to be changed with Karma handshake
+bool HandShake(){
 
   //Setup for sending ACK Request
   char radiopacket[20] = "ACK?";
@@ -66,15 +87,11 @@ void HandShake(){
 
   //While we dont get ACK we delay
   while(!rf69.available()){
-
-    Serial.print("Waiting for handshake ack");
-    delay(1000);
-
+    delay(10);
   }
 
   //If ACK recieved we return true
-  if (rf69.available() && /*INSERT MESSAGE HERE*/ == "ACK!") {
-    Serial.print("ACK recieved");
+  if (rf69.available() && rf69.BeskedFraBlackBox == "ACK!") {
   }
 
   return true;
