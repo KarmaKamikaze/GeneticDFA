@@ -9,8 +9,8 @@
 #define RFM69_CS 10    // Select Signal Pin
 #define RFM69_RST 3    // RST Pin
 #define LED 9          // Test LED
-#define MY_ADDRESS 1   // Blackbox arduino address
-#define DEST_ADDRESS 2 // Where to send packets to
+#define MY_ADDRESS 2   // Blackbox arduino address
+#define DEST_ADDRESS 1 // Where to send packets to
 #define TIMEOUT 2000   // Timeout in milliseconds
 
 #define SERIAL_BAUD 9600
@@ -21,12 +21,12 @@ RH_RF69 rf69(RFM69_CS, RFM69_INT);
 // Class to manage message delivery and receipt, using the driver declared above
 RHReliableDatagram rf69_manager(rf69, MY_ADDRESS);
 
-const char* array_of_traces[500] = {"10010000110", "011010"};
-const int array_size = sizeof(array_of_traces)/sizeof(array_of_traces[0]);
+const char *array_of_traces[500] = {"10010000110", "011010"};
+const int array_size = sizeof(array_of_traces) / sizeof(array_of_traces[0]);
 void TransmitMessage(uint8_t reply[]);
 
 void setup() {
- // Setup for RFM69 chipset
+  // Setup for RFM69 chipset
   Serial.begin(SERIAL_BAUD);
   // Uncomment the following line, if used without serial connection
   while (!Serial) {
@@ -72,24 +72,23 @@ void setup() {
 uint8_t buffer[RH_RF69_MAX_MESSAGE_LEN];
 
 void loop() {
-    
+
   /*Loop over traces*/
-  for (int i = 0; i < array_size; i++){
+  for (int i = 0; i < array_size; i++) {
     // Loop over char in trace
-    for(int j = 0; j <= strlen(array_of_traces[i]); j++){
+    for (int j = 0; j <= strlen(array_of_traces[i]); j++) {
       // If at end of a trace tell blackbox its END
-      if(j == strlen(array_of_traces[i])){
+      if (j == strlen(array_of_traces[i])) {
         TransmitMessage("END");
         break;
-      }
-      else{
-        //Send array_of_traces[i][j]
+      } else {
+        // Send array_of_traces[i][j]
         TransmitMessage(array_of_traces[i][j]);
       }
     }
     /*When one trace have been sent await result*/
-    while(!rf69_manager.available()){
-    delay(10);
+    while (!rf69_manager.available()) {
+      delay(10);
     }
     /*Print result from blackbox*/
     if (rf69_manager.available()) {
@@ -99,10 +98,9 @@ void loop() {
       if (rf69_manager.recvfromAckTimeout(buffer, &len, TIMEOUT, &from)) {
 
         if ((char *)buffer == "Trace Accepted!") {
-          Serial.print(strcat(array_of_traces[i],":SUCCESS"));
-        }
-        else if((char *)buffer == "Trace Failed!"){
-          Serial.print(strcat(array_of_traces[i],":FAILED"));
+          Serial.print(strcat(array_of_traces[i], ":SUCCESS"));
+        } else if ((char *)buffer == "Trace Failed!") {
+          Serial.print(strcat(array_of_traces[i], ":FAILED"));
         }
       }
     }
@@ -110,7 +108,7 @@ void loop() {
   /*When no more traces, print "STOP" to stop python*/
   Serial.print("STOP");
 }
-  
+
 void TransmitMessage(uint8_t reply[]) {
   Serial.println((char *)reply);
 
