@@ -24,8 +24,8 @@ RHReliableDatagram rf69_manager(rf69, MY_ADDRESS);
 const char *array_of_traces[500] = {"10010000110", "011010"};
 const int array_size = sizeof(array_of_traces) / sizeof(array_of_traces[0]);
 
-void TransmitMessage(uint8_t reply[]);
 void Blink(int milliseconds);
+void TransmitMessage(char reply[]);
 
 void setup() {
   // Setup for RFM69 chipset
@@ -33,7 +33,7 @@ void setup() {
   // Uncomment the following line, if used without serial connection
   while (!Serial) {
     delay(1);
-  } // Wait until serial console is open
+  }
 
   pinMode(LED, OUTPUT);
   pinMode(RFM69_RST, OUTPUT);
@@ -73,11 +73,11 @@ uint8_t buffer[RH_RF69_MAX_MESSAGE_LEN];
 
 void loop() {
 
-  /*Loop over traces*/
+  // Loop over traces
   for (int i = 0; i < array_size; i++) {
     // Loop over char in trace
     for (int j = 0; j <= strlen(array_of_traces[i]); j++) {
-      // If at end of a trace tell blackbox its END
+      // If at end of a trace, tell blackbox its END
       if (j == strlen(array_of_traces[i])) {
         TransmitMessage("END");
         break;
@@ -87,7 +87,7 @@ void loop() {
       }
     }
 
-    /*Print result from blackbox*/
+    // Print result from blackbox
     if (rf69_manager.available()) {
       // Wait for a message addressed to the Blackbox arduino
       uint8_t len = sizeof(buffer);
@@ -102,7 +102,7 @@ void loop() {
       }
     }
   }
-  /*When no more traces, print "STOP" to stop python*/
+  // When no more traces, print "STOP" to stop python monitor
   Serial.print("STOP");
 }
 
@@ -121,10 +121,8 @@ void Blink(int milliseconds) {
   delay(milliseconds);
 }
 
-void TransmitMessage(uint8_t reply[]) {
-  Serial.println((char *)reply);
-
-  if (!rf69_manager.sendtoWait(reply, sizeof(reply), DEST_ADDRESS)) {
+void TransmitMessage(char reply[]) {
+  if (!rf69_manager.sendtoWait((uint8_t *)reply, strlen(reply), DEST_ADDRESS)) {
     // If the transmission fails, flash the error code
     for (int i = 0; i < 10; i++) {
       Blink(500);
