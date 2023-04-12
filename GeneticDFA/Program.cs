@@ -23,16 +23,16 @@ class Program
         //Sample traces of SmallDFA
         List<TraceModel> traces = new List<TraceModel>()
         {
-            new TraceModel("11", 2, true),
-            new TraceModel("00011", 5, true),
-            new TraceModel("110011", 6, true),
-            new TraceModel("1011", 4, true),
-            new TraceModel("0101101011", 10, true),
-            new TraceModel("110", 3, false),
-            new TraceModel("01", 1, false),
-            new TraceModel("00111", 5, false),
-            new TraceModel("1010", 4, false),
-            new TraceModel("00000000000111", 14, false),
+            new TraceModel("11", true),
+            new TraceModel("00011", true),
+            new TraceModel("110011", true),
+            new TraceModel("1011", true),
+            new TraceModel("0101101011", true),
+            new TraceModel("110", false),
+            new TraceModel("01", false),
+            new TraceModel("00111", false),
+            new TraceModel("1010", false),
+            new TraceModel("00000000000111", false),
         };
         List<char> alphabet = new List<char>() {'1', '0'};
         
