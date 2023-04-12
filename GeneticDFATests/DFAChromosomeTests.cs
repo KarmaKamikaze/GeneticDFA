@@ -14,9 +14,7 @@ public class DFAChromosomeTests
     {
         //Arrange
         List<DFAEdgeModel> expected = edges.Where(e => expectedNonDeterministicEdgeIDs.Contains(e.ID)).ToList();
-        DFAChromosome chromosome = new DFAChromosome();
-        chromosome.States.AddRange(States);
-        chromosome.Edges.AddRange(edges);
+        DFAChromosome chromosome = new DFAChromosome(States, edges, States[0]);
         
         //Act
         chromosome.FindAndAssignNonDeterministicEdges();

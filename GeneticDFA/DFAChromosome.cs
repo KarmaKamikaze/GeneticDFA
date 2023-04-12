@@ -12,7 +12,19 @@ public class DFAChromosome : IChromosome
     public int Size => States.Count + Edges.Count;
     private int _nextStateID = 0;
     private int _nextEdgeID = 0;
-    
+
+    public DFAChromosome(List<DFAStateModel> states, List<DFAEdgeModel> edges, DFAStateModel startState)
+    {
+        States = states;
+        Edges = edges;
+        StartState = startState;
+    }
+
+    public DFAChromosome()
+    {
+        
+    }
+
 
     public IChromosome CreateNew()
     {
