@@ -14,65 +14,62 @@ void RunBridgeDFA(char input[]) {
   bool stringComplete = false;
   DFA.update();
 
-  for (int i = 0; i < strlen(input); i += 2) {
-    if (input[i] == 'A') {
-      if (input[i + 1] == 'w') {
-        if (DFA.isInState(AA)) {
-          DFA.transitionTo(AW);
-        } else if (DFA.isInState(WA)) {
-          DFA.transitionTo(WW);
-        } else if (DFA.isInState(BA)) {
-          DFA.transitionTo(BW);
-        }
-      } else if (input[i + 1] == 'e') {
-        if (DFA.isInState(AA)) {
-          DFA.transitionTo(WA);
-        } else if (DFA.isInState(AW)) {
-          DFA.transitionTo(WW);
-        } else if (DFA.isInState(AB)) {
-          DFA.transitionTo(WB);
-        }
-      } else {
+  for (int i = 0; i < strlen(input); i++) {
+    if (input[i] == 'A'){
+      if (DFA.isInState(AA)){
+        DFA.transitionTo(WA);
+      } else if (DFA.isInState(AW)){
+        DFA.transitionTo(WW);
+      } else if (DFA.isInState(AB)){
+        DFA.transitionTo(WB);
+      } else{
         Serial.println("Failed because it enters the trash state");
-        break;
       }
-    } else if (input[i] == 'E') {
-      if (input[i + 1] == 'w') {
-        if (DFA.isInState(AW)) {
-          DFA.transitionTo(AB);
-        } else if (DFA.isInState(WW)) {
-          DFA.transitionTo(WB);
-        } else if (DFA.isInState(BW)) {
-          DFA.transitionTo(BB);
-        }
-      } else if (input[i + 1] == 'e') {
-        if (DFA.isInState(WA)) {
-          DFA.transitionTo(BA);
-        } else if (DFA.isInState(WW)) {
-          DFA.transitionTo(BW);
-        } else if (DFA.isInState(WB)) {
-          DFA.transitionTo(BB);
-        }
-      } else {
+    } else if (input[i] == 'B'){
+      if (DFA.isInState(WA)){
+        DFA.transitionTo(BA);
+      } else if (DFA.isInState(WW)){
+        DFA.transitionTo(BW);
+      } else if (DFA.isInState(WB)){
+        DFA.transitionTo(BB);
+      } else{
         Serial.println("Failed because it enters the trash state");
-        break;
       }
-    } else if (input[i] == 'L') {
-      if (input[i + 1] == 'w') {
-        if (DFA.isInState(WB)) {
-          DFA.transitionTo(WA);
-        } else if (DFA.isInState(AB)) {
-          DFA.transitionTo(AA);
-        }
-      } else if (input[i + 1] == 'e') {
-        if (DFA.isInState(BW)) {
-          DFA.transitionTo(AW);
-        } else if (DFA.isInState(BA)) {
-          DFA.transitionTo(AA);
-        }
-      } else {
+    } else if (input[i] == 'C'){
+      if (DFA.isInState(BW)){
+        DFA.transitionTo(AW);
+      } else if (DFA.isInState(BA)){
+        DFA.transitionTo(AA);
+      } else{
         Serial.println("Failed because it enters the trash state");
-        break;
+      }
+    } else if (input[i] == 'X'){
+      if (DFA.isInState(AA)){
+        DFA.transitionTo(AW);
+      } else if (DFA.isInState(WA)){
+        DFA.transitionTo(WW);
+      } else if (DFA.isInState(BA)){
+        DFA.transitionTo(BW);
+      } else{
+        Serial.println("Failed because it enters the trash state");
+      }
+    } else if (input[i] == 'Y'){
+      if (DFA.isInState(AW)){
+        DFA.transitionTo(AB);
+      } else if (DFA.isInState(WW)){
+        DFA.transitionTo(WB);
+      } else if (DFA.isInState(BW)){
+        DFA.transitionTo(BB);
+      } else{
+        Serial.println("Failed because it enters the trash state");
+      }
+    } else if (input[i] == 'Z'){
+      if (DFA.isInState(WB)){
+        DFA.transitionTo(WA);
+      } else if (DFA.isInState(AB)){
+        DFA.transitionTo(AA);
+      } else{
+        Serial.println("Failed because it enters the trash state");
       }
     }
 
@@ -85,7 +82,7 @@ void RunBridgeDFA(char input[]) {
       break;
     }
 
-    if (i == ((strlen(input) - 2))) {
+    if (i == ((strlen(input) - 1))) {
       stringComplete = true;
     }
     DFA.update();
