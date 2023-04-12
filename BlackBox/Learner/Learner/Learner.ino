@@ -51,13 +51,13 @@ void loop() {
   while(!HandShake()){
   //We wait for handshake to be true
   }
-  /*SEND AN ENTIRE TRACE OVER RADIO*/
+  /*send an entire trace over radio*/
   for (int i=0; i<sizeof(array_of_traces)/sizeof(array_of_traces[0]); i++){
 
     rf69.send((uint8_t *)array_of_traces[i], strlen(array_of_traces[i]));
     rf69.waitPacketSent();
 
-    /*WAIT FOR ACK THAT TRACE WAS RECHIEVED*/
+    /*wait for ack that trace was rechieved*/
     while(!rf69.available()){
     delay(10);
     }
@@ -70,7 +70,7 @@ void loop() {
       Serial.print(strcat(array_of_traces[i],":FAILED"));
     }
   }
-  /*WHEN NO MORE TRACES SERIAL PRINT "STOP" TO STOP PYTHON*/
+  /*when no more traces serial print "stop" to stop python*/
   Serial.print("STOP");
   }
   
