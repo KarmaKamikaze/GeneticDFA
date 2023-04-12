@@ -109,7 +109,7 @@ void loop() {
   }
   /*When no more traces, print "STOP" to stop python*/
   Serial.print("STOP");
-  }
+}
   
 
 
