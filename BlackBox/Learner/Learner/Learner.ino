@@ -37,7 +37,7 @@ void setup() {
     //Radio init failed
     while (1);
   }
-  //init was sucessfull
+  //init was successful
   if (!rf69.setFrequency(RF69_FREQ)) {
     //Frequency failed
   }
@@ -51,26 +51,26 @@ void loop() {
   while(!HandShake()){
   //We wait for handshake to be true
   }
-  /*send an entire trace over radio*/
+  /*Send an entire trace over radio*/
   for (int i=0; i<sizeof(array_of_traces)/sizeof(array_of_traces[0]); i++){
 
     rf69.send((uint8_t *)array_of_traces[i], strlen(array_of_traces[i]));
     rf69.waitPacketSent();
 
-    /*wait for ack that trace was rechieved*/
+    /*Wait for acknowledgement that trace was received*/
     while(!rf69.available()){
     delay(10);
     }
 
     /*Print answer from blackbox*/
     if (rf69.available() == "Trace Accepted!") {
-      Serial.print(strcat(array_of_traces[i],":SUCESS"));
+      Serial.print(strcat(array_of_traces[i],":SUCCESS"));
     }
     else if(rf69.available() == "Trace Failed!"){
       Serial.print(strcat(array_of_traces[i],":FAILED"));
     }
   }
-  /*when no more traces serial print "stop" to stop python*/
+  /*When no more traces, print "stop" to stop python*/
   Serial.print("STOP");
   }
   
