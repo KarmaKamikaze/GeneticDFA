@@ -21,7 +21,7 @@ RH_RF69 rf69(RFM69_CS, RFM69_INT);
 // Class to manage message delivery and receipt, using the driver declared above
 RHReliableDatagram rf69_manager(rf69, MY_ADDRESS);
 
-const char* array_of_traces[3] = {"100100110", "011010", "101010"};
+const char* array_of_traces[500] = {"10010000110", "011010"};
 const int array_size = sizeof(array_of_traces)/sizeof(array_of_traces[0]);
 void TransmitMessagde(uint8_t reply[]);
 
@@ -74,7 +74,7 @@ uint8_t buffer[RH_RF69_MAX_MESSAGE_LEN];
 void loop() {
     
   /*loop over traces*/
-  for (int i=0; i < array_size; i++){
+  for (int i = 0; i < array_size; i++){
     //loop over char in trace
     for(int j = 0; j <= strlen(array_of_traces[i]); j++){
       //if at end of a trace tell blackbox its END
@@ -111,8 +111,6 @@ void loop() {
   Serial.print("STOP");
 }
   
-
-
 void TransmitMessagde(uint8_t reply[]) {
   Serial.println((char *)reply);
 
