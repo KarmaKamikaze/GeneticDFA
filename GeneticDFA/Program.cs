@@ -14,8 +14,8 @@ class Program
         const int fitnessLowerBound = 100;
         const int weightTruePositive = 1;
         const int weightTrueNegative = 1;
-        const int weightFalsePositive = -1;
-        const int weightFalseNegative = -1;
+        const int weightFalsePositive = 1;
+        const int weightFalseNegative = 1;
         const int weightNonDeterministicEdges = 1;
         const int weightMissingDeterministicEdges = 1;
         const int weightSize = 1;

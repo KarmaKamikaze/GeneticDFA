@@ -52,10 +52,10 @@ public class DFAFitness : IFitness
                     fitnessScore += WeightTrueNegative;
                     break;
                 case Verdict.FalsePositive:
-                    fitnessScore += WeightFalsePositive;
+                    fitnessScore -= WeightFalsePositive;
                     break;
                 default:
-                    fitnessScore += WeightFalseNegative;
+                    fitnessScore -= WeightFalseNegative;
                     break;
             }
         }
@@ -107,7 +107,6 @@ public class DFAFitness : IFitness
 
         return false;
     }
-    
     
     //Can be moved to chromosome class, but it requires passing of the alphabet.
     private int NumberOfMissingDeterministicEdges(DFAChromosome chromosome)
