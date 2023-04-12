@@ -23,7 +23,9 @@ RHReliableDatagram rf69_manager(rf69, MY_ADDRESS);
 
 const char *array_of_traces[500] = {"10010000110", "011010"};
 const int array_size = sizeof(array_of_traces) / sizeof(array_of_traces[0]);
+
 void TransmitMessage(uint8_t reply[]);
+void Blink(int milliseconds);
 
 void setup() {
   // Setup for RFM69 chipset
@@ -35,8 +37,6 @@ void setup() {
 
   pinMode(LED, OUTPUT);
   pinMode(RFM69_RST, OUTPUT);
-  Serial.println("RFM69HW Arduino DFA Learner System!");
-  Serial.println();
 
   // Manual reset
   digitalWrite(RFM69_RST, LOW);
@@ -46,18 +46,18 @@ void setup() {
   delay(10);
 
   if (!rf69_manager.init()) {
-    Serial.println("RFM69HW radio init failed.");
-    while (1)
-      ;
+    while (1) {
+      Blink(1000);
+    }
   }
-  Serial.println("RFM69HW radio init OK!");
 
   // Set base frequency
   if (!rf69.setFrequency(RF69_FREQ)) {
-    Serial.println("setFrequency failed.");
-  } else {
-    Serial.println("Listening at 868 MHz.");
+    while (1) {
+      Blink(2000);
+    }
   }
+
   // RFM69HW *requires* that the Tx power flag is set!
   rf69.setTxPower(20); // power range from 14-20
 
@@ -109,9 +109,28 @@ void loop() {
   Serial.print("STOP");
 }
 
+/*
+ * Blink is used for error codes, as the serial monitor will solely be used
+ * for communication between the learner and the blackbox device.
+ * The error codes are as follows:
+ * ½ second blinks: Failed to send message.
+ * 1 second blinks: Failed RFM69HW initialization.
+ * 2 second blinks: Failed while setting the frequency.
+ */
+void Blink(int milliseconds) {
+  digitalWrite(LED_BUILTIN, HIGH);
+  delay(milliseconds);
+  digitalWrite(LED_BUILTIN, LOW);
+  delay(milliseconds);
+}
+
 void TransmitMessage(uint8_t reply[]) {
   Serial.println((char *)reply);
 
-  if (!rf69_manager.sendtoWait(reply, sizeof(reply), DEST_ADDRESS))
-    Serial.println("sendtoWait failed.");
+  if (!rf69_manager.sendtoWait(reply, sizeof(reply), DEST_ADDRESS)) {
+    // If the transmission fails, flash the error code
+    for (int i = 0; i < 10; i++) {
+      Blink(500);
+    }
+  }
 }
