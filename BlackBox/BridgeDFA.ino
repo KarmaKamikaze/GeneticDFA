@@ -14,6 +14,7 @@ void RunBridgeDFA(char input[]) {
   bool stringComplete = false;
   DFA.update();
 
+  //Let it be noted that: A = ArriveEast, B = EnterEast, C = LeaveEast, X = ArriveWest, Y = EnterWest and Z = LeaveWest
   for (int i = 0; i < strlen(input); i++) {
     if (input[i] == 'A'){
       if (DFA.isInState(AA)){
