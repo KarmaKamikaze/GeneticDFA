@@ -63,11 +63,11 @@ void loop() {
     }
 
     /*Print answer from blackbox*/
-    if (rf69.available() && rf69.BeskedFraBlackBox == "Trace Accepted!") {
-      Serial.print(array_of_traces[i] +":SUCESS");
+    if (rf69.available() == "Trace Accepted!") {
+      Serial.print(strcat(array_of_traces[i],":SUCESS"));
     }
-    else if(rf69.available() && rf69.BeskedFraBlackBox == "Trace Failed!"){
-      Serial.print(array_of_traces[i] +":FAILED");
+    else if(rf69.available() == "Trace Failed!"){
+      Serial.print(strcat(array_of_traces[i],":FAILED"));
     }
   }
   /*WHEN NO MORE TRACES SERIAL PRINT "STOP" TO STOP PYTHON*/
@@ -91,7 +91,7 @@ bool HandShake(){
   }
 
   //If ACK recieved we return true
-  if (rf69.available() && rf69.BeskedFraBlackBox == "ACK!") {
+  if (rf69.available() == "ACK!") {
   }
 
   return true;
