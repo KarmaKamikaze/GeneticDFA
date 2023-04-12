@@ -86,10 +86,7 @@ void loop() {
         TransmitMessage(array_of_traces[i][j]);
       }
     }
-    /*When one trace have been sent await result*/
-    while (!rf69_manager.available()) {
-      delay(10);
-    }
+
     /*Print result from blackbox*/
     if (rf69_manager.available()) {
       // Wait for a message addressed to the Blackbox arduino
