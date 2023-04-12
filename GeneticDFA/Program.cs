@@ -29,7 +29,7 @@ class Program
             new TraceModel("1011", 4, true),
             new TraceModel("0101101011", 10, true),
             new TraceModel("110", 3, false),
-            new TraceModel("0", 1, false),
+            new TraceModel("01", 1, false),
             new TraceModel("00111", 5, false),
             new TraceModel("1010", 4, false),
             new TraceModel("00000000000111", 14, false),
@@ -44,7 +44,6 @@ class Program
         DFAFitness fitness = new DFAFitness(traces, alphabet, weightTruePositive, weightTrueNegative, 
             weightFalsePositive, weightFalseNegative, weightNonDeterministicEdges, weightMissingDeterministicEdges,
             weightSize);
-        TestFitness(fitness);
         // Specific chromosome (gene) function for the DFA learning problem.
         DFAChromosome chromosome = new DFAChromosome();
 
@@ -73,71 +72,5 @@ class Program
         Console.WriteLine($"Elapsed time: {ga.TimeEvolving}");
         Console.ReadKey();*/
     }
-
-
-    private static void TestFitness(DFAFitness fitness)
-    {
-        DFAChromosome chromosome = new DFAChromosome();
-        
-        
-        List<DFAStateModel> states = new List<DFAStateModel>()
-        {
-            new DFAStateModel(1, false),
-            new DFAStateModel(2, false),
-            new DFAStateModel(3, true),
-            new DFAStateModel(4, false),
-        };
-        
-        List<DFAEdgeModel> edges = new List<DFAEdgeModel>()
-        {
-            new DFAEdgeModel(1, states[0], states[1], '1'),
-            new DFAEdgeModel(2, states[0], states[3], '0'),
-            new DFAEdgeModel(3, states[1], states[1], '0'),
-            new DFAEdgeModel(4, states[1], states[2], '0'),
-            new DFAEdgeModel(5, states[2], states[3], '1'),
-            new DFAEdgeModel(6, states[2], states[3], '0'),
-            new DFAEdgeModel(7, states[3], states[0], '1'),
-            new DFAEdgeModel(8, states[3], states[1], '0'),
-            new DFAEdgeModel(9, states[3], states[2], '1'),
-        };
-        
-        
-        //SmallDFA
-        List<DFAStateModel> statesSmallDFA = new List<DFAStateModel>()
-        {
-            new DFAStateModel(1, false),
-            new DFAStateModel(2, false),
-            new DFAStateModel(3, true),
-        };
-        
-        List<DFAEdgeModel> edgesSmallDFA = new List<DFAEdgeModel>()
-        {
-            new DFAEdgeModel(1, states[0], states[0], '0'),
-            new DFAEdgeModel(2, states[0], states[1], '1'),
-            new DFAEdgeModel(3, states[1], states[0], '0'),
-            new DFAEdgeModel(4, states[1], states[2], '1'),
-            new DFAEdgeModel(5, states[2], states[0], '1'),
-            new DFAEdgeModel(6, states[2], states[0], '0'),
-        };
-        
-        chromosome.States.AddRange(states);
-        chromosome.Edges.AddRange(edges);
-        //chromosome.StartState = states[0];
-        
-        Stopwatch stopWatch = new Stopwatch();
-        stopWatch.Start();
-        for (int i = 0; i < 1; i++)
-        {
-            Console.WriteLine(fitness.Evaluate(chromosome));
-        }
-        stopWatch.Stop();
-        // Get the elapsed time as a TimeSpan value.
-        TimeSpan ts = stopWatch.Elapsed;
-
-        // Format and display the TimeSpan value.
-        int elapsedTime = ts.Milliseconds;
-        Console.WriteLine("RunTime " + elapsedTime);
-        
-        
-    }
+    
 }

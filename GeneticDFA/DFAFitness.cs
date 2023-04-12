@@ -4,7 +4,9 @@ namespace GeneticDFA;
 
 public class DFAFitness : IFitness
 {
-    public DFAFitness(List<TraceModel> traces, List<char> alphabet, double weightTruePositive, double weightTrueNegative, double weightFalsePositive, double weightFalseNegative, double weightNonDeterministicEdges, double weightMissingDeterministicEdges, double weightSize)
+    public DFAFitness(List<TraceModel> traces, List<char> alphabet, double weightTruePositive, 
+        double weightTrueNegative, double weightFalsePositive, double weightFalseNegative, 
+        double weightNonDeterministicEdges, double weightMissingDeterministicEdges, double weightSize)
     {
         Traces = traces;
         Alphabet = alphabet;
@@ -94,6 +96,7 @@ public class DFAFitness : IFitness
             return state.IsAccept;
         }
 
+        //Assuming inputs are chars
         char nextInput = traceString[0];
         string remainingTrace = traceString[1..];
         foreach (DFAEdgeModel edge in chromosome.Edges)
