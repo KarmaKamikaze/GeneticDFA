@@ -39,12 +39,17 @@ public class DFAChromosome : IChromosome
         if (edges.Count < 2)
             return;
         
+        //Sort the edges so that non-deterministic edges are grouped.
+        //Example with edges as (Source, Input, Target):
+        //{(A,1,B), (B,0,A), (A,0,B), (A,1,C), (C,0,C), (B,1,C)}->{(A,1,B), (A,1,C), (A,0,B), (B,0,A), (B,1,C), (C,0,C)}
         edges.Sort(delegate(DFAEdgeModel edge1, DFAEdgeModel edge2)
         {
             int areSourcesEqual = edge1.Source.ID.CompareTo(edge2.Source.ID);
             return areSourcesEqual == 0 ? edge1.Input.CompareTo(edge2.Input) : areSourcesEqual;
         });
 
+        //Iterate through the edges and check if each edge has same source and input as a neighbor
+        //Special cases for the first and last edge, since they only have 1 neighbor
         if(edges[0].Source.ID == edges[1].Source.ID && edges[0].Input == edges[1].Input)
             NonDeterministicEdges.Add(edges[0]);
         

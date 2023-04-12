@@ -9,8 +9,8 @@ public class TraceModel
         IsAccepting = isAccepting;
     }
 
-    public string Trace { get; set; }
-    public int Length { get; set; }
-    public bool IsAccepting { get; set; }
+    public string Trace { get; }
+    public int Length { get; set; } //Not currently in use. Maybe later, but cannot see use case.
+    public bool IsAccepting { get; }
     
 }
