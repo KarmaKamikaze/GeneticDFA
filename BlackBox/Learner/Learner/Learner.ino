@@ -23,7 +23,7 @@ RHReliableDatagram rf69_manager(rf69, MY_ADDRESS);
 
 const char* array_of_traces[500] = {"10010000110", "011010"};
 const int array_size = sizeof(array_of_traces)/sizeof(array_of_traces[0]);
-void TransmitMessagde(uint8_t reply[]);
+void TransmitMessage(uint8_t reply[]);
 
 void setup() {
  // Setup for RFM69 chipset
@@ -73,21 +73,21 @@ uint8_t buffer[RH_RF69_MAX_MESSAGE_LEN];
 
 void loop() {
     
-  /*loop over traces*/
+  /*Loop over traces*/
   for (int i = 0; i < array_size; i++){
-    //loop over char in trace
+    // Loop over char in trace
     for(int j = 0; j <= strlen(array_of_traces[i]); j++){
-      //if at end of a trace tell blackbox its END
+      // If at end of a trace tell blackbox its END
       if(j == strlen(array_of_traces[i])){
-        TransmitMessagde("END");
+        TransmitMessage("END");
         break;
       }
       else{
         //Send array_of_traces[i][j]
-        TransmitMessagde(array_of_traces[i][j]);
+        TransmitMessage(array_of_traces[i][j]);
       }
     }
-    /*when one trace have been sent await result*/
+    /*When one trace have been sent await result*/
     while(!rf69_manager.available()){
     delay(10);
     }
@@ -111,7 +111,7 @@ void loop() {
   Serial.print("STOP");
 }
   
-void TransmitMessagde(uint8_t reply[]) {
+void TransmitMessage(uint8_t reply[]) {
   Serial.println((char *)reply);
 
   if (!rf69_manager.sendtoWait(reply, sizeof(reply), DEST_ADDRESS))
