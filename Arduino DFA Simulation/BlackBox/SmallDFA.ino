@@ -47,6 +47,7 @@ void RunSmallDFA(char input) {
       SmallDFA.transitionTo(A);
       SmallDFA.update();
     }
+    break;
 
     default:
       SmallDFA.transitionTo(TRASH);
