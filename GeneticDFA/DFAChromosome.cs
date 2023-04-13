@@ -7,11 +7,11 @@ public class DFAChromosome : IChromosome
     public List<DFAState> States { get; } = new List<DFAState>();
     public List<DFAEdge> Edges { get; } = new List<DFAEdge>();
     public List<DFAEdge> NonDeterministicEdges { get; private set; } = new List<DFAEdge>();
-    public DFAState StartState { get; }
+    public DFAState StartState { get; set; }
     public double? Fitness { get; set; }
     public int Size => States.Count + Edges.Count;
-    private int _nextStateID = 0;
-    private int _nextEdgeID = 0;
+    public int NextStateID { get; set; } = 0;
+    public int NextEdgeID { get; set; } = 0;
 
     public DFAChromosome(List<DFAState> states, List<DFAEdge> edges, DFAState startState)
     {
@@ -31,18 +31,18 @@ public class DFAChromosome : IChromosome
         return new DFAChromosome();
     }
 
+    //Move to mutation and crossover
     public void FindAndAssignNonDeterministicEdges()
     {
-        List<DFAEdge> edges = Edges;
         NonDeterministicEdges = new List<DFAEdge>();
 
-        if (edges.Count < 2)
+        if (Edges.Count < 2)
             return;
         
         //Sort the edges so that non-deterministic edges are grouped.
         //Example with edges as (Source, Input, Target):
         //{(A,1,B), (B,0,A), (A,0,B), (A,1,C), (C,0,C), (B,1,C)}->{(A,1,B), (A,1,C), (A,0,B), (B,0,A), (B,1,C), (C,0,C)}
-        edges.Sort(delegate(DFAEdge edge1, DFAEdge edge2)
+        Edges.Sort(delegate(DFAEdge edge1, DFAEdge edge2)
         {
             int areSourcesEqual = edge1.Source.ID.CompareTo(edge2.Source.ID);
             return areSourcesEqual == 0 ? edge1.Input.CompareTo(edge2.Input) : areSourcesEqual;
@@ -51,20 +51,20 @@ public class DFAChromosome : IChromosome
         //Iterate through the edges and check if each edge has same source and input as a neighbor
         //Special cases for the first and last edge to avoid indexing out of range,
         //since they are at the ends of the array and thus only have 1 neighbor
-        if(edges[0].Source.ID == edges[1].Source.ID && edges[0].Input == edges[1].Input)
-            NonDeterministicEdges.Add(edges[0]);
+        if(Edges[0].Source.ID == Edges[1].Source.ID && Edges[0].Input == Edges[1].Input)
+            NonDeterministicEdges.Add(Edges[0]);
         
-        for (int i = 1; i < edges.Count-1; i++)
+        for (int i = 1; i < Edges.Count-1; i++)
         {
-            if ((edges[i].Source.ID == edges[i + 1].Source.ID && edges[i].Input == edges[i + 1].Input) ||
-                (edges[i].Source.ID == edges[i - 1].Source.ID && edges[i].Input == edges[i - 1].Input))
+            if ((Edges[i].Source.ID == Edges[i + 1].Source.ID && Edges[i].Input == Edges[i + 1].Input) ||
+                (Edges[i].Source.ID == Edges[i - 1].Source.ID && Edges[i].Input == Edges[i - 1].Input))
             {
-                NonDeterministicEdges.Add(edges[i]);
+                NonDeterministicEdges.Add(Edges[i]);
             }
         }
 
-        if(edges[^1].Source.ID == edges[^2].Source.ID && edges[^1].Input == edges[^2].Input)
-            NonDeterministicEdges.Add(edges[^1]);
+        if(Edges[^1].Source.ID == Edges[^2].Source.ID && Edges[^1].Input == Edges[^2].Input)
+            NonDeterministicEdges.Add(Edges[^1]);
     }
     
     

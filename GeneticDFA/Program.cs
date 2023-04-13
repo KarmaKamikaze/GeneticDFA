@@ -47,7 +47,7 @@ class Program
         // Specific chromosome (gene) function for the DFA learning problem.
         DFAChromosome chromosome = new DFAChromosome();
 
-        Population population = new Population(minPopulation, maxPopulation, chromosome);
+        DFAPopulation population = new DFAPopulation(minPopulation, maxPopulation, chromosome, alphabet);
 
         OrTermination stoppingCriterion = new OrTermination(new GenerationNumberTermination(maximumGenerationNumber),
             new AndTermination(new FitnessStagnationTermination(convergenceGenerationNumber),
