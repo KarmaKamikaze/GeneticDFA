@@ -16,7 +16,7 @@
 #define SERIAL_BAUD 9600
 
 void Blink(int milliseconds);
-void TransmitMessage(const char reply[]);
+void TransmitMessage(uint8_t reply[]);
 
 // Singleton instance of the radio driver
 RH_RF69 rf69(RFM69_CS, RFM69_INT);
@@ -24,7 +24,17 @@ RH_RF69 rf69(RFM69_CS, RFM69_INT);
 // Class to manage message delivery and receipt, using the driver declared above
 RHReliableDatagram rf69_manager(rf69, MY_ADDRESS);
 
-const char *array_of_traces[500] = {"10010000110", "011010"};
+/*
+ * The Arduino can only handle 30 * 30 character arrays, as one char = 1 byte,
+ * and the dynamic memory is only 2048 bytes large. Thus, the trace array take
+ * up 900 bytes. This leaves around 400 bytes for local variables once
+ * everything has been compiled.
+ */
+// Test traces
+const byte max_number_of_characters_in_one_trace = 30;
+char array_of_traces[/* Max 30 traces */]
+                    [max_number_of_characters_in_one_trace] = {"10010000110",
+                                                               "011010"};
 const int array_size = sizeof(array_of_traces) / sizeof(array_of_traces[0]);
 bool finished = false;
 
@@ -80,25 +90,26 @@ void loop() {
       for (int j = 0; j <= strlen(array_of_traces[i]); j++) {
         // If at end of a trace, tell blackbox its END
         if (j == strlen(array_of_traces[i])) {
-          TransmitMessage("END");
+          uint8_t message[] = "END";
+          TransmitMessage(message);
           break;
         } else {
           // Send array_of_traces[i][j]
-          TransmitMessage(&array_of_traces[i][j]);
+          uint8_t message[] = {(uint8_t)array_of_traces[i][j]};
+          TransmitMessage(message);
         }
       }
 
       // Print result from blackbox
       if (rf69_manager.available()) {
-        // Wait for a message addressed to the Blackbox arduino
+        // Wait for a message addressed to the Learner arduino
         uint8_t len = sizeof(buffer);
         uint8_t from;
         if (rf69_manager.recvfromAckTimeout(buffer, &len, TIMEOUT, &from)) {
-
           if ((char *)buffer == "Trace Accepted!") {
-            Serial.print(strcat((char *)array_of_traces[i], ":SUCCESS"));
+            Serial.print(strcat(array_of_traces[i], ":SUCCESS"));
           } else if ((char *)buffer == "Trace Failed!") {
-            Serial.print(strcat((char *)array_of_traces[i], ":FAILED"));
+            Serial.print(strcat(array_of_traces[i], ":FAILED"));
           }
         }
       }
@@ -127,8 +138,8 @@ void Blink(int milliseconds) {
   delay(milliseconds);
 }
 
-void TransmitMessage(const char reply[]) {
-  if (!rf69_manager.sendtoWait((uint8_t *)reply, strlen(reply), DEST_ADDRESS)) {
+void TransmitMessage(uint8_t reply[]) {
+  if (!rf69_manager.sendtoWait(reply, strlen((char *)reply), DEST_ADDRESS)) {
     // If the transmission fails, flash the error code
     for (int i = 0; i < 10; i++) {
       Blink(500);
