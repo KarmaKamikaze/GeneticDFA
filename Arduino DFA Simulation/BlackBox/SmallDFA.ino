@@ -47,7 +47,7 @@ void RunSmallDFA(char input) {
     }
 
     case default:
-
+    SmallDFA.transitionTo(TRASH);
     
   }
 }

@@ -94,6 +94,6 @@ void RunBridgeDFA(char input) {
         }
 
       case default:
-        
+      BridgeDFA.transitionTo(TRASH);
   }
 }
