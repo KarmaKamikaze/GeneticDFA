@@ -19,10 +19,11 @@ public class DFAPopulation : Population
         List<IChromosome> chromosomes = new List<IChromosome>();
         for (int index = 0; index < MinSize; ++index)
         {
-            IChromosome chromosome = AdamChromosome.CreateNew();
+            DFAChromosome chromosome = (DFAChromosome) AdamChromosome.CreateNew();
             if (chromosome == null)
                 throw new InvalidOperationException("Adam chromosome's 'CreateNew' method created a null chromosome.");
             InitializeChromosome(chromosome);
+            chromosome.FindAndAssignNonDeterministicEdges();
             chromosomes.Add(chromosome);
         }
         CreateNewGeneration(chromosomes);
@@ -30,9 +31,14 @@ public class DFAPopulation : Population
         
     }
 
-    private void InitializeChromosome(IChromosome paramChromosome)
+    private void InitializeChromosome(DFAChromosome chromosome)
     {
-        DFAChromosome chromosome = (DFAChromosome) paramChromosome;
+        InitializeChromosomeStates(chromosome);
+        InitializeChromosomeEdges(chromosome);
+    }
+
+    private void InitializeChromosomeStates(DFAChromosome chromosome)
+    {
         int numberOfAcceptStates = _rnd.GetInt(1, Alphabet.Count+1);
         for (int i = 0; i < numberOfAcceptStates; i++)
         {
@@ -47,7 +53,10 @@ public class DFAPopulation : Population
 
         int startStateIndex = _rnd.GetInt(0, chromosome.States.Count);
         chromosome.StartState = chromosome.States[startStateIndex];
+    }
 
+    private void InitializeChromosomeEdges(DFAChromosome chromosome)
+    {
         List<DFAEdge> edges = new List<DFAEdge>();
         int edgesToAdd = (int) Math.Pow(Alphabet.Count, 2);
         int uniqueEdgesAdded = 0;
@@ -71,9 +80,11 @@ public class DFAPopulation : Population
         }
 
         chromosome.Edges.AddRange(edges);
-        chromosome.FindAndAssignNonDeterministicEdges();
-
+        
+        
     }
+    
+    
     
     //Copied from source code, but without gene validation, since we do not use the gene properties on chromosomes
     public override void CreateNewGeneration(IList<IChromosome> chromosomes)
