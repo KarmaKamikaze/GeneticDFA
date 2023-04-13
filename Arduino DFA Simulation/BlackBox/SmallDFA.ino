@@ -32,6 +32,7 @@ void RunSmallDFA(char input) {
       if (SmallDFA.isInState(C)) {
         SmallDFA.transitionTo(A);
       }
+      break;
 
     case '$':
       if (SmallDFA.isInState(C)) {
