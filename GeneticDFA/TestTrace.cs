@@ -1,8 +1,8 @@
 ﻿namespace GeneticDFA;
 
-public class TraceModel
+public class TestTrace
 {
-    public TraceModel(string trace, bool isAccepting)
+    public TestTrace(string trace, bool isAccepting)
     {
         Trace = trace;
         IsAccepting = isAccepting;

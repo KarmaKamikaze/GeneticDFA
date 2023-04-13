@@ -1,8 +1,8 @@
 ﻿namespace GeneticDFA;
 
-public class DFAStateModel
+public class DFAState
 {
-    public DFAStateModel(int id, bool isAccept)
+    public DFAState(int id, bool isAccept)
     {
         ID = id;
         IsAccept = isAccept;

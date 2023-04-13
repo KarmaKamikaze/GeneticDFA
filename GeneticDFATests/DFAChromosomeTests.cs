@@ -9,11 +9,11 @@ public class DFAChromosomeTests
 {
     [Theory]
     [MemberData(nameof(SetsOfTestEdges))]
-    public void FindAndAssignNonDeterministicEdgesCorrectBehavior(List<DFAEdgeModel> edges, 
+    public void FindAndAssignNonDeterministicEdgesCorrectBehavior(List<DFAEdge> edges, 
         List<int> expectedNonDeterministicEdgeIDs)
     {
         //Arrange
-        List<DFAEdgeModel> expected = edges.Where(e => expectedNonDeterministicEdgeIDs.Contains(e.ID)).ToList();
+        List<DFAEdge> expected = edges.Where(e => expectedNonDeterministicEdgeIDs.Contains(e.ID)).ToList();
         DFAChromosome chromosome = new DFAChromosome(States, edges, States[0]);
         
         //Act
@@ -24,11 +24,11 @@ public class DFAChromosomeTests
         
     }
 
-    private static readonly List<DFAStateModel> States = new List<DFAStateModel>()
+    private static readonly List<DFAState> States = new List<DFAState>()
     {
-        new DFAStateModel(1, false),
-        new DFAStateModel(2, false),
-        new DFAStateModel(3, true)
+        new DFAState(1, false),
+        new DFAState(2, false),
+        new DFAState(3, true)
     };
 
     public static IEnumerable<object[]> SetsOfTestEdges =>
@@ -36,82 +36,82 @@ public class DFAChromosomeTests
         {
             new object[]
             {
-                new List<DFAEdgeModel>()
+                new List<DFAEdge>()
                 {
-                    new DFAEdgeModel(1, States[0], States[0], '0'),
-                    new DFAEdgeModel(2, States[0], States[1], '1'),
-                    new DFAEdgeModel(3, States[1], States[0], '0'),
-                    new DFAEdgeModel(4, States[1], States[2], '1'),
-                    new DFAEdgeModel(5, States[2], States[0], '1'),
-                    new DFAEdgeModel(6, States[2], States[0], '0'),
+                    new DFAEdge(1, States[0], States[0], '0'),
+                    new DFAEdge(2, States[0], States[1], '1'),
+                    new DFAEdge(3, States[1], States[0], '0'),
+                    new DFAEdge(4, States[1], States[2], '1'),
+                    new DFAEdge(5, States[2], States[0], '1'),
+                    new DFAEdge(6, States[2], States[0], '0'),
                 },
                 new List<int>()
             },
             new object[]
             {
-                new List<DFAEdgeModel>()
+                new List<DFAEdge>()
                 {
-                    new DFAEdgeModel(1, States[0], States[0], '0'),
+                    new DFAEdge(1, States[0], States[0], '0'),
                 },
                 new List<int>()
             },
             new object[]
             {
-                new List<DFAEdgeModel>()
+                new List<DFAEdge>()
                 {
-                    new DFAEdgeModel(1, States[0], States[0], '0'),
-                    new DFAEdgeModel(2, States[0], States[1], '0'),
-                    new DFAEdgeModel(3, States[1], States[0], '0'),
-                    new DFAEdgeModel(4, States[1], States[2], '1'),
-                    new DFAEdgeModel(5, States[2], States[0], '1'),
-                    new DFAEdgeModel(6, States[2], States[0], '0'),
+                    new DFAEdge(1, States[0], States[0], '0'),
+                    new DFAEdge(2, States[0], States[1], '0'),
+                    new DFAEdge(3, States[1], States[0], '0'),
+                    new DFAEdge(4, States[1], States[2], '1'),
+                    new DFAEdge(5, States[2], States[0], '1'),
+                    new DFAEdge(6, States[2], States[0], '0'),
                 },
                 new List<int>() {1,2}
             },
             new object[]
             {
-                new List<DFAEdgeModel>()
+                new List<DFAEdge>()
                 {
-                    new DFAEdgeModel(1, States[0], States[0], '0'),
-                    new DFAEdgeModel(2, States[0], States[1], '1'),
-                    new DFAEdgeModel(3, States[1], States[0], '0'),
-                    new DFAEdgeModel(4, States[1], States[2], '1'),
-                    new DFAEdgeModel(5, States[2], States[0], '1'),
-                    new DFAEdgeModel(6, States[2], States[0], '0'),
-                    new DFAEdgeModel(7, States[1], States[0], '1'),
-                    new DFAEdgeModel(8, States[1], States[1], '1'),
+                    new DFAEdge(1, States[0], States[0], '0'),
+                    new DFAEdge(2, States[0], States[1], '1'),
+                    new DFAEdge(3, States[1], States[0], '0'),
+                    new DFAEdge(4, States[1], States[2], '1'),
+                    new DFAEdge(5, States[2], States[0], '1'),
+                    new DFAEdge(6, States[2], States[0], '0'),
+                    new DFAEdge(7, States[1], States[0], '1'),
+                    new DFAEdge(8, States[1], States[1], '1'),
                 },
                 new List<int>() {4,7,8}
             },
             new object[]
             {
-                new List<DFAEdgeModel>()
+                new List<DFAEdge>()
                 {
-                    new DFAEdgeModel(1, States[0], States[0], '0'),
-                    new DFAEdgeModel(2, States[0], States[1], '0'),
-                    new DFAEdgeModel(3, States[1], States[0], '0'),
-                    new DFAEdgeModel(4, States[1], States[2], '1'),
-                    new DFAEdgeModel(5, States[2], States[0], '1'),
-                    new DFAEdgeModel(6, States[2], States[1], '1'),
+                    new DFAEdge(1, States[0], States[0], '0'),
+                    new DFAEdge(2, States[0], States[1], '0'),
+                    new DFAEdge(3, States[1], States[0], '0'),
+                    new DFAEdge(4, States[1], States[2], '1'),
+                    new DFAEdge(5, States[2], States[0], '1'),
+                    new DFAEdge(6, States[2], States[1], '1'),
                 },
                 new List<int>() {1,2,5,6}
             },
             new object[]
             {
-                new List<DFAEdgeModel>()
+                new List<DFAEdge>()
                 {
-                    new DFAEdgeModel(1, States[0], States[0], '0'),
-                    new DFAEdgeModel(2, States[0], States[1], '0'),
+                    new DFAEdge(1, States[0], States[0], '0'),
+                    new DFAEdge(2, States[0], States[1], '0'),
                 },
                 new List<int>() {1,2}
             },
             new object[]
             {
-                new List<DFAEdgeModel>()
+                new List<DFAEdge>()
                 {
-                    new DFAEdgeModel(1, States[0], States[0], '0'),
-                    new DFAEdgeModel(2, States[0], States[1], '1'),
-                    new DFAEdgeModel(3, States[0], States[2], '0'),
+                    new DFAEdge(1, States[0], States[0], '0'),
+                    new DFAEdge(2, States[0], States[1], '1'),
+                    new DFAEdge(3, States[0], States[2], '0'),
                 },
                 new List<int>() {1,3}
             },

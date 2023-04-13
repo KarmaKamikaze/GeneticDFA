@@ -4,16 +4,16 @@ namespace GeneticDFA;
 
 public class DFAChromosome : IChromosome
 {
-    public List<DFAStateModel> States { get; } = new List<DFAStateModel>();
-    public List<DFAEdgeModel> Edges { get; } = new List<DFAEdgeModel>();
-    public List<DFAEdgeModel> NonDeterministicEdges { get; private set; } = new List<DFAEdgeModel>();
-    public DFAStateModel StartState { get; }
+    public List<DFAState> States { get; } = new List<DFAState>();
+    public List<DFAEdge> Edges { get; } = new List<DFAEdge>();
+    public List<DFAEdge> NonDeterministicEdges { get; private set; } = new List<DFAEdge>();
+    public DFAState StartState { get; }
     public double? Fitness { get; set; }
     public int Size => States.Count + Edges.Count;
     private int _nextStateID = 0;
     private int _nextEdgeID = 0;
 
-    public DFAChromosome(List<DFAStateModel> states, List<DFAEdgeModel> edges, DFAStateModel startState)
+    public DFAChromosome(List<DFAState> states, List<DFAEdge> edges, DFAState startState)
     {
         States = states;
         Edges = edges;
@@ -33,8 +33,8 @@ public class DFAChromosome : IChromosome
 
     public void FindAndAssignNonDeterministicEdges()
     {
-        List<DFAEdgeModel> edges = Edges;
-        NonDeterministicEdges = new List<DFAEdgeModel>();
+        List<DFAEdge> edges = Edges;
+        NonDeterministicEdges = new List<DFAEdge>();
 
         if (edges.Count < 2)
             return;
@@ -42,7 +42,7 @@ public class DFAChromosome : IChromosome
         //Sort the edges so that non-deterministic edges are grouped.
         //Example with edges as (Source, Input, Target):
         //{(A,1,B), (B,0,A), (A,0,B), (A,1,C), (C,0,C), (B,1,C)}->{(A,1,B), (A,1,C), (A,0,B), (B,0,A), (B,1,C), (C,0,C)}
-        edges.Sort(delegate(DFAEdgeModel edge1, DFAEdgeModel edge2)
+        edges.Sort(delegate(DFAEdge edge1, DFAEdge edge2)
         {
             int areSourcesEqual = edge1.Source.ID.CompareTo(edge2.Source.ID);
             return areSourcesEqual == 0 ? edge1.Input.CompareTo(edge2.Input) : areSourcesEqual;

@@ -21,18 +21,18 @@ class Program
         const int weightSize = 1;
         
         //Sample traces of SmallDFA
-        List<TraceModel> traces = new List<TraceModel>()
+        List<TestTrace> traces = new List<TestTrace>()
         {
-            new TraceModel("11", true),
-            new TraceModel("00011", true),
-            new TraceModel("110011", true),
-            new TraceModel("1011", true),
-            new TraceModel("0101101011", true),
-            new TraceModel("110", false),
-            new TraceModel("01", false),
-            new TraceModel("00111", false),
-            new TraceModel("1010", false),
-            new TraceModel("00000000000111", false),
+            new TestTrace("11", true),
+            new TestTrace("00011", true),
+            new TestTrace("110011", true),
+            new TestTrace("1011", true),
+            new TestTrace("0101101011", true),
+            new TestTrace("110", false),
+            new TestTrace("01", false),
+            new TestTrace("00111", false),
+            new TestTrace("1010", false),
+            new TestTrace("00000000000111", false),
         };
         List<char> alphabet = new List<char>() {'1', '0'};
         

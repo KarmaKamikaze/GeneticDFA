@@ -12,7 +12,7 @@ public class DFAFitnessTests
     public void FitnessScoreIsCorrectWhenOnlySizeWeighs(DFAChromosome chromosome, double expected)
     {
         //Arrange
-        DFAFitness fitness = new DFAFitness(new List<TraceModel>(), new List<char>(), 0, 0, 0, 0, 0, 0, 1);
+        DFAFitness fitness = new DFAFitness(new List<TestTrace>(), new List<char>(), 0, 0, 0, 0, 0, 0, 1);
 
         //Act 
         double actual = fitness.Evaluate(chromosome);
@@ -26,7 +26,7 @@ public class DFAFitnessTests
     public void FitnessScoreIsCorrectWhenOnlyNumberOfMissingDeterministicEdgesWeighs(DFAChromosome chromosome, List<char> alphabet, double expected)
     {
         //Arrange
-        DFAFitness fitness = new DFAFitness(new List<TraceModel>(), alphabet, 0, 0, 0, 0, 0, 1, 0);
+        DFAFitness fitness = new DFAFitness(new List<TestTrace>(), alphabet, 0, 0, 0, 0, 0, 1, 0);
 
         //Act 
         double actual = fitness.Evaluate(chromosome);
@@ -40,7 +40,7 @@ public class DFAFitnessTests
     public void FitnessScoreIsCorrectWhenOnlyNumberOfNonDeterministicEdgesWeighs(DFAChromosome chromosome, double expected)
     {
         //Arrange
-        DFAFitness fitness = new DFAFitness(new List<TraceModel>(), new List<char>(), 0, 0, 0, 0, 1, 0, 0);
+        DFAFitness fitness = new DFAFitness(new List<TestTrace>(), new List<char>(), 0, 0, 0, 0, 1, 0, 0);
         chromosome.FindAndAssignNonDeterministicEdges();
         
         //Act 
@@ -118,17 +118,17 @@ public class DFAFitnessTests
         new object[]{ TestDFAs.NFA, new List<char>() {'0', '1'}, -16 }
     };
     
-    private static readonly List<TraceModel> SampleTraces = new List<TraceModel>()
+    private static readonly List<TestTrace> SampleTraces = new List<TestTrace>()
     {
-        new TraceModel("11", true),
-        new TraceModel("00011", true),
-        new TraceModel("110011", true),
-        new TraceModel("1011", true),
-        new TraceModel("0101101011", true),
-        new TraceModel("110", false),
-        new TraceModel("01", false),
-        new TraceModel("00111", false),
-        new TraceModel("1010", false),
-        new TraceModel("00000000000111", false),
+        new TestTrace("11", true),
+        new TestTrace("00011", true),
+        new TestTrace("110011", true),
+        new TestTrace("1011", true),
+        new TestTrace("0101101011", true),
+        new TestTrace("110", false),
+        new TestTrace("01", false),
+        new TestTrace("00111", false),
+        new TestTrace("1010", false),
+        new TestTrace("00000000000111", false),
     };
 }
