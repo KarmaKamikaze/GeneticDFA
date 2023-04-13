@@ -48,7 +48,8 @@ void RunSmallDFA(char input) {
     }
 
     default:
-    SmallDFA.transitionTo(TRASH);
+      SmallDFA.transitionTo(TRASH);
+      break;
     
   }
 }
