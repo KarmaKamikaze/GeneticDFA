@@ -88,16 +88,13 @@ void RunBridgeDFA(char input) {
       case '$':
         if (!BridgeDFA.isInState(BB) && !BridgeDFA.isInState(TRASH)) {
         uint8_t reply[15] = "Trace Accepted!";
-        TransmitVerdict(reply);
-        BridgeDFA.transitionTo(AA);
-        BridgeDFA.update();
         }
         else {
         uint8_t reply[13] = "Trace Failed!";
+        }
         TransmitVerdict(reply);
         BridgeDFA.transitionTo(AA);
         BridgeDFA.update();
-        }
         break;
 
       default:
