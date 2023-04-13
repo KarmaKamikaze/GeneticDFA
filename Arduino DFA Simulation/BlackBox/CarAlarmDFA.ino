@@ -47,6 +47,7 @@ void RunCarAlarmDFA(char input) {
       else {
         CarAlarmDFA.transitionTo(TRASH);
       }
+      break;
 
     case 'o':
       if (CarAlarmDFA.isInState(UC)) {
