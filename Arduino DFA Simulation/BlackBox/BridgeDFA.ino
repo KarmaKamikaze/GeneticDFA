@@ -27,6 +27,7 @@ void RunBridgeDFA(char input) {
       } else{
         BridgeDFA.transitionTo(TRASH);
       }
+      break;
 
       case 'B':
         if (BridgeDFA.isInState(WA)){
