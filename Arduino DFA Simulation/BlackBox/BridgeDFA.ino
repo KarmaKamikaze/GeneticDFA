@@ -83,6 +83,7 @@ void RunBridgeDFA(char input) {
       } else{
         BridgeDFA.transitionTo(TRASH);
       }
+      break;
 
       case '$':
         if (!BridgeDFA.isInState(BB) && !BridgeDFA.isInState(TRASH)) {
