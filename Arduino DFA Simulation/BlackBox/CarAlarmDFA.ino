@@ -71,21 +71,17 @@ void RunCarAlarmDFA(char input) {
         CarAlarmDFA.transitionTo(TRASH);
       }
 
-    default:
-      CarAlarmDFA.transitionTo(TRASH);
+    case 'q':
+      if (!CarAlarmDFA.isInState(AO) && !CarAlarmDFA.isInState(TRASH)) {
+      uint8_t reply[15] = "Trace Accepted!";
+      TransmitVerdict(reply);
+      CarAlarmDFA.transitionTo(UO);
+      CarAlarmDFA.update();
+      } else {
       uint8_t reply[13] = "Trace Failed!";
       TransmitVerdict(reply);
-      break;
+      CarAlarmDFA.transitionTo(UO);
+      CarAlarmDFA.update();
+      }
   }
-
-
-    if (!CarAlarmDFA.isInState(AO) && !CarAlarmDFA.isInState(TRASH)) {
-    uint8_t reply[15] = "Trace Accepted!";
-    } 
-
-    //send verdict
-    TransmitVerdict(reply);
-    //reset
-    CarAlarmDFA.transitionTo(UO);
-    CarAlarmDFA.update();
-    }
+}

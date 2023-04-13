@@ -9,8 +9,7 @@ State WB = State(InStateAction);
 State BW = State(InStateAction);
 State BB = State(InStateAction);
 State TRASH = State(InActionState);
-
-  FSM BridgeDFA = FSM(AA);
+FSM BridgeDFA = FSM(AA);
 
 void RunBridgeDFA(char input) {
   bool stringComplete = false;
@@ -81,21 +80,18 @@ void RunBridgeDFA(char input) {
         BridgeDFA.transitionTo(TRASH);
       }
 
-      default:
-        BridgeDFA.transitionTo(TRASH);
+      case 'q':
+        if (!BridgeDFA.isInState(BB) && !BridgeDFA.isInState(TRASH)) {
+        uint8_t reply[15] = "Trace Accepted!";
+        TransmitVerdict(reply);
+        BridgeDFA.transitionTo(AA);
+        BridgeDFA.update();
+        }
+        else {
         uint8_t reply[13] = "Trace Failed!";
         TransmitVerdict(reply);
-        break;
-
+        BridgeDFA.transitionTo(AA);
+        BridgeDFA.update();
+        }
   }
-    
-    
-
-    if (!BridgeDFA.isInState(BB) && !BridgeDFA.isInState(TRASH)) {
-    uint8_t reply[15] = "Trace Accepted!";
-    TransmitVerdict(reply);
-    } 
-
-  BridgeDFA.transitionTo(AA);
-  BridgeDFA.update();
-  }
+}

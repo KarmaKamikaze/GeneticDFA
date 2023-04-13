@@ -83,10 +83,14 @@ void loop() {
       Serial.print(": ");
       Serial.println((char *)buffer);
 
+      if (buffer == "END"){
+      RunSmallDFA('q');
+      } else {
       // Call simulation
       RunSmallDFA((char *)buffer);
       // RunCarAlarmDFA((char*)buffer);
       // RunBridgeDFA((char*)buffer);
+      }
     }
   }
 }
