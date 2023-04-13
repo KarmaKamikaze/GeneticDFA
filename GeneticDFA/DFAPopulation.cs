@@ -44,8 +44,8 @@ public class DFAPopulation : Population
             chromosome.NextStateID++;
         }
 
-        int startStateID = RandomizationProvider.Current.GetInt(0, chromosome.States.Count-1);
-        chromosome.StartState = chromosome.States.First(s => s.ID == startStateID);
+        int startStateIndex = RandomizationProvider.Current.GetInt(0, chromosome.States.Count-1);
+        chromosome.StartState = chromosome.States[startStateIndex];
         
         
         
