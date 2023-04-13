@@ -79,6 +79,7 @@ public class DFAPopulation : Population
             uniqueEdgesAdded++;
         }
 
+        //Add reachability check
         chromosome.Edges.AddRange(edges);
         
         
