@@ -73,6 +73,7 @@ void RunBridgeDFA(char input) {
       } else{
         BridgeDFA.transitionTo(TRASH);
       }
+      break;
       
       case 'Z':
         if (BridgeDFA.isInState(WB)){
