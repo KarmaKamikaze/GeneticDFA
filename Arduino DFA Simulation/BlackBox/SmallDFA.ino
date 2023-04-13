@@ -20,6 +20,7 @@ void RunSmallDFA(char input) {
       if (SmallDFA.isInState(C)) {
         SmallDFA.transitionTo(A);
       }
+      break;
 
     case 1:
       if (SmallDFA.isInState(A)) {
