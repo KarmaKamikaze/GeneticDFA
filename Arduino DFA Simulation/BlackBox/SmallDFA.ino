@@ -2,57 +2,44 @@
 State A = State(InStateAction);
 State B = State(InStateAction);
 State C = State(InStateAction);
+//mashine
+FSM SmallDFA = FSM(A);
 
 void RunSmallDFA(char input[]) {
-  bool stringComplete = false;
-  FSM DFA = FSM(A);
-  DFA.update();
-
-  for (int i = 0; i < strlen(input); i++) {
-    if (input[i] == '1') {
-      if (DFA.isInState(A)) {
-        DFA.transitionTo(B);
+  SmallDFA.update();
+    if (input == "1") {
+      if (SmallDFA.isInState(A)) {
+        SmallDFA.transitionTo(B);
       }
-      if (DFA.isInState(B)) {
-        DFA.transitionTo(C);
+      if (SmallDFA.isInState(B)) {
+        SmallDFA.transitionTo(C);
       }
-      if (DFA.isInState(C)) {
-        DFA.transitionTo(A);
+      if (SmallDFA.isInState(C)) {
+        SmallDFA.transitionTo(A);
       }
-    } else if (input[i] == '0') {
-      if (DFA.isInState(A)) {
-        DFA.transitionTo(A);
+    } 
+    else if (input == "0") {
+      if (SmallDFA.isInState(A)) {
+        SmallDFA.transitionTo(A);
       }
-      if (DFA.isInState(B)) {
-        DFA.transitionTo(A);
+      if (SmallDFA.isInState(B)) {
+        SmallDFA.transitionTo(A);
       }
-      if (DFA.isInState(C)) {
-        DFA.transitionTo(A);
+      if (SmallDFA.isInState(C)) {
+        SmallDFA.transitionTo(A);
       }
     }
-    // If char of input is not 1 | 0 we break and check if we are in final
-    // state.
-    else {
-      stringComplete = false;
-      Serial.println("Failed because it enters the trash state");
-      break;
+    else if(input == "END"){
+      if (DFA.isInState(C)) {
+      uint8_t reply[15] = "Trace Accepted!";
+      TransmitVerdict(reply);
+      }
+      else {
+      uint8_t reply[13] = "Trace Failed!";
+      TransmitVerdict(reply);
+      }
+    //reset
+    SmallDFA.transitionTo(A);
     };
-    // If we are at end of string
-    if (i == strlen(input) - 1) {
-      stringComplete = true;
-    };
-    // Moves state in dfa
-    DFA.update();
-  }
-
-  // if we finish in a final state report back that we have passed
-  if (stringComplete && DFA.isInState(C)) {
-    uint8_t reply[15] = "Trace Accepted!";
-  } else {
-    uint8_t reply[13] = "Trace Failed!";
-  }
-  TransmitVerdict(reply);
-
-  DFA.transitionTo(A);
   DFA.update();
 }

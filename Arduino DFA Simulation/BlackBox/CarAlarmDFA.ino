@@ -5,83 +5,79 @@ State UC = State(InStateAction);
 State LC = State(InStateAction);
 State AC = State(InStateAction);
 State AO = State(InStateAction);
+FSM CarAlarmDFA = FSM(UO);
 
 void RunCarAlarmDFA(char input[]) {
-  bool stringComplete = false;
-  FSM DFA = FSM(UO);
-  DFA.update();
-
-  for (int i = 0; i < strlen(input); i++) {
-    if (input[i] == 'l') {
-      if (DFA.isInState(UO)) {
-        DFA.transitionTo(LO);
-      } else if (DFA.isInState(UC)) {
-        DFA.transitionTo(LC);
-      } else {
+  CarAlarmDFA.update();
+    if (input == "l") {
+      if (CarAlarmDFA.isInState(UO)) {
+        CarAlarmDFA.transitionTo(LO);
+      } 
+      else if (CarAlarmDFA.isInState(UC)) {
+        CarAlarmDFA.transitionTo(LC);
+      } 
+      else {
         Serial.println("Failed because it enters the trash state");
-        break;
       }
-    } else if (input[i] == 'u') {
-      if (DFA.isInState(LO)) {
-        DFA.transitionTo(UO);
-      } else if (DFA.isInState(LC)) {
-        DFA.transitionTo(UC);
-      } else if (DFA.isInState(AC)) {
-        DFA.transitionTo(UC);
-      } else {
+    } 
+    else if (input == "u") {
+      if (CarAlarmDFA.isInState(LO)) {
+        CarAlarmDFA.transitionTo(UO);
+      } 
+      else if (CarAlarmDFA.isInState(LC)) {
+        CarAlarmDFA.transitionTo(UC);
+      } 
+      else if (CarAlarmDFA.isInState(AC)) {
+        CarAlarmDFA.transitionTo(UC);
+      } 
+      else {
         Serial.println("Failed because it enters the trash state");
-        break;
       }
-    } else if (input[i] == 'c') {
-      if (DFA.isInState(UO)) {
-        DFA.transitionTo(UC);
-      } else if (DFA.isInState(LO)) {
-        DFA.transitionTo(LC);
-      } else {
+    } 
+    else if (input == "c") {
+      if (CarAlarmDFA.isInState(UO)) {
+        CarAlarmDFA.transitionTo(UC);
+      } 
+      else if (CarAlarmDFA.isInState(LO)) {
+        CarAlarmDFA.transitionTo(LC);
+      } 
+      else {
         Serial.println("Failed because it enters the trash state");
-        break;
       }
-    } else if (input[i] == 'o') {
-      if (DFA.isInState(UC)) {
-        DFA.transitionTo(UO);
-      } else if (DFA.isInState(LC)) {
-        DFA.transitionTo(LO);
-      } else if (DFA.isInState(AC)) {
-        DFA.transitionTo(AO);
-      } else {
+    } 
+    else if (input == "o") {
+      if (CarAlarmDFA.isInState(UC)) {
+        CarAlarmDFA.transitionTo(UO);
+      } 
+      else if (CarAlarmDFA.isInState(LC)) {
+        CarAlarmDFA.transitionTo(LO);
+      } 
+      else if (CarAlarmDFA.isInState(AC)) {
+        CarAlarmDFA.transitionTo(AO);
+      } 
+      else {
         Serial.println("Failed because it enters the trash state");
-        break;
       }
-    } else if (input[i] == 'a') {
-      if (DFA.isInState(LC)) {
-        DFA.transitionTo(AC);
-      } else {
+    } 
+    else if (input == "a") {
+      if (CarAlarmDFA.isInState(LC)) {
+        DFCarAlarmDFAA.transitionTo(AC);
+      } 
+      else {
         Serial.println("Failed because it enters the trash state");
-        break;
       }
     }
-    // If char of input is not acceptable we break and check if we are in
-    // accepting state.
-    else {
-      stringComplete = false;
-      break;
+    if input == "END"{
+      if (!CarAlarmDFA.isInState(AO)) {
+      uint8_t reply[15] = "Trace Accepted!";
+      } 
+      else {
+        uint8_t reply[13] = "Trace Failed!";
+      }
+    //send verdict
+    TransmitVerdict(reply);
+    //reset
+    DFA.transitionTo(UO);
     }
-    // if we are at end of input
-    if (i == strlen(input) - 1) {
-      stringComplete = true;
-    }
-
-    DFA.update();
-  }
-
-  // If we finish in a final state report back that we have passed
-  if (stringComplete && !DFA.isInState(AO)) {
-    uint8_t reply[15] = "Trace Accepted!";
-  } else {
-    uint8_t reply[13] = "Trace Failed!";
-  }
-  TransmitVerdict(reply);
-
-  DFA.transitionTo(UO);
   DFA.update();
 }
