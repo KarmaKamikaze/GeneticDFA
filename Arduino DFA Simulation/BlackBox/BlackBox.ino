@@ -86,8 +86,8 @@ void loop() {
       Serial.print(": ");
       Serial.println((char *)buffer);
 
-      if (buffer == "END"){
-      RunSmallDFA('q');
+      if ((char *)buffer == "END"){
+      RunSmallDFA('$');
       } else {
       // Call simulation
       RunSmallDFA((char *)buffer);

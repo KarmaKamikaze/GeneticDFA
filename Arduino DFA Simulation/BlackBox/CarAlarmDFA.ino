@@ -70,7 +70,7 @@ void RunCarAlarmDFA(char input) {
         CarAlarmDFA.transitionTo(TRASH);
       }
 
-    case 'q':
+    case '$':
       if (!CarAlarmDFA.isInState(AO) && !CarAlarmDFA.isInState(TRASH)) {
       uint8_t reply[15] = "Trace Accepted!";
       TransmitVerdict(reply);

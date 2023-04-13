@@ -79,7 +79,7 @@ void RunBridgeDFA(char input) {
         BridgeDFA.transitionTo(TRASH);
       }
 
-      case 'q':
+      case '$':
         if (!BridgeDFA.isInState(BB) && !BridgeDFA.isInState(TRASH)) {
         uint8_t reply[15] = "Trace Accepted!";
         TransmitVerdict(reply);
@@ -92,5 +92,8 @@ void RunBridgeDFA(char input) {
         BridgeDFA.transitionTo(AA);
         BridgeDFA.update();
         }
+
+      case default:
+        
   }
 }

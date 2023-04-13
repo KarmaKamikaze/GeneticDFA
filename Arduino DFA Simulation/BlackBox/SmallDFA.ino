@@ -32,7 +32,7 @@ void RunSmallDFA(char input) {
         SmallDFA.transitionTo(A);
       }
 
-    case 'q':
+    case '$':
       if (SmallDFA.isInState(C)) {
       uint8_t reply[15] = "Trace Accepted!";
       TransmitVerdict(reply);
