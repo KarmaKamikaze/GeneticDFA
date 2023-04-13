@@ -15,6 +15,9 @@
 
 #define SERIAL_BAUD 9600
 
+void Blink(int milliseconds);
+void TransmitMessage(const char reply[]);
+
 // Singleton instance of the radio driver
 RH_RF69 rf69(RFM69_CS, RFM69_INT);
 
@@ -23,9 +26,7 @@ RHReliableDatagram rf69_manager(rf69, MY_ADDRESS);
 
 const char *array_of_traces[500] = {"10010000110", "011010"};
 const int array_size = sizeof(array_of_traces) / sizeof(array_of_traces[0]);
-
-void Blink(int milliseconds);
-void TransmitMessage(char reply[]);
+bool finished = false;
 
 void setup() {
   // Setup for RFM69 chipset
@@ -72,43 +73,48 @@ void setup() {
 uint8_t buffer[RH_RF69_MAX_MESSAGE_LEN];
 
 void loop() {
-
-  // Loop over traces
-  for (int i = 0; i < array_size; i++) {
-    // Loop over char in trace
-    for (int j = 0; j <= strlen(array_of_traces[i]); j++) {
-      // If at end of a trace, tell blackbox its END
-      if (j == strlen(array_of_traces[i])) {
-        TransmitMessage("END");
-        break;
-      } else {
-        // Send array_of_traces[i][j]
-        TransmitMessage(array_of_traces[i][j]);
+  while (!finished) {
+    // Loop over traces
+    for (int i = 0; i < array_size; i++) {
+      // Loop over char in trace
+      for (int j = 0; j <= strlen(array_of_traces[i]); j++) {
+        // If at end of a trace, tell blackbox its END
+        if (j == strlen(array_of_traces[i])) {
+          TransmitMessage("END");
+          break;
+        } else {
+          // Send array_of_traces[i][j]
+          TransmitMessage(&array_of_traces[i][j]);
+        }
       }
-    }
 
-    // Print result from blackbox
-    if (rf69_manager.available()) {
-      // Wait for a message addressed to the Blackbox arduino
-      uint8_t len = sizeof(buffer);
-      uint8_t from;
-      if (rf69_manager.recvfromAckTimeout(buffer, &len, TIMEOUT, &from)) {
+      // Print result from blackbox
+      if (rf69_manager.available()) {
+        // Wait for a message addressed to the Blackbox arduino
+        uint8_t len = sizeof(buffer);
+        uint8_t from;
+        if (rf69_manager.recvfromAckTimeout(buffer, &len, TIMEOUT, &from)) {
 
-        if ((char *)buffer == "Trace Accepted!") {
-          Serial.print(strcat(array_of_traces[i], ":SUCCESS"));
-        } else if ((char *)buffer == "Trace Failed!") {
-          Serial.print(strcat(array_of_traces[i], ":FAILED"));
+          if ((char *)buffer == "Trace Accepted!") {
+            Serial.print(strcat((char *)array_of_traces[i], ":SUCCESS"));
+          } else if ((char *)buffer == "Trace Failed!") {
+            Serial.print(strcat((char *)array_of_traces[i], ":FAILED"));
+          }
         }
       }
     }
+    // When no more traces, print "STOP" to stop python monitor
+    Serial.print("STOP");
+    finished = true;
   }
-  // When no more traces, print "STOP" to stop python monitor
-  Serial.print("STOP");
+  // Once all traces have been tested, indicate that we are finished by blinking
+  Blink(100);
 }
 
 /*
- * Blink is used for error codes, as the serial monitor will solely be used
- * for communication between the learner and the blackbox device.
+ * Blink is used for error codes and to indicate that a run has finished,
+ * as the serial monitor will solely be used for communication between
+ * the learner and the blackbox device.
  * The error codes are as follows:
  * ½ second blinks: Failed to send message.
  * 1 second blinks: Failed RFM69HW initialization.
@@ -121,7 +127,7 @@ void Blink(int milliseconds) {
   delay(milliseconds);
 }
 
-void TransmitMessage(char reply[]) {
+void TransmitMessage(const char reply[]) {
   if (!rf69_manager.sendtoWait((uint8_t *)reply, strlen(reply), DEST_ADDRESS)) {
     // If the transmission fails, flash the error code
     for (int i = 0; i < 10; i++) {
