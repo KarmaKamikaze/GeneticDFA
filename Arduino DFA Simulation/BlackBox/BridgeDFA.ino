@@ -93,7 +93,7 @@ void RunBridgeDFA(char input) {
         BridgeDFA.update();
         }
 
-      case default:
+      default:
       BridgeDFA.transitionTo(TRASH);
   }
 }

@@ -83,7 +83,7 @@ void RunCarAlarmDFA(char input) {
       CarAlarmDFA.update();
       }
 
-    case default:
+    default:
     CarAlarmDFA.transitionTo(TRASH);
     
   }
