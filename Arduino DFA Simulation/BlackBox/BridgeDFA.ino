@@ -98,6 +98,7 @@ void RunBridgeDFA(char input) {
         BridgeDFA.transitionTo(AA);
         BridgeDFA.update();
         }
+        break;
 
       default:
         BridgeDFA.transitionTo(TRASH);
