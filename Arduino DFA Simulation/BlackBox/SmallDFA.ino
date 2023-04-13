@@ -45,5 +45,9 @@ void RunSmallDFA(char input) {
       SmallDFA.transitionTo(A);
       SmallDFA.update();
     }
+
+    case default:
+
+    
   }
 }

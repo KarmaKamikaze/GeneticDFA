@@ -82,5 +82,9 @@ void RunCarAlarmDFA(char input) {
       CarAlarmDFA.transitionTo(UO);
       CarAlarmDFA.update();
       }
+
+    case default:
+
+    
   }
 }
