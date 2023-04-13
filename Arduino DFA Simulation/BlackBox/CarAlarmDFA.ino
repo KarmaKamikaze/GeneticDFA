@@ -83,6 +83,7 @@ void RunCarAlarmDFA(char input) {
       CarAlarmDFA.transitionTo(UO);
       CarAlarmDFA.update();
       }
+      break;
 
     default:
       CarAlarmDFA.transitionTo(TRASH);
