@@ -37,16 +37,13 @@ void RunSmallDFA(char input) {
     case '$':
       if (SmallDFA.isInState(C)) {
       uint8_t reply[15] = "Trace Accepted!";
-      TransmitVerdict(reply);
-      SmallDFA.transitionTo(A);
-      SmallDFA.update();
     } else {
       SmallDFA.transitionTo(TRASH);
       uint8_t reply[13] = "Trace Failed!";
+    }
       TransmitVerdict(reply);
       SmallDFA.transitionTo(A);
       SmallDFA.update();
-    }
     break;
 
     default:
