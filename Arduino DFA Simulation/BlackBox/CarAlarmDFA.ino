@@ -5,7 +5,6 @@ State UC = State(InStateAction);
 State LC = State(InStateAction);
 State AC = State(InStateAction);
 State AO = State(InStateAction);
-State TRASH = State(InStateAction);
 FSM CarAlarmDFA = FSM(UO);
 
 void RunCarAlarmDFA(char input) {

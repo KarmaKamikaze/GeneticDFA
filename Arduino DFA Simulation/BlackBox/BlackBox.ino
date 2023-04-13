@@ -15,6 +15,9 @@
 
 #define SERIAL_BAUD 9600
 
+// Creation of TRASH state such that it can be used in any DFA
+State TRASH = State(InStateAction);
+
 // Singleton instance of the radio driver
 RH_RF69 rf69(RFM69_CS, RFM69_INT);
 
@@ -22,9 +25,9 @@ RH_RF69 rf69(RFM69_CS, RFM69_INT);
 RHReliableDatagram rf69_manager(rf69, MY_ADDRESS);
 
 // DFA prototypes
-void RunSmallDFA(char input[]);
-void RunCarAlarmDFA(char input[]);
-void RunBridgeDFA(char input[]);
+void RunSmallDFA(char input);
+void RunCarAlarmDFA(char input);
+void RunBridgeDFA(char input);
 
 void setup() {
   // Setup for RFM69 chipset
@@ -104,3 +107,5 @@ void TransmitVerdict(uint8_t reply[]) {
 }
 
 void InStateAction() {}
+
+

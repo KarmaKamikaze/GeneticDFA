@@ -2,7 +2,6 @@
 State A = State(InStateAction);
 State B = State(InStateAction);
 State C = State(InStateAction);
-State TRASH = State(InStateAction);
 // Machine
 FSM SmallDFA = FSM(A);
 

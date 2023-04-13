@@ -8,7 +8,6 @@ State BA = State(InStateAction);
 State WB = State(InStateAction);
 State BW = State(InStateAction);
 State BB = State(InStateAction);
-State TRASH = State(InActionState);
 FSM BridgeDFA = FSM(AA);
 
 void RunBridgeDFA(char input) {
