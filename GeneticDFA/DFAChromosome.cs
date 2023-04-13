@@ -49,7 +49,8 @@ public class DFAChromosome : IChromosome
         });
 
         //Iterate through the edges and check if each edge has same source and input as a neighbor
-        //Special cases for the first and last edge, since they only have 1 neighbor
+        //Special cases for the first and last edge to avoid indexing out of range,
+        //since they are at the ends of the array and thus only have 1 neighbor
         if(edges[0].Source.ID == edges[1].Source.ID && edges[0].Input == edges[1].Input)
             NonDeterministicEdges.Add(edges[0]);
         
