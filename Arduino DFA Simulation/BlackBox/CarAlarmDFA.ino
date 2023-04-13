@@ -5,11 +5,15 @@ State UC = State(InStateAction);
 State LC = State(InStateAction);
 State AC = State(InStateAction);
 State AO = State(InStateAction);
+State TRASH = State(InStateAction);
 FSM CarAlarmDFA = FSM(UO);
 
-void RunCarAlarmDFA(char input[]) {
+void RunCarAlarmDFA(char input) {
   CarAlarmDFA.update();
-    if (input == "l") {
+
+  switch (input)
+  {
+    case 'l':
       if (CarAlarmDFA.isInState(UO)) {
         CarAlarmDFA.transitionTo(LO);
       } 
@@ -17,10 +21,10 @@ void RunCarAlarmDFA(char input[]) {
         CarAlarmDFA.transitionTo(LC);
       } 
       else {
-        Serial.println("Failed because it enters the trash state");
+        CarAlarmDFA.transitionTo(TRASH);
       }
-    } 
-    else if (input == "u") {
+
+    case 'u':
       if (CarAlarmDFA.isInState(LO)) {
         CarAlarmDFA.transitionTo(UO);
       } 
@@ -31,10 +35,10 @@ void RunCarAlarmDFA(char input[]) {
         CarAlarmDFA.transitionTo(UC);
       } 
       else {
-        Serial.println("Failed because it enters the trash state");
+        CarAlarmDFA.transitionTo(TRASH);
       }
-    } 
-    else if (input == "c") {
+
+    case 'c':
       if (CarAlarmDFA.isInState(UO)) {
         CarAlarmDFA.transitionTo(UC);
       } 
@@ -42,10 +46,10 @@ void RunCarAlarmDFA(char input[]) {
         CarAlarmDFA.transitionTo(LC);
       } 
       else {
-        Serial.println("Failed because it enters the trash state");
+        CarAlarmDFA.transitionTo(TRASH);
       }
-    } 
-    else if (input == "o") {
+
+    case 'o':
       if (CarAlarmDFA.isInState(UC)) {
         CarAlarmDFA.transitionTo(UO);
       } 
@@ -56,28 +60,32 @@ void RunCarAlarmDFA(char input[]) {
         CarAlarmDFA.transitionTo(AO);
       } 
       else {
-        Serial.println("Failed because it enters the trash state");
+        CarAlarmDFA.transitionTo(TRASH);
       }
-    } 
-    else if (input == "a") {
+
+    case 'a':
       if (CarAlarmDFA.isInState(LC)) {
-        DFCarAlarmDFAA.transitionTo(AC);
+        CarAlarmDFA.transitionTo(AC);
       } 
       else {
-        Serial.println("Failed because it enters the trash state");
+        CarAlarmDFA.transitionTo(TRASH);
       }
-    }
-    if input == "END"{
-      if (!CarAlarmDFA.isInState(AO)) {
-      uint8_t reply[15] = "Trace Accepted!";
-      } 
-      else {
-        uint8_t reply[13] = "Trace Failed!";
-      }
+
+    default:
+      CarAlarmDFA.transitionTo(TRASH);
+      uint8_t reply[13] = "Trace Failed!";
+      TransmitVerdict(reply);
+      break;
+  }
+
+
+    if (!CarAlarmDFA.isInState(AO) && !CarAlarmDFA.isInState(TRASH)) {
+    uint8_t reply[15] = "Trace Accepted!";
+    } 
+
     //send verdict
     TransmitVerdict(reply);
     //reset
-    DFA.transitionTo(UO);
+    CarAlarmDFA.transitionTo(UO);
+    CarAlarmDFA.update();
     }
-  DFA.update();
-}

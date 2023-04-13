@@ -8,95 +8,94 @@ State BA = State(InStateAction);
 State WB = State(InStateAction);
 State BW = State(InStateAction);
 State BB = State(InStateAction);
+State TRASH = State(InActionState);
 
-void RunBridgeDFA(char input[]) {
-  FSM DFA = FSM(AA);
+  FSM BridgeDFA = FSM(AA);
+
+void RunBridgeDFA(char input) {
   bool stringComplete = false;
-  DFA.update();
+  BridgeDFA.update();
 
   //Let it be noted that: A = ArriveEast, B = EnterEast, C = LeaveEast, X = ArriveWest, Y = EnterWest and Z = LeaveWest
-  for (int i = 0; i < strlen(input); i++) {
-    if (input[i] == 'A'){
-      if (DFA.isInState(AA)){
-        DFA.transitionTo(WA);
-      } else if (DFA.isInState(AW)){
-        DFA.transitionTo(WW);
-      } else if (DFA.isInState(AB)){
-        DFA.transitionTo(WB);
+  switch(input)
+  {
+    case 'A':
+      if (BridgeDFA.isInState(AA)){
+        BridgeDFA.transitionTo(WA);
+      } else if (BridgeDFA.isInState(AW)){
+        BridgeDFA.transitionTo(WW);
+      } else if (BridgeDFA.isInState(AB)){
+        BridgeDFA.transitionTo(WB);
       } else{
-        Serial.println("Failed because it enters the trash state");
+        BridgeDFA.transitionTo(TRASH);
       }
-    } else if (input[i] == 'B'){
-      if (DFA.isInState(WA)){
-        DFA.transitionTo(BA);
-      } else if (DFA.isInState(WW)){
+
+      case 'B':
+        if (BridgeDFA.isInState(WA)){
+        BridgeDFA.transitionTo(BA);
+      } else if (BridgeDFA.isInState(WW)){
         DFA.transitionTo(BW);
-      } else if (DFA.isInState(WB)){
+      } else if (BridgeDFA.isInState(WB)){
         DFA.transitionTo(BB);
       } else{
-        Serial.println("Failed because it enters the trash state");
+        BridgeDFA.transitionTo(TRASH);
       }
-    } else if (input[i] == 'C'){
-      if (DFA.isInState(BW)){
-        DFA.transitionTo(AW);
-      } else if (DFA.isInState(BA)){
-        DFA.transitionTo(AA);
-      } else{
-        Serial.println("Failed because it enters the trash state");
-      }
-    } else if (input[i] == 'X'){
-      if (DFA.isInState(AA)){
-        DFA.transitionTo(AW);
-      } else if (DFA.isInState(WA)){
-        DFA.transitionTo(WW);
-      } else if (DFA.isInState(BA)){
-        DFA.transitionTo(BW);
-      } else{
-        Serial.println("Failed because it enters the trash state");
-      }
-    } else if (input[i] == 'Y'){
-      if (DFA.isInState(AW)){
-        DFA.transitionTo(AB);
-      } else if (DFA.isInState(WW)){
-        DFA.transitionTo(WB);
-      } else if (DFA.isInState(BW)){
-        DFA.transitionTo(BB);
-      } else{
-        Serial.println("Failed because it enters the trash state");
-      }
-    } else if (input[i] == 'Z'){
-      if (DFA.isInState(WB)){
-        DFA.transitionTo(WA);
-      } else if (DFA.isInState(AB)){
-        DFA.transitionTo(AA);
-      } else{
-        Serial.println("Failed because it enters the trash state");
-      }
-    }
 
-    // If char of input is not acceptable we break and check if we are in
-    // accepting state.
-    else {
-      stringComplete = false;
-      DFA.transitionTo(AA);
-      DFA.update();
-      break;
-    }
+      case 'C':
+        if (BridgeDFA.isInState(BW)){
+        BridgeDFA.transitionTo(AW);
+      } else if (BridgeDFA.isInState(BA)){
+        BridgeDFA.transitionTo(AA);
+      } else{
+        BridgeDFA.transitionTo(TRASH);
+      }
 
-    if (i == ((strlen(input) - 1))) {
-      stringComplete = true;
-    }
-    DFA.update();
+      case 'X':
+        if (BridgeDFA.isInState(AA)){
+        BridgeDFA.transitionTo(AW);
+      } else if (BridgeDFA.isInState(WA)){
+        BridgeDFA.transitionTo(WW);
+      } else if (BridgeDFA.isInState(BA)){
+        BridgeDFA.transitionTo(BW);
+      } else{
+        BridgeDFA.transitionTo(TRASH);
+      }
+
+      case 'Y':
+        if (BridgeDFA.isInState(AW)){
+        BridgeDFA.transitionTo(AB);
+      } else if (BridgeDFA.isInState(WW)){
+        BridgeDFA.transitionTo(WB);
+      } else if (BridgeDFA.isInState(BW)){
+        BridgeDFA.transitionTo(BB);
+      } else{
+        BridgeDFA.transitionTo(TRASH);
+      }
+      
+      case 'Z':
+        if (BridgeDFA.isInState(WB)){
+        BridgeDFA.transitionTo(WA);
+      } else if (BridgeDFA.isInState(AB)){
+        BridgeDFA.transitionTo(AA);
+      } else{
+        BridgeDFA.transitionTo(TRASH);
+      }
+
+      default:
+        BridgeDFA.transitionTo(TRASH);
+        uint8_t reply[13] = "Trace Failed!";
+        TransmitVerdict(reply);
+        break;
+
   }
+    
+    
 
-  // If we finish in a final state report back that we have passed
-  if (stringComplete && !DFA.isInState(BB)) {
+    if (!BridgeDFA.isInState(BB) && !BridgeDFA.isInState(TRASH)) {
     uint8_t reply[15] = "Trace Accepted!";
-  } else {
-    uint8_t reply[13] = "Trace Failed!";
-  }
-  TransmitVerdict(reply);
+    TransmitVerdict(reply);
+    } 
 
-  DFA.transitionTo(AA);
-  DFA.update();
-}
+  BridgeDFA.transitionTo(AA);
+  BridgeDFA.update();
+  }
