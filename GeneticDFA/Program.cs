@@ -65,12 +65,12 @@ class Program
 
         // Begin learning.
         Console.WriteLine("GA is learning the DFA...");
-        /*ga.Start();
+        ga.Start();
 
         Console.WriteLine();
         Console.WriteLine($"Best solution found has fitness: {ga.BestChromosome.Fitness}");
         Console.WriteLine($"Elapsed time: {ga.TimeEvolving}");
-        Console.ReadKey();*/
+        Console.ReadKey();
     }
     
 }

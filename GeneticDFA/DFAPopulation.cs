@@ -10,7 +10,8 @@ public class DFAPopulation : Population
     }
 
     public List<char> Alphabet { get; }
-
+    private readonly IRandomization _rnd = RandomizationProvider.Current;
+    
     public override void CreateInitialGeneration()
     {
         Generations = new List<Generation>();
@@ -32,7 +33,7 @@ public class DFAPopulation : Population
     private void InitializeChromosome(IChromosome paramChromosome)
     {
         DFAChromosome chromosome = (DFAChromosome) paramChromosome;
-        int numberOfAcceptStates = RandomizationProvider.Current.GetInt(1, Alphabet.Count);
+        int numberOfAcceptStates = _rnd.GetInt(1, Alphabet.Count+1);
         for (int i = 0; i < numberOfAcceptStates; i++)
         {
             chromosome.States.Add(new DFAState(chromosome.NextStateID, true));
@@ -44,19 +45,40 @@ public class DFAPopulation : Population
             chromosome.NextStateID++;
         }
 
-        int startStateIndex = RandomizationProvider.Current.GetInt(0, chromosome.States.Count-1);
+        int startStateIndex = _rnd.GetInt(0, chromosome.States.Count);
         chromosome.StartState = chromosome.States[startStateIndex];
-        
-        
-        
-        
+
+        List<DFAEdge> edges = new List<DFAEdge>();
+        int edgesToAdd = (int) Math.Pow(Alphabet.Count, 2);
+        int uniqueEdgesAdded = 0;
+        while (uniqueEdgesAdded < edgesToAdd)
+        {
+            DFAState source = chromosome.States[_rnd.GetInt(0, chromosome.States.Count)];
+            List<DFAEdge> existingEdgesWithCurrentSource = edges.Where(e => e.Source == source).ToList();
+            
+            List<char> possibleInputs = Alphabet.Where(i => existingEdgesWithCurrentSource.Count(
+                e=> e.Input == i) < chromosome.States.Count).ToList();
+            char input = possibleInputs[_rnd.GetInt(0, possibleInputs.Count)];
+            List<DFAEdge> existingEdgesWithCurrentSourceAndInput =
+                existingEdgesWithCurrentSource.Where(e => e.Input == input).ToList();
+
+            List<DFAState> possibleTargets = chromosome.States.Where(s => existingEdgesWithCurrentSourceAndInput.All(e => e.Target != s)).ToList();
+            DFAState target = possibleTargets[_rnd.GetInt(0, possibleTargets.Count)];
+            
+            edges.Add(new DFAEdge(chromosome.NextEdgeID,source, target, input));
+            chromosome.NextEdgeID++;
+            uniqueEdgesAdded++;
+        }
+
+        chromosome.Edges.AddRange(edges);
+        chromosome.FindAndAssignNonDeterministicEdges();
+
     }
     
     //Copied from source code, but without gene validation, since we do not use the gene properties on chromosomes
     public override void CreateNewGeneration(IList<IChromosome> chromosomes)
     {
         ExceptionHelper.ThrowIfNull(nameof (chromosomes), chromosomes);
-        chromosomes.ValidateGenes();
         CurrentGeneration = new Generation(++GenerationsNumber, chromosomes);
         Generations.Add(CurrentGeneration);
         GenerationStrategy.RegisterNewGeneration( this);
