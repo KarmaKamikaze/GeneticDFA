@@ -33,9 +33,9 @@ void RunBridgeDFA(char input) {
         if (BridgeDFA.isInState(WA)){
         BridgeDFA.transitionTo(BA);
       } else if (BridgeDFA.isInState(WW)){
-        DFA.transitionTo(BW);
+        BridgeDFA.transitionTo(BW);
       } else if (BridgeDFA.isInState(WB)){
-        DFA.transitionTo(BB);
+        BridgeDFA.transitionTo(BB);
       } else{
         BridgeDFA.transitionTo(TRASH);
       }
