@@ -30,16 +30,7 @@ public class DFAChromosome : IChromosome
     {
         return new DFAChromosome();
     }
-
-    public void FixUnreachability(List<char> alphabet)
-    {
-        List<DFAState> reachableStates = FindReachableStates();
-
-        if (reachableStates.Count != States.Count)
-        {
-            AddEdgesToUnreachableStates(reachableStates, alphabet);
-        }
-    }
+    
     
     private List<DFAState> FindReachableStates()
     {
@@ -58,19 +49,19 @@ public class DFAChromosome : IChromosome
         return reachableStates;
     }
 
-    private void AddEdgesToUnreachableStates(IList<DFAState> reachableStates, IReadOnlyList<char> alphabet)
+    public void FixUnreachability(List<char> alphabet)
     {
         while (true)
         {
-            List<DFAState> unreachableStates = States.Where(s => !reachableStates.Contains(s)).ToList();
-            if(unreachableStates.Count == 0)
+            List<DFAState> reachableStates = FindReachableStates();
+            if (reachableStates.Count == States.Count)
                 break;
+            List<DFAState> unreachableStates = States.Where(s => !reachableStates.Contains(s)).ToList();
             DFAState source = reachableStates[RandomizationProvider.Current.GetInt(0, reachableStates.Count)];
             char input = alphabet[RandomizationProvider.Current.GetInt(0, alphabet.Count)];
             DFAState target = unreachableStates[RandomizationProvider.Current.GetInt(0, unreachableStates.Count)];
             Edges.Add(new DFAEdge(NextEdgeID, source, target, input));
             NextEdgeID++;
-            reachableStates = FindReachableStates();
         }
     }
 

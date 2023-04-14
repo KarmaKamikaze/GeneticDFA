@@ -22,19 +22,12 @@ public class DFAPopulation : Population
             DFAChromosome chromosome = (DFAChromosome) AdamChromosome.CreateNew();
             if (chromosome == null)
                 throw new InvalidOperationException("Adam chromosome's 'CreateNew' method created a null chromosome.");
-            InitializeChromosome(chromosome);
+            InitializeChromosomeStates(chromosome);
+            InitializeChromosomeEdges(chromosome);
             chromosome.FindAndAssignNonDeterministicEdges();
             chromosomes.Add(chromosome);
         }
         CreateNewGeneration(chromosomes);
-        
-        
-    }
-
-    private void InitializeChromosome(DFAChromosome chromosome)
-    {
-        InitializeChromosomeStates(chromosome);
-        InitializeChromosomeEdges(chromosome);
     }
 
     private void InitializeChromosomeStates(DFAChromosome chromosome)
