@@ -31,6 +31,49 @@ public class DFAChromosome : IChromosome
         return new DFAChromosome();
     }
 
+    public void FixUnreachability(List<char> alphabet)
+    {
+        List<DFAState> reachableStates = FindReachableStates();
+
+        if (reachableStates.Count != States.Count)
+        {
+            AddEdgesToUnreachableStates(reachableStates, alphabet);
+        }
+    }
+    
+    private List<DFAState> FindReachableStates()
+    {
+        List<DFAState> reachableStates = new List<DFAState> {StartState};
+
+        while (true)
+        {
+            List<DFAEdge> edgesFromReachableStates = Edges.Where(e => reachableStates.Contains(e.Source)).ToList();
+            List<DFAState> newReachableStates = States.Where(s => edgesFromReachableStates.Any(e => e.Target == s)).ToList();
+            newReachableStates.RemoveAll(s => reachableStates.Contains(s));
+            if (newReachableStates.Count == 0)
+                break;
+            reachableStates.AddRange(newReachableStates);
+        }
+
+        return reachableStates;
+    }
+
+    private void AddEdgesToUnreachableStates(IList<DFAState> reachableStates, IReadOnlyList<char> alphabet)
+    {
+        while (true)
+        {
+            List<DFAState> unreachableStates = States.Where(s => !reachableStates.Contains(s)).ToList();
+            if(unreachableStates.Count == 0)
+                break;
+            DFAState source = reachableStates[RandomizationProvider.Current.GetInt(0, reachableStates.Count)];
+            char input = alphabet[RandomizationProvider.Current.GetInt(0, alphabet.Count)];
+            DFAState target = unreachableStates[RandomizationProvider.Current.GetInt(0, unreachableStates.Count)];
+            Edges.Add(new DFAEdge(NextEdgeID, source, target, input));
+            NextEdgeID++;
+            reachableStates = FindReachableStates();
+        }
+    }
+
     //Move to mutation and crossover
     public void FindAndAssignNonDeterministicEdges()
     {

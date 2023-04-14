@@ -7,7 +7,7 @@ class Program
 {
     static void Main(string[] args)
     {
-        const int minPopulation = 200;
+        const int minPopulation = 500;
         const int maxPopulation = 800;
         const int convergenceGenerationNumber = 100;
         const int maximumGenerationNumber = 1000;
@@ -34,7 +34,7 @@ class Program
             new TestTrace("1010", false),
             new TestTrace("00000000000111", false),
         };
-        List<char> alphabet = new List<char>() {'1', '0'};
+        List<char> alphabet = new List<char>() {'1', '0', '2'};
         
         EliteSelection selection = new EliteSelection();
         UniformCrossover crossover = new UniformCrossover();

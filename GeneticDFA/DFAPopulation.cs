@@ -9,7 +9,7 @@ public class DFAPopulation : Population
         Alphabet = alphabet;
     }
 
-    public List<char> Alphabet { get; }
+    private List<char> Alphabet { get; }
     private readonly IRandomization _rnd = RandomizationProvider.Current;
     
     public override void CreateInitialGeneration()
@@ -79,14 +79,11 @@ public class DFAPopulation : Population
             uniqueEdgesAdded++;
         }
 
-        //Add reachability check
         chromosome.Edges.AddRange(edges);
-        
-        
+        chromosome.FixUnreachability(Alphabet);
     }
-    
-    
-    
+
+
     //Copied from source code, but without gene validation, since we do not use the gene properties on chromosomes
     public override void CreateNewGeneration(IList<IChromosome> chromosomes)
     {
