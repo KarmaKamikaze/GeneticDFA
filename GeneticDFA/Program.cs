@@ -7,8 +7,8 @@ class Program
 {
     static void Main(string[] args)
     {
-        const int minPopulation = 500;
-        const int maxPopulation = 800;
+        const int minPopulation = 1000;
+        const int maxPopulation = 1000;
         const int convergenceGenerationNumber = 100;
         const int maximumGenerationNumber = 1000;
         const int fitnessLowerBound = 100;
@@ -34,7 +34,7 @@ class Program
             new TestTrace("1010", false),
             new TestTrace("00000000000111", false),
         };
-        List<char> alphabet = new List<char>() {'1', '0', '2'};
+        List<char> alphabet = new List<char>() {'1', '0', '2', '3', '4', '5'};
         
         EliteSelection selection = new EliteSelection();
         UniformCrossover crossover = new UniformCrossover();
