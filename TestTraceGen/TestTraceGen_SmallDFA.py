@@ -15,6 +15,7 @@ def generate_test_traces_for_smalldfa():
     
     #generate and write traces
     write_traces_to_file(generate_failing_traces(number_of_failing_traces,length),generate_passing_traces(number_of_passing_traces,length))
+    
     print("script will now close, press enter to close")
     input()
     
@@ -44,6 +45,7 @@ def generate_failing_traces(number_of_failing_traces:int,length:int):
     ''' generates list of failing traces '''
     failing_traces: list = []
     pattern = re.compile("^0*1(00*1)*1((1|0)0*1(00*1)*1)*$")
+    
     #generate input amount of traces
     while len(failing_traces) != int(number_of_failing_traces):
         random_num = ''.join(rnd.choices(['0','1'],k=int(length)))
@@ -55,6 +57,7 @@ def generate_passing_traces(number_of_passing_traces:int, length:int):
     ''' generates list of passing traces '''
     passing_traces: list = []
     pattern = re.compile("^0*1(00*1)*1((1|0)0*1(00*1)*1)*$")
+    
     #generate input amount of traces
     while len(passing_traces) != int(number_of_passing_traces):
         random_num = ''.join(rnd.choices(['0','1'],k=int(length)))
@@ -62,6 +65,7 @@ def generate_passing_traces(number_of_passing_traces:int, length:int):
             passing_traces.append(random_num) 
     return passing_traces
 
+#Run the script
 generate_test_traces_for_smalldfa()
 
 
