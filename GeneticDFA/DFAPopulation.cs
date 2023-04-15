@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using GeneticSharp;
+﻿using GeneticSharp;
 
 namespace GeneticDFA;
 
@@ -18,8 +17,6 @@ public class DFAPopulation : Population
         Generations = new List<Generation>();
         GenerationsNumber = 0;
         List<IChromosome> chromosomes = new List<IChromosome>();
-        Stopwatch stopWatch = new Stopwatch();
-        stopWatch.Start();
         for (int index = 0; index < MinSize; ++index)
         {
             DFAChromosome chromosome = (DFAChromosome) AdamChromosome.CreateNew();
@@ -30,13 +27,6 @@ public class DFAPopulation : Population
             chromosome.FindAndAssignNonDeterministicEdges();
             chromosomes.Add(chromosome);
         }
-        stopWatch.Stop();
-        // Get the elapsed time as a TimeSpan value.
-        TimeSpan ts = stopWatch.Elapsed;
-
-        // Format and display the TimeSpan value.
-        int elapsedTime = ts.Milliseconds;
-        Console.WriteLine("RunTime " + elapsedTime);
         CreateNewGeneration(chromosomes);
     }
 

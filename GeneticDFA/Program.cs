@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using GeneticSharp;
+﻿using GeneticSharp;
 
 namespace GeneticDFA;
 
