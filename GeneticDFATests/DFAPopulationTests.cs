@@ -89,11 +89,10 @@ public class DFAPopulationTests
             DFAChromosome dfaChromosome = (DFAChromosome) c;
             Assert.Equal(expected, dfaChromosome.NextStateID);
         });
-        
     }
     
     [Fact]
-    public void InitialIndividualsHasAtleastOneAcceptState()
+    public void InitialIndividualsHasAtLeastOneAcceptState()
     {
         //Arrange
         DFAChromosome chromosome = new DFAChromosome();
@@ -127,6 +126,91 @@ public class DFAPopulationTests
         {
             DFAChromosome dfaChromosome = (DFAChromosome) c;
             Assert.NotNull(dfaChromosome.StartState);
+        });
+    }
+    
+    [Theory]
+    [InlineData(new []{'0'}, 1)]
+    [InlineData(new []{'0', '1'}, 4)]
+    [InlineData(new []{'0', '1', '2'}, 9)]
+    [InlineData(new []{'0', '1', '2', '3'}, 16)]
+    [InlineData(new []{'0', '1', '2', '3', '4'}, 25)]
+    public void InitialIndividualsHasNumberOfEdgesAtLeastSquareOfAlphabetSize(char[] alphabet, int expectedLowerBound)
+    {
+        //Arrange
+        DFAChromosome chromosome = new DFAChromosome();
+        DFAPopulation population = new DFAPopulation(100, 100, chromosome, alphabet.ToList());
+        
+        //Act
+        population.CreateInitialGeneration();
+        
+        //Assert
+        Assert.All(population.Generations[0].Chromosomes, c =>
+        {
+            DFAChromosome dfaChromosome = (DFAChromosome) c;
+            Assert.True(expectedLowerBound <= dfaChromosome.Edges.Count);
+        });
+    }
+    
+    [Fact]
+    public void InitialIndividualsEdgesHasUniqueID()
+    {
+        //Arrange
+        DFAChromosome chromosome = new DFAChromosome();
+        List<char> alphabet = new List<char>() {'0', '1', '2', '3'};
+        DFAPopulation population = new DFAPopulation(100, 100, chromosome, alphabet);
+        
+        //Act
+        population.CreateInitialGeneration();
+        
+        //Assert
+        Assert.All(population.Generations[0].Chromosomes, c =>
+        {
+            DFAChromosome dfaChromosome = (DFAChromosome) c;
+            Assert.All(dfaChromosome.Edges, e => Assert.Single(dfaChromosome.Edges, e2 => e2.ID == e.ID));
+        });
+    }
+    
+    [Theory]
+    [InlineData(new []{'0'})]
+    [InlineData(new []{'0', '1'})]
+    [InlineData(new []{'0', '1', '2'})]
+    [InlineData(new []{'0', '1', '2', '3'})]
+    [InlineData(new []{'0', '1', '2', '3', '4'})]
+    public void InitialIndividualsNextEdgeIDPropertyIsCorrect(char[] alphabet)
+    {
+        //Arrange
+        DFAChromosome chromosome = new DFAChromosome();
+        DFAPopulation population = new DFAPopulation(100, 100, chromosome, alphabet.ToList());
+        
+        //Act
+        population.CreateInitialGeneration();
+        
+        //Assert
+        Assert.All(population.Generations[0].Chromosomes, c =>
+        {
+            DFAChromosome dfaChromosome = (DFAChromosome) c;
+            Assert.Equal(dfaChromosome.Edges.Count, dfaChromosome.NextEdgeID);
+        });
+    }
+    
+    [Fact]
+    public void InitialIndividualsEdgesAreUnique()
+    {
+        //Arrange
+        DFAChromosome chromosome = new DFAChromosome();
+        List<char> alphabet = new List<char>() {'0', '1', '2', '3'};
+        DFAPopulation population = new DFAPopulation(100, 100, chromosome, alphabet);
+        
+        //Act
+        population.CreateInitialGeneration();
+        
+        //Assert
+        Assert.All(population.Generations[0].Chromosomes, c =>
+        {
+            DFAChromosome dfaChromosome = (DFAChromosome) c;
+            Assert.All(dfaChromosome.Edges, e => Assert.Single(dfaChromosome.Edges, e2 => e2.Source == e.Source && 
+                e2.Input == e.Input && e2.Target == e.Target));
         });
     }
     

@@ -64,7 +64,8 @@ public class DFAPopulation : Population
             List<DFAEdge> existingEdgesWithCurrentSourceAndInput =
                 existingEdgesWithCurrentSource.Where(e => e.Input == input).ToList();
 
-            List<DFAState> possibleTargets = chromosome.States.Where(s => existingEdgesWithCurrentSourceAndInput.All(e => e.Target != s)).ToList();
+            List<DFAState> possibleTargets = chromosome.States.Where(s => existingEdgesWithCurrentSourceAndInput.All(
+                e => e.Target != s)).ToList();
             DFAState target = possibleTargets[_rnd.GetInt(0, possibleTargets.Count)];
             
             edges.Add(new DFAEdge(chromosome.NextEdgeID,source, target, input));
