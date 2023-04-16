@@ -49,6 +49,7 @@ public class DFAChromosome : IChromosome
         return reachableStates;
     }
 
+    //Does not fit in this class, but the method will be used by both Population class and Crossover class
     public void FixUnreachability(List<char> alphabet)
     {
         while (true)
@@ -57,6 +58,11 @@ public class DFAChromosome : IChromosome
             if (reachableStates.Count == States.Count)
                 break;
             List<DFAState> unreachableStates = States.Where(s => !reachableStates.Contains(s)).ToList();
+            
+            //Note that we do not check whether the edge we are going to add is unique
+            //(contrast to InitializeChromosomeEdges() in DFAPopulation). This is because we know that if a state is
+            //unreachable, that must mean that no reachable state has an outgoing edge to it.
+            //Thus all edges pointing to unreachable states will be unique.
             DFAState source = reachableStates[RandomizationProvider.Current.GetInt(0, reachableStates.Count)];
             char input = alphabet[RandomizationProvider.Current.GetInt(0, alphabet.Count)];
             DFAState target = unreachableStates[RandomizationProvider.Current.GetInt(0, unreachableStates.Count)];
@@ -65,7 +71,7 @@ public class DFAChromosome : IChromosome
         }
     }
 
-    //Move to mutation and crossover
+    //Does not fit in this class, but the method will be used by both Population class and Mutation class
     public void FindAndAssignNonDeterministicEdges()
     {
         NonDeterministicEdges = new List<DFAEdge>();
