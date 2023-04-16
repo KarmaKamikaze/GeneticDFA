@@ -30,24 +30,6 @@ public class DFAChromosome : IChromosome
     {
         return new DFAChromosome();
     }
-    
-    
-    private List<DFAState> FindReachableStates()
-    {
-        List<DFAState> reachableStates = new List<DFAState> {StartState};
-
-        while (true)
-        {
-            List<DFAEdge> edgesFromReachableStates = Edges.Where(e => reachableStates.Contains(e.Source)).ToList();
-            List<DFAState> newReachableStates = States.Where(s => edgesFromReachableStates.Any(e => e.Target == s)).ToList();
-            newReachableStates.RemoveAll(s => reachableStates.Contains(s));
-            if (newReachableStates.Count == 0)
-                break;
-            reachableStates.AddRange(newReachableStates);
-        }
-
-        return reachableStates;
-    }
 
     //Does not fit in this class, but the method will be used by both Population class and Crossover class
     public void FixUnreachability(List<char> alphabet)
@@ -71,6 +53,24 @@ public class DFAChromosome : IChromosome
         }
     }
 
+    private List<DFAState> FindReachableStates()
+    {
+        List<DFAState> reachableStates = new List<DFAState> {StartState};
+
+        while (true)
+        {
+            List<DFAEdge> edgesFromReachableStates = Edges.Where(e => reachableStates.Contains(e.Source)).ToList();
+            List<DFAState> newReachableStates = States.Where(s => edgesFromReachableStates.Any(e => e.Target == s)).ToList();
+            newReachableStates.RemoveAll(s => reachableStates.Contains(s));
+            if (newReachableStates.Count == 0)
+                break;
+            reachableStates.AddRange(newReachableStates);
+        }
+
+        return reachableStates;
+    }
+    
+    
     //Does not fit in this class, but the method will be used by both Population class and Mutation class
     public void FindAndAssignNonDeterministicEdges()
     {
