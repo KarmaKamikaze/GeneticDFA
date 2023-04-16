@@ -33,7 +33,7 @@ class Program
             new TestTrace("1010", false),
             new TestTrace("00000000000111", false),
         };
-        List<char> alphabet = new List<char>() {'1', '0', '2', '3', '4', '5'};
+        List<char> alphabet = new List<char>() {'1', '0'};
         
         EliteSelection selection = new EliteSelection();
         UniformCrossover crossover = new UniformCrossover();
