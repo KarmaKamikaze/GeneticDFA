@@ -7,20 +7,8 @@ using Xunit;
 
 namespace GeneticDFATests;
 
-public class DFAChromosomeTests : IDisposable
+public class DFAChromosomeTests 
 {
-
-    public DFAChromosomeTests()
-    {
-        RandomizationProvider.Current = new TestRandomization();
-    }
-
-    public void Dispose()
-    {
-        RandomizationProvider.Current = new FastRandomRandomization();
-    }
-    
-    
     [Theory]
     [MemberData(nameof(SetsOfTestEdgesForFindAndAssignNonDeterministicEdgesTests))]
     public void FindAndAssignNonDeterministicEdgesCorrectBehavior(List<DFAEdge> edges, 
@@ -61,14 +49,24 @@ public class DFAChromosomeTests : IDisposable
     {
         //Arrange
         List<char> alphabet = new List<char>() {'A', 'B', 'C'};
-        DFAChromosome chromosome = new DFAChromosome(States, new List<DFAEdge>(edges), State1);
+        List<DFAChromosome> chromosomes = new List<DFAChromosome>();
+        for (int i = 0; i < 100; i++)
+        {
+            chromosomes.Add(new DFAChromosome(States, new List<DFAEdge>(edges), State1));
+        }
         
         //Act
-        chromosome.FixUnreachability(alphabet);
-
+        foreach (DFAChromosome chromosome in chromosomes)
+        {
+            chromosome.FixUnreachability(alphabet);
+        }
+        
         //Assert
-        List<DFAEdge> newEdges = chromosome.Edges.Where(e => !edges.Contains(e)).ToList();
-        Assert.All(unreachableStates, s => Assert.Single(newEdges, e => !unreachableStates.Contains(e.Source) && e.Target == s));
+        Assert.All(chromosomes, chromosome =>
+        {
+            List<DFAEdge> newEdges = chromosome.Edges.Where(e => !edges.Contains(e)).ToList();
+            Assert.All(unreachableStates, s => Assert.Single(newEdges, e => e.Target == s));
+        });
     }
     
     
@@ -79,14 +77,43 @@ public class DFAChromosomeTests : IDisposable
     {
         //Arrange
         List<char> alphabet = new List<char>() {'A', 'B', 'C'};
+        List<DFAChromosome> chromosomes = new List<DFAChromosome>();
+        for (int i = 0; i < 100; i++)
+        {
+            chromosomes.Add(new DFAChromosome(States, new List<DFAEdge>(edges), State1));
+        }
+        
+        //Act
+        foreach (DFAChromosome chromosome in chromosomes)
+        {
+            chromosome.FixUnreachability(alphabet);
+        }
+        
+        //Assert
+        Assert.All(chromosomes, chromosome =>
+        {
+            List<DFAEdge> newEdges = chromosome.Edges.Where(e => !edges.Contains(e)).ToList();
+            Assert.All(unreachableStates, s => Assert.True(newEdges.Count(e => e.Target == s) <= 1));
+        });
+    }
+
+    [Theory]
+    [MemberData(nameof(SetsOfTestEdgesForFixUnreachabilityCorrectBehaviorTests))]
+    public void FixUnreachabilityCorrectBehaviorWithTestRandomizer(List<DFAEdge> edges, List<DFAEdge> expectedNewEdges)
+    {
+        //Arrange
+        RandomizationProvider.Current = new TestRandomization();
+        List<char> alphabet = new List<char>() {'A', 'B', 'C'};
         DFAChromosome chromosome = new DFAChromosome(States, new List<DFAEdge>(edges), State1);
         
         //Act
         chromosome.FixUnreachability(alphabet);
+        RandomizationProvider.Current = new FastRandomRandomization();
 
         //Assert
         List<DFAEdge> newEdges = chromosome.Edges.Where(e => !edges.Contains(e)).ToList();
-        Assert.All(unreachableStates, s => Assert.True(newEdges.Count(e => e.Target == s) <= 1));
+        Assert.All(newEdges, e => Assert.Contains(expectedNewEdges, e2 => e2.Source == e.Source && e2.Input == e.Input
+            && e2.Target == e.Target));
     }
     
     
@@ -101,6 +128,9 @@ public class DFAChromosomeTests : IDisposable
         State3
     };
 
+   
+    
+    
     public static IEnumerable<object[]> SetsOfTestEdgesForFindAndAssignNonDeterministicEdgesTests =>
         new List<object[]>()
         {
@@ -286,5 +316,79 @@ public class DFAChromosomeTests : IDisposable
                 },
                 new List<DFAState>() {State2, State3}
             }
+        };
+    
+    public static IEnumerable<object[]> SetsOfTestEdgesForFixUnreachabilityCorrectBehaviorTests =>
+        new List<object[]>()
+        {
+            new object[]
+            {
+                new List<DFAEdge>(),
+                new List<DFAEdge>()
+                {
+                    new DFAEdge(1, State1, State2, 'A'),
+                    new DFAEdge(2, State1, State3, 'A')
+                }
+            },
+            new object[]
+            {
+                new List<DFAEdge>()
+                {
+                    new DFAEdge(1, State1, State2, 'C'),
+                },
+                new List<DFAEdge>()
+                {
+                    new DFAEdge(2, State1, State3, 'A')
+                }
+            },
+            new object[]
+            {
+                new List<DFAEdge>()
+                {
+                    new DFAEdge(1, State1, State3, 'C'),
+                    new DFAEdge(2, State1, State1, 'A'),
+                },
+                new List<DFAEdge>()
+                {
+                    new DFAEdge(3, State1, State2, 'A')
+                }
+            },
+            new object[]
+            {
+                new List<DFAEdge>()
+                {
+                    new DFAEdge(1, State2, State3, 'B'),
+                },
+                new List<DFAEdge>()
+                {
+                    new DFAEdge(2, State1, State2, 'A')
+                }
+            },
+            new object[]
+            {
+                new List<DFAEdge>()
+                {
+                    new DFAEdge(1, State3, State2, 'B'),
+                },
+                new List<DFAEdge>()
+                {
+                    new DFAEdge(2, State1, State2, 'A'),
+                    new DFAEdge(3, State1, State3, 'A')
+                }
+            },
+            new object[]
+            {
+                new List<DFAEdge>()
+                {
+                    new DFAEdge(1, State2, State3, 'B'),
+                    new DFAEdge(2, State3, State3, 'C'),
+                    new DFAEdge(3, State3, State1, 'A'),
+                    new DFAEdge(4, State3, State2, 'A'),
+                },
+                new List<DFAEdge>()
+                {
+                    new DFAEdge(5, State1, State2, 'A')
+                }
+            },
         };
 }
