@@ -152,6 +152,30 @@ public class DFAPopulationTests
         });
     }
     
+    [Theory]
+    [InlineData(new []{'0'}, 1)]
+    [InlineData(new []{'0', '1'}, 5)]
+    [InlineData(new []{'0', '1', '2'}, 11)]
+    [InlineData(new []{'0', '1', '2', '3'}, 19)]
+    [InlineData(new []{'0', '1', '2', '3', '4'}, 29)]
+    public void InitialIndividualsHasNumberOfEdgesAtMostSquareOfAlphabetSizePlusAlphabetSizeMinusOne(char[] alphabet, int expectedUpperBound)
+    {
+        //Arrange
+        DFAChromosome chromosome = new DFAChromosome();
+        DFAPopulation population = new DFAPopulation(100, 100, chromosome, alphabet.ToList());
+        
+        //Act
+        population.CreateInitialGeneration();
+        
+        //Assert
+        Assert.All(population.Generations[0].Chromosomes, c =>
+        {
+            DFAChromosome dfaChromosome = (DFAChromosome) c;
+            Assert.True(expectedUpperBound >= dfaChromosome.Edges.Count);
+        });
+    }
+    
+    
     [Fact]
     public void InitialIndividualsEdgesHasUniqueID()
     {
