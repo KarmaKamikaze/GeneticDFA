@@ -57,5 +57,3 @@ def test_trace_generation():
 
 #run test trace generation
 test_trace_generation()
-
-
