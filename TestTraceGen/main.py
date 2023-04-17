@@ -14,6 +14,14 @@ def write_traces_to_file(failing_traces:list,passing_traces:list,user_input: str
     elif user_input == "3":
         file_name: str = "brigde-dfa-traces-"+time
     
+def get_input() -> int:
+    while True:
+        try:
+            user_input = int(input("> "))
+            return user_input
+        except ValueError:
+            print("Error in input. Please try again.")
+    
     # Write passing traces
     text_to_write: str = "passing = ["
     for trace in passing_traces:
