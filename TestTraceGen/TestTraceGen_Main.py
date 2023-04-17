@@ -18,7 +18,7 @@ def write_traces_to_file(failing_traces:list,passing_traces:list,user_input: str
     text_to_write: str = "passing = ["
     for trace in passing_traces:
         text_to_write +=(trace+",")
-    text_to_write +=(trace+"]")
+    text_to_write +=(trace+"]\n")
     
     #write failing traces
     text_to_write += "failing = ["
