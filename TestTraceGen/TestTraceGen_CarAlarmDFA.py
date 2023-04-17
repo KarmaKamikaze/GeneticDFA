@@ -3,6 +3,8 @@ import random as rnd
 import re
 import exrex
 
+regex = 'c(l(u|au))*(l(a|o|u|au)|l|o)|(l|c(l(u|au))*lo)(c(o|(u|au)(l(u|au))*lo))*(c(a|(u|au)(l(u|au))*(l(a|o|u|au)|o|l)|u|au|o)|c|u)|(c(l(u|au))*o|(l|c(l(u|au))*lo)(c(o|(u|au)(l(u|au))*lo))*(u|c(u|au)(l(u|au))*o))(c(l(u|au))*o|(l|c(l(u|au))*lo)(c(o|(u|au)(l(u|au))*lo))*(u|c(u|au)(l(u|au))*o))*(c(l(u|au))*(l(a|o|u|au)|l|o)|(l|c(l(u|au))*lo)(c(o|(u|au)(l(u|au))*lo))*(c(a|(u|au)(l(u|au))*(l(a|o|u|au)|o|l)|u|au|o)|c|u)|c|l)|c|l'
+
 def generate_test_traces_for_caralarmDFA():
     ''' writes traces generated to a file '''
     
@@ -44,7 +46,6 @@ def write_traces_to_file(failing_traces:list,passing_traces:list):
 def generate_failing_traces(number_of_failing_traces:int,length:int):
     ''' generates list of failing traces '''
     failing_traces: list = []
-    regex = re.compile("^c(l(u|au))*(l(a|o|u|au)|l|o)|(l|c(l(u|au))*lo)(c(o|(u|au)(l(u|au))*lo))*(c(a|(u|au)(l(u|au))*(l(a|o|u|au)|o|l)|u|au|o)|c|u)|(c(l(u|au))*o|(l|c(l(u|au))*lo)(c(o|(u|au)(l(u|au))*lo))*(u|c(u|au)(l(u|au))*o))(c(l(u|au))*o|(l|c(l(u|au))*lo)(c(o|(u|au)(l(u|au))*lo))*(u|c(u|au)(l(u|au))*o))*(c(l(u|au))*(l(a|o|u|au)|l|o)|(l|c(l(u|au))*lo)(c(o|(u|au)(l(u|au))*lo))*(c(a|(u|au)(l(u|au))*(l(a|o|u|au)|o|l)|u|au|o)|c|u)|c|l)|c|l*$")
     i: int = 0
     #generate input amount of traces
     while len(failing_traces) != int(number_of_failing_traces):
@@ -62,7 +63,6 @@ def generate_passing_traces(number_of_passing_traces:int):
     passing_traces: list = []
     i: int = 0
     #generate input amount of traces
-    regex = 'c(l(u|au))*(l(a|o|u|au)|l|o)|(l|c(l(u|au))*lo)(c(o|(u|au)(l(u|au))*lo))*(c(a|(u|au)(l(u|au))*(l(a|o|u|au)|o|l)|u|au|o)|c|u)|(c(l(u|au))*o|(l|c(l(u|au))*lo)(c(o|(u|au)(l(u|au))*lo))*(u|c(u|au)(l(u|au))*o))(c(l(u|au))*o|(l|c(l(u|au))*lo)(c(o|(u|au)(l(u|au))*lo))*(u|c(u|au)(l(u|au))*o))*(c(l(u|au))*(l(a|o|u|au)|l|o)|(l|c(l(u|au))*lo)(c(o|(u|au)(l(u|au))*lo))*(c(a|(u|au)(l(u|au))*(l(a|o|u|au)|o|l)|u|au|o)|c|u)|c|l)|c|l'
     while len(passing_traces) != int(number_of_passing_traces):
         i= i+1
         trace = exrex.getone(regex, limit=2)
