@@ -6,7 +6,7 @@ public class GraphVisualization
 {
     private readonly DFAChromosome _chromosome;
     private readonly int _generationNumber;
-    private RootGraph _graph;
+    private readonly RootGraph _graph;
 
     public GraphVisualization(DFAChromosome chromosome, int generationNumber)
     {
@@ -22,7 +22,7 @@ public class GraphVisualization
     private RootGraph ConstructGraph()
     {
         // Construct the graph root (this is not a node)
-        RootGraph root = RootGraph.CreateNew($"Gen {_generationNumber}", GraphType.Directed);
+        RootGraph root = RootGraph.CreateNew($"Gen{_generationNumber}", GraphType.Directed);
         // Introduce new input attribute to edges and make the default value empty
         Edge.IntroduceAttribute(root, "Input", "");
 
@@ -48,10 +48,19 @@ public class GraphVisualization
     }
 
     /// <summary>
-    /// Constructs and saves the graph to a file in DOT format.
+    /// Saves the graph to a file in DOT format.
     /// </summary>
     public void SaveToDotFile()
     {
-        _graph.ToDotFile($"./graph.dot");
+        _graph.ToDotFile($"./{_graph.GetName()}.dot");
+    }
+
+    /// <summary>
+    /// Saves a visualization of the graph to a file in SVG format.
+    /// </summary>
+    public void SaveToSvgFile()
+    {
+        _graph.ComputeLayout(); // default is 'dot' layout
+        _graph.ToSvgFile($"./{_graph.GetName()}.svg");
     }
 }
