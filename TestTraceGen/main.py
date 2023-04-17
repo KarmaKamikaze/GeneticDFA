@@ -33,7 +33,7 @@ def write_traces_to_file(failing_traces:list,passing_traces:list,user_input: str
     print(f"The generated traces have been written to file: {file_name}")
 
 def test_trace_generation():
-    print("Which dfa do you wish to generate for? \n type 1, 2 or 3 to select \n 1. Small DFA \n 2. Car Alarm DFA \n 3. Brigde DFA")
+    print("Which DFA do you wish to generate traces for? \nType 1, 2, or 3 to select. \n1. Small DFA.\n2. Car Alarm DFA.\n3. Brigde DFA.")
     user_input: int = input()
     print("How many passing traces should be generated?")
     number_of_passing_traces: int = input()
