@@ -46,8 +46,16 @@ public class DFAPopulation : Population
             chromosome.NextStateID++;
         }
 
-        //The following causes the start state to not always be the first state in the list,
-        //but that property is not upheld anyways due to the state merge mutation operator
+        /*The following causes the start state to not always be the first state in the list,
+        but that property is not upheld anyways due to the state merge mutation operator
+        This approach is faster than the opposite. I.e. first assigning the start state to the first state,
+        and then iterating through the list of states and assigning accept states based on randomness.
+        That would cause possible reiteration.
+        Furthermore, there would be bias towards making the start state an accept state,
+        since the iteration of the states would start with the first element.
+        The actual implementation ensures that there is no bias, and it is also faster than the aforementioned approach,
+        since we do not have possible reiteration.
+        The downside is readability, since the start state is not always the first state.*/
         int startStateIndex = _rnd.GetInt(0, chromosome.States.Count);
         chromosome.StartState = chromosome.States[startStateIndex];
     }
