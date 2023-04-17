@@ -116,6 +116,7 @@ public class DFAGeneticAlgorithm: IGeneticAlgorithm
     
     //Possibly needs proper implementation since it only evaluates fitness on chromosomes without a value assigned?
     //Hinting that the fitness of chromosomes are reset after a mutation or crossover.
+    //Depends on how we are going to adjust fitness after mutation and crossover. Probably best to set it to null.
     private void EvaluateFitness()
     {
         try
@@ -133,6 +134,8 @@ public class DFAGeneticAlgorithm: IGeneticAlgorithm
             TaskExecutor.Stop();
             TaskExecutor.Clear();
         }
+        
+        //Scuffed, but the setter on the Chromosomes list is internal :skull:
         List<IChromosome> tempList = Population.CurrentGeneration.Chromosomes.OrderByDescending<IChromosome, double>((c => c.Fitness.Value)).ToList();
         Population.CurrentGeneration.Chromosomes.Clear();
         foreach (IChromosome chromosome in tempList)
@@ -154,6 +157,4 @@ public class DFAGeneticAlgorithm: IGeneticAlgorithm
             throw new FitnessException(Fitness, "Error executing Fitness.Evaluate for chromosome: {0}".With(ex.Message), ex);
         }
     }
-    
-    
 }
