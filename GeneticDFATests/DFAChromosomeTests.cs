@@ -19,7 +19,7 @@ public class DFAChromosomeTests
         DFAChromosome chromosome = new DFAChromosome(States, edges, State1);
         
         //Act
-        chromosome.FindAndAssignNonDeterministicEdges();
+        DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(chromosome);
 
         //Assert
         Assert.Equal(chromosome.NonDeterministicEdges, expected);
@@ -36,7 +36,7 @@ public class DFAChromosomeTests
         List<DFAEdge> expected = new List<DFAEdge>(edges);
         
         //Act
-        chromosome.FixUnreachability(alphabet);
+        DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(chromosome);
         
         //Assert
         Assert.Equal(expected, chromosome.Edges);
@@ -58,7 +58,7 @@ public class DFAChromosomeTests
         //Act
         foreach (DFAChromosome chromosome in chromosomes)
         {
-            chromosome.FixUnreachability(alphabet);
+            DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(chromosome);
         }
         
         //Assert
@@ -86,7 +86,7 @@ public class DFAChromosomeTests
         //Act
         foreach (DFAChromosome chromosome in chromosomes)
         {
-            chromosome.FixUnreachability(alphabet);
+            DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(chromosome);
         }
         
         //Assert
@@ -107,7 +107,7 @@ public class DFAChromosomeTests
         DFAChromosome chromosome = new DFAChromosome(States, new List<DFAEdge>(edges), State1);
         
         //Act
-        chromosome.FixUnreachability(alphabet);
+        DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(chromosome);
         RandomizationProvider.Current = new FastRandomRandomization();
 
         //Assert

@@ -24,7 +24,7 @@ public class DFAPopulation : Population
                 throw new InvalidOperationException("Adam chromosome's 'CreateNew' method created a null chromosome.");
             InitializeChromosomeStates(chromosome);
             InitializeChromosomeEdges(chromosome);
-            chromosome.FindAndAssignNonDeterministicEdges();
+            DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(chromosome);
             chromosomes.Add(chromosome);
         }
         CreateNewGeneration(chromosomes);
@@ -32,8 +32,8 @@ public class DFAPopulation : Population
 
     private void InitializeChromosomeStates(DFAChromosome chromosome)
     {
-        //Recall that there should be at least 1 accept state
-        //Also note that the max value parameter of GetInt() is not included in the range of possible values
+        //There should be at least 1 accept state
+        //Note that the max value parameter of GetInt() is not included in the range of possible values
         int numberOfAcceptStates = _rnd.GetInt(1, Alphabet.Count+1);
         for (int i = 0; i < numberOfAcceptStates; i++)
         {
@@ -88,7 +88,7 @@ public class DFAPopulation : Population
         }
 
         chromosome.Edges.AddRange(edges);
-        chromosome.FixUnreachability(Alphabet);
+        DFAChromosomeHelper.FixUnreachability(chromosome, Alphabet);
     }
 
 

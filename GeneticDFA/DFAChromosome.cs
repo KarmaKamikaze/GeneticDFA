@@ -6,7 +6,7 @@ public class DFAChromosome : IChromosome
 {
     public List<DFAState> States { get; } = new List<DFAState>();
     public List<DFAEdge> Edges { get; } = new List<DFAEdge>();
-    public List<DFAEdge> NonDeterministicEdges { get; private set; } = new List<DFAEdge>();
+    public List<DFAEdge> NonDeterministicEdges { get; set; } = new List<DFAEdge>();
     public DFAState StartState { get; set; }
     public double? Fitness { get; set; }
     public int Size => States.Count + Edges.Count;
@@ -30,83 +30,6 @@ public class DFAChromosome : IChromosome
     {
         return new DFAChromosome();
     }
-
-    //Does not fit in this class, but the method will be used by both Population class and Crossover class
-    public void FixUnreachability(List<char> alphabet)
-    {
-        while (true)
-        {
-            List<DFAState> reachableStates = FindReachableStates();
-            if (reachableStates.Count == States.Count)
-                break;
-            List<DFAState> unreachableStates = States.Where(s => !reachableStates.Contains(s)).ToList();
-            
-            //Note that we do not check whether the edge we are going to add is unique
-            //(contrast to InitializeChromosomeEdges() in DFAPopulation). This is because we know that if a state is
-            //unreachable, that must mean that no reachable state has an outgoing edge to it.
-            //Thus all edges pointing to unreachable states will be unique.
-            DFAState source = reachableStates[RandomizationProvider.Current.GetInt(0, reachableStates.Count)];
-            char input = alphabet[RandomizationProvider.Current.GetInt(0, alphabet.Count)];
-            DFAState target = unreachableStates[RandomizationProvider.Current.GetInt(0, unreachableStates.Count)];
-            Edges.Add(new DFAEdge(NextEdgeID, source, target, input));
-            NextEdgeID++;
-        }
-    }
-
-    private List<DFAState> FindReachableStates()
-    {
-        List<DFAState> reachableStates = new List<DFAState> {StartState};
-
-        while (true)
-        {
-            List<DFAEdge> edgesFromReachableStates = Edges.Where(e => reachableStates.Contains(e.Source)).ToList();
-            List<DFAState> newReachableStates = States.Where(s => edgesFromReachableStates.Any(e => e.Target == s)).ToList();
-            newReachableStates.RemoveAll(s => reachableStates.Contains(s));
-            if (newReachableStates.Count == 0)
-                break;
-            reachableStates.AddRange(newReachableStates);
-        }
-
-        return reachableStates;
-    }
-    
-    
-    //Does not fit in this class, but the method will be used by both Population class and Mutation class
-    public void FindAndAssignNonDeterministicEdges()
-    {
-        NonDeterministicEdges = new List<DFAEdge>();
-
-        if (Edges.Count < 2)
-            return;
-        
-        //Sort the edges so that non-deterministic edges are grouped.
-        //Example with edges as (Source, Input, Target):
-        //{(A,1,B), (B,0,A), (A,0,B), (A,1,C), (C,0,C), (B,1,C)}->{(A,1,B), (A,1,C), (A,0,B), (B,0,A), (B,1,C), (C,0,C)}
-        Edges.Sort(delegate(DFAEdge edge1, DFAEdge edge2)
-        {
-            int areSourcesEqual = edge1.Source.ID.CompareTo(edge2.Source.ID);
-            return areSourcesEqual == 0 ? edge1.Input.CompareTo(edge2.Input) : areSourcesEqual;
-        });
-
-        //Iterate through the edges and check if each edge has same source and input as a neighbor
-        //Special cases for the first and last edge to avoid indexing out of range,
-        //since they are at the ends of the array and thus only have 1 neighbor
-        if(Edges[0].Source.ID == Edges[1].Source.ID && Edges[0].Input == Edges[1].Input)
-            NonDeterministicEdges.Add(Edges[0]);
-        
-        for (int i = 1; i < Edges.Count-1; i++)
-        {
-            if ((Edges[i].Source.ID == Edges[i + 1].Source.ID && Edges[i].Input == Edges[i + 1].Input) ||
-                (Edges[i].Source.ID == Edges[i - 1].Source.ID && Edges[i].Input == Edges[i - 1].Input))
-            {
-                NonDeterministicEdges.Add(Edges[i]);
-            }
-        }
-
-        if(Edges[^1].Source.ID == Edges[^2].Source.ID && Edges[^1].Input == Edges[^2].Input)
-            NonDeterministicEdges.Add(Edges[^1]);
-    }
-    
     
     public IChromosome Clone()
     {
