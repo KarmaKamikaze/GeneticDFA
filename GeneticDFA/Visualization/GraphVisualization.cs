@@ -24,7 +24,7 @@ public class GraphVisualization
         // Construct the graph root (this is not a node)
         RootGraph root = RootGraph.CreateNew($"Gen{_generationNumber}", GraphType.Directed);
         // Introduce new input attribute to edges and make the default value empty
-        Edge.IntroduceAttribute(root, "Input", "");
+        Edge.IntroduceAttribute(root, "label", "");
 
         // Make each state into a node
         foreach (DFAState state in _chromosome.States)
@@ -41,7 +41,7 @@ public class GraphVisualization
             // An edge name is only unique between two nodes
             Edge? newEdge = root.GetOrAddEdge(source, target, edge.ID.ToString());
             // Set the input attribute
-            newEdge.SetAttribute("Input", edge.Input.ToString());
+            newEdge.SetAttribute("label", edge.Input.ToString());
         }
 
         return root;
