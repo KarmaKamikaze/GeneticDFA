@@ -1,7 +1,7 @@
 from datetime import datetime
-from TestTraceGen_SmallDFA import generate_test_traces_for_smalldfa
-from TestTraceGen_CarAlarmDFA import generate_test_traces_for_caralarmDFA
-from TestTraceGen_BrigdeDFA import generate_test_traces_for_brigdeDFA
+from DFA.small import generate_test_traces_for_smalldfa
+from DFA.car_alarm import generate_test_traces_for_caralarmDFA
+from DFA.brigde import generate_test_traces_for_brigdeDFA
 
 def write_traces_to_file(failing_traces:list,passing_traces:list,user_input: str):
     ''' writes traces generated to a file '''
