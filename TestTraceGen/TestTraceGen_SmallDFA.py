@@ -23,7 +23,7 @@ def write_traces_to_file(failing_traces:list,passing_traces:list):
     ''' writes traces generated to a file '''
     #generate filename
     time = datetime.now().strftime("%Y-%m-%d %H-%M-%S")
-    file_name: str = "smallDFA-traces made: "+time
+    file_name: str = "smallDFA-traces-made"+time
     
     #write passing traces
     text_to_write: str = "Passing: \n"
@@ -44,7 +44,7 @@ def write_traces_to_file(failing_traces:list,passing_traces:list):
 def generate_failing_traces(number_of_failing_traces:int,length:int):
     ''' generates list of failing traces '''
     failing_traces: list = []
-    pattern = re.compile("^0*1(00*1)*1((1|0)0*1(00*1)*1)*$")
+    pattern = re.compile("^c(l(u|au))*(l(a|o|u|au)|l|o)|(l|c(l(u|au))*lo)(c(o|(u|au)(l(u|au))*lo))*(c(a|(u|au)(l(u|au))*(l(a|o|u|au)|o|l)|u|au|o)|c|u)|(c(l(u|au))*o|(l|c(l(u|au))*lo)(c(o|(u|au)(l(u|au))*lo))*(u|c(u|au)(l(u|au))*o))(c(l(u|au))*o|(l|c(l(u|au))*lo)(c(o|(u|au)(l(u|au))*lo))*(u|c(u|au)(l(u|au))*o))*(c(l(u|au))*(l(a|o|u|au)|l|o)|(l|c(l(u|au))*lo)(c(o|(u|au)(l(u|au))*lo))*(c(a|(u|au)(l(u|au))*(l(a|o|u|au)|o|l)|u|au|o)|c|u)|c|l)|c|l$")
     
     #generate input amount of traces
     while len(failing_traces) != int(number_of_failing_traces):
@@ -56,16 +56,13 @@ def generate_failing_traces(number_of_failing_traces:int,length:int):
 def generate_passing_traces(number_of_passing_traces:int, length:int):
     ''' generates list of passing traces '''
     passing_traces: list = []
-    pattern = re.compile("^0*1(00*1)*1((1|0)0*1(00*1)*1)*$")
-    
+    pattern = re.compile("^c(l(u|au))*(l(a|o|u|au)|l|o)|(l|c(l(u|au))*lo)(c(o|(u|au)(l(u|au))*lo))*(c(a|(u|au)(l(u|au))*(l(a|o|u|au)|o|l)|u|au|o)|c|u)|(c(l(u|au))*o|(l|c(l(u|au))*lo)(c(o|(u|au)(l(u|au))*lo))*(u|c(u|au)(l(u|au))*o))(c(l(u|au))*o|(l|c(l(u|au))*lo)(c(o|(u|au)(l(u|au))*lo))*(u|c(u|au)(l(u|au))*o))*(c(l(u|au))*(l(a|o|u|au)|l|o)|(l|c(l(u|au))*lo)(c(o|(u|au)(l(u|au))*lo))*(c(a|(u|au)(l(u|au))*(l(a|o|u|au)|o|l)|u|au|o)|c|u)|c|l)|c|l$")
     #generate input amount of traces
     while len(passing_traces) != int(number_of_passing_traces):
         random_num = ''.join(rnd.choices(['0','1'],k=int(length)))
+        i = i+1
         if re.match(pattern,random_num):
-            passing_traces.append(random_num) 
+            passing_traces.append(random_num)
     return passing_traces
-
-#Run the script
-generate_test_traces_for_smalldfa()
 
 
