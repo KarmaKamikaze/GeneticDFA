@@ -4,8 +4,8 @@ from TestTraceGen_CarAlarmDFA import generate_test_traces_for_caralarmDFA
 from TestTraceGen_BrigdeDFA import generate_test_traces_for_brigdeDFA
 
 def write_traces_to_file(failing_traces:list,passing_traces:list,user_input: str):
-    ''' writes traces generated to a file '''
-    #generate filename
+    ''' Writes traces generated to a file '''
+    # Generate filename
     time = datetime.now().strftime("%Y-%m-%d %H-%M-%S")
     if user_input == "1":
         file_name: str = "small-dfa-traces-"+time
@@ -14,19 +14,19 @@ def write_traces_to_file(failing_traces:list,passing_traces:list,user_input: str
     elif user_input == "3":
         file_name: str = "brigde-dfa-traces-"+time
     
-    #write passing traces
+    # Write passing traces
     text_to_write: str = "passing = ["
     for trace in passing_traces:
         text_to_write +=(trace+",")
     text_to_write +=(trace+"]")
     
-    #write failing traces
+    # Write failing traces
     text_to_write += "failing = ["
     for trace in failing_traces:
         text_to_write += (trace+",")
     text_to_write +=(trace+"]")
 
-    #write to file
+    # Write to file
     f = open(f"{file_name}.txt", "a")
     f.write(text_to_write)
     f.close()
@@ -35,11 +35,11 @@ def write_traces_to_file(failing_traces:list,passing_traces:list,user_input: str
 def test_trace_generation():
     print("Which dfa do you wish to generate for? \n type 1, 2 or 3 to select \n 1. Small DFA \n 2. Car Alarm DFA \n 3. Brigde DFA")
     user_input: int = input()
-    print("how many passing traces should be generated?")
+    print("How many passing traces should be generated?")
     number_of_passing_traces: int = input()
-    print("how many failing traces should be generated?")
+    print("How many failing traces should be generated?")
     number_of_failing_traces: int = input()
-    print("how many char long should it be?")
+    print("How many char long should it be?")
     length_of_trace: int = input()
     
     if user_input == "1":
@@ -52,10 +52,10 @@ def test_trace_generation():
         print("Wrong input")
         test_trace_generation()
     write_traces_to_file(traces[0],traces[1],user_input)
-    print("script will now close, press enter to close")
+    print("Script will now close, press enter to close")
     input()
 
-#run test trace generation
+# Run test trace generation
 test_trace_generation()
 
 
