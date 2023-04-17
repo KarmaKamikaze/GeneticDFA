@@ -7,9 +7,6 @@ public class GraphVisualization
     private readonly DFAChromosome _chromosome;
     private readonly int _generationNumber;
     private RootGraph _graph;
-    private readonly List<Node> _nodes = new();
-    private readonly List<Edge> _edges = new();
-
 
     public GraphVisualization(DFAChromosome chromosome, int generationNumber)
     {
@@ -33,19 +30,18 @@ public class GraphVisualization
         foreach (DFAState state in _chromosome.States)
         {
             // The node names are unique identifiers
-            _nodes.Add(root.GetOrAddNode(state.ID.ToString()));
+            root.GetOrAddNode(state.ID.ToString());
         }
 
         // Add edges between states
         foreach (DFAEdge edge in _chromosome.Edges)
         {
-            Node? source = _nodes.Find(node => node.GetName() == edge.Source.ID.ToString());
-            Node? target = _nodes.Find(node => node.GetName() == edge.Target.ID.ToString());
+            Node? source = root.GetNode(edge.Source.ID.ToString());
+            Node? target = root.GetNode(edge.Target.ID.ToString());
             // An edge name is only unique between two nodes
             Edge? newEdge = root.GetOrAddEdge(source, target, edge.ID.ToString());
             // Set the input attribute
             newEdge.SetAttribute("Input", edge.Input.ToString());
-            _edges.Add(newEdge);
         }
 
         return root;
