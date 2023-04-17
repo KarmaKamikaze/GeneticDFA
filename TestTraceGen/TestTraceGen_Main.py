@@ -15,14 +15,16 @@ def write_traces_to_file(failing_traces:list,passing_traces:list,user_input: str
         file_name: str = "brigde-dfa-traces-"+time
     
     #write passing traces
-    text_to_write: str = "Passing: \n"
+    text_to_write: str = "passing = ["
     for trace in passing_traces:
-        text_to_write +=(trace+"\n")
-
+        text_to_write +=(trace+",")
+    text_to_write +=(trace+"]")
+    
     #write failing traces
-    text_to_write += "Failing: \n"
+    text_to_write += "failing = ["
     for trace in failing_traces:
-        text_to_write += (trace+"\n")
+        text_to_write += (trace+",")
+    text_to_write +=(trace+"]")
 
     #write to file
     f = open(f"{file_name}.txt", "a")
