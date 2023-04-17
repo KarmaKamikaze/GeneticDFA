@@ -18,6 +18,8 @@ class Program
         const int weightNonDeterministicEdges = 1;
         const int weightMissingDeterministicEdges = 1;
         const int weightSize = 1;
+        const double crossoverProbability = 0.5;
+        const double mutationProbability = 0.5;
         
         //Sample traces of SmallDFA
         List<TestTrace> traces = new List<TestTrace>()
@@ -52,11 +54,8 @@ class Program
             new AndTermination(new FitnessStagnationTermination(convergenceGenerationNumber),
                 new FitnessThresholdTermination(fitnessLowerBound)));
 
-        GeneticAlgorithm ga = new GeneticAlgorithm(population, fitness, selection, crossover, mutation)
-        {
-            // Terminate when stopping criterion is met.
-            Termination = stoppingCriterion
-        };
+        DFAGeneticAlgorithm ga = new DFAGeneticAlgorithm(population, fitness, selection, crossover, mutation,
+            stoppingCriterion, crossoverProbability, mutationProbability);
 
         // Output continuous evaluation of each generation.
         ga.GenerationRan += (s, e) =>

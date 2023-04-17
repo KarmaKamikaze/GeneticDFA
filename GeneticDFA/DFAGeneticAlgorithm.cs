@@ -15,26 +15,28 @@ public class DFAGeneticAlgorithm: IGeneticAlgorithm
         IFitness fitness,
         ISelection selection,
         ICrossover crossover,
-        IMutation mutation)
+        IMutation mutation,
+        ITermination termination,
+        double crossoverProbability,
+        double mutationProbability)
     {
-        ExceptionHelper.ThrowIfNull(nameof (population), (object) population);
-        ExceptionHelper.ThrowIfNull(nameof (fitness), (object) fitness);
-        ExceptionHelper.ThrowIfNull(nameof (selection), (object) selection);
-        ExceptionHelper.ThrowIfNull(nameof (crossover), (object) crossover);
-        ExceptionHelper.ThrowIfNull(nameof (mutation), (object) mutation);
-        this.Population = population;
-        this.Fitness = fitness;
-        this.Selection = selection;
-        this.Crossover = crossover;
-        this.Mutation = mutation;
-        this.Reinsertion = (IReinsertion) new ElitistReinsertion();
-        this.Termination = (ITermination) new GenerationNumberTermination(1);
-        this.CrossoverProbability = 0.75f;
-        this.MutationProbability = 0.1f;
-        this.TimeEvolving = TimeSpan.Zero;
-        this.State = GeneticAlgorithmState.NotStarted;
-        this.TaskExecutor = (ITaskExecutor) new LinearTaskExecutor();
-        this.OperatorsStrategy = (IOperatorsStrategy) new DefaultOperatorsStrategy();
+        ExceptionHelper.ThrowIfNull(nameof (population), population);
+        ExceptionHelper.ThrowIfNull(nameof (fitness), fitness);
+        ExceptionHelper.ThrowIfNull(nameof (selection), selection);
+        ExceptionHelper.ThrowIfNull(nameof (crossover), crossover);
+        ExceptionHelper.ThrowIfNull(nameof (mutation), mutation);
+        Population = population;
+        Fitness = fitness;
+        Selection = selection;
+        Crossover = crossover;
+        Mutation = mutation;
+        Reinsertion = new ElitistReinsertion();
+        Termination = termination;
+        CrossoverProbability = crossoverProbability;
+        MutationProbability = mutationProbability;
+        TimeEvolving = TimeSpan.Zero;
+        State = GeneticAlgorithmState.NotStarted;
+        TaskExecutor = new LinearTaskExecutor();
     }
     
     public event EventHandler GenerationRan;
@@ -42,133 +44,137 @@ public class DFAGeneticAlgorithm: IGeneticAlgorithm
     public event EventHandler TerminationReached;
 
     public event EventHandler Stopped;
-    
-    public IPopulation Population { get; private set; }
 
-    public IFitness Fitness { get; private set; }
+    private IPopulation Population { get; }
 
-    public ISelection Selection { get; set; }
+    private IFitness Fitness { get; }
 
-    public ICrossover Crossover { get; set; }
+    private ISelection Selection { get; }
 
-    public float CrossoverProbability { get; set; }
+    private ICrossover Crossover { get; }
 
-    public IMutation Mutation { get; set; }
+    private double CrossoverProbability { get; }
 
-    public float MutationProbability { get; set; }
+    private IMutation Mutation { get; }
 
-    public IReinsertion Reinsertion { get; set; }
+    private double MutationProbability { get; }
 
-    public ITermination Termination { get; set; }
+    private IReinsertion Reinsertion { get; }
 
-    public int GenerationsNumber => this.Population.GenerationsNumber;
+    public ITermination Termination { get; init; }
 
-    public IChromosome BestChromosome => this.Population.BestChromosome;
+    public int GenerationsNumber => Population.GenerationsNumber;
+
+    public IChromosome BestChromosome => Population.BestChromosome;
 
     public TimeSpan TimeEvolving { get; private set; }
 
-    public GeneticAlgorithmState State
+    private GeneticAlgorithmState State
     {
-        get => this.m_state;
-        private set
+        get => m_state;
+        set
         {
-            int num = this.Stopped == null || this.m_state == value ? 0 : (value == GeneticAlgorithmState.Stopped ? 1 : 0);
-            this.m_state = value;
+            int num = m_state == value ? 0 : (value == GeneticAlgorithmState.Stopped ? 1 : 0);
+            m_state = value;
             if (num == 0)
                 return;
-            this.Stopped((object) this, EventArgs.Empty);
+            Stopped(this, EventArgs.Empty);
         }
     }
 
-    public bool IsRunning => this.State == GeneticAlgorithmState.Started || this.State == GeneticAlgorithmState.Resumed;
+    public bool IsRunning => State is GeneticAlgorithmState.Started or GeneticAlgorithmState.Resumed;
 
     public ITaskExecutor TaskExecutor { get; set; }
 
     
     public void Start()
     {
-        lock (this.m_lock)
+        lock (m_lock)
         {
-            this.State = GeneticAlgorithmState.Started;
-            this.m_stopwatch = Stopwatch.StartNew();
-            this.Population.CreateInitialGeneration();
-            this.m_stopwatch.Stop();
-            this.TimeEvolving = this.m_stopwatch.Elapsed;
+            State = GeneticAlgorithmState.Started;
+            m_stopwatch = Stopwatch.StartNew();
+            Population.CreateInitialGeneration();
+            m_stopwatch.Stop();
+            TimeEvolving = m_stopwatch.Elapsed;
         }
-        this.Resume();
+        Resume();
     }
     
     public void Resume()
     {
         try
         {
-            lock (this.m_lock)
-                this.m_stopRequested = false;
-            if (this.Population.GenerationsNumber == 0)
+            lock (m_lock)
+                m_stopRequested = false;
+            if (Population.GenerationsNumber == 0)
                 throw new InvalidOperationException("Attempt to resume a genetic algorithm which was not yet started.");
-            if (this.Population.GenerationsNumber > 1)
+            if (Population.GenerationsNumber > 1)
             {
-                if (this.Termination.HasReached((IGeneticAlgorithm) this))
-                    throw new InvalidOperationException("Attempt to resume a genetic algorithm with a termination ({0}) already reached. Please, specify a new termination or extend the current one.".With((object) this.Termination));
-                this.State = GeneticAlgorithmState.Resumed;
+                if (Termination.HasReached(this))
+                    throw new InvalidOperationException("Attempt to resume a genetic algorithm with a " +
+                                                        "termination ({0}) already reached. " +
+                                                        "Please, specify a new termination or extend the current one."
+                                                            .With(Termination));
+                State = GeneticAlgorithmState.Resumed;
             }
-            if (this.EndCurrentGeneration())
+            if (EndCurrentGeneration())
                 return;
-            while (!this.m_stopRequested)
+            while (!m_stopRequested)
             {
-                this.m_stopwatch.Restart();
-                bool flag = this.EvolveOneGeneration();
-                this.m_stopwatch.Stop();
-                this.TimeEvolving += this.m_stopwatch.Elapsed;
+                m_stopwatch.Restart();
+                bool flag = EvolveOneGeneration();
+                m_stopwatch.Stop();
+                TimeEvolving += m_stopwatch.Elapsed;
                 if (flag)
                     break;
             }
         }
         catch
         {
-            this.State = GeneticAlgorithmState.Stopped;
+            State = GeneticAlgorithmState.Stopped;
             throw;
         }
     }
     
     public void Stop()
     {
-        if (this.Population.GenerationsNumber == 0)
+        if (Population.GenerationsNumber == 0)
             throw new InvalidOperationException("Attempt to stop a genetic algorithm which was not yet started.");
-        lock (this.m_lock)
-            this.m_stopRequested = true;
+        lock (m_lock)
+            m_stopRequested = true;
     }
     
     //Needs proper implementation
     private bool EvolveOneGeneration()
     {
-        IList<IChromosome> parents = this.SelectParents();
-        IList<IChromosome> chromosomeList = this.Cross(parents);
-        this.Mutate(chromosomeList);
-        this.Population.CreateNewGeneration(this.Reinsert(chromosomeList, parents));
-        return this.EndCurrentGeneration();
+        throw new NotImplementedException();
+        
+        /*
+        IList<IChromosome> parents = SelectParents();
+        IList<IChromosome> chromosomeList = Cross(parents);
+        Mutate(chromosomeList);
+        Population.CreateNewGeneration(Reinsert(chromosomeList, parents));
+        return EndCurrentGeneration();*/
     }
     
     
     private bool EndCurrentGeneration()
     {
-        this.EvaluateFitness();
-        this.Population.EndCurrentGeneration();
-        EventHandler generationRan = this.GenerationRan;
-        if (generationRan != null)
-            generationRan((object) this, EventArgs.Empty);
-        if (this.Termination.HasReached((IGeneticAlgorithm) this))
+        EvaluateFitness();
+        Population.EndCurrentGeneration();
+        EventHandler generationRan = GenerationRan;
+        generationRan(this, EventArgs.Empty);
+        if (Termination.HasReached(this))
         {
-            this.State = GeneticAlgorithmState.TerminationReached;
-            EventHandler terminationReached = this.TerminationReached;
-            if (terminationReached != null)
-                terminationReached((object) this, EventArgs.Empty);
+            State = GeneticAlgorithmState.TerminationReached;
+            EventHandler terminationReached = TerminationReached;
+            terminationReached(this, EventArgs.Empty);
             return true;
         }
-        if (this.m_stopRequested)
+        if (m_stopRequested)
         {
-            this.TaskExecutor.Stop();
-            this.State = GeneticAlgorithmState.Stopped;
+            TaskExecutor.Stop();
+            State = GeneticAlgorithmState.Stopped;
         }
         return false;
     }
@@ -178,21 +184,25 @@ public class DFAGeneticAlgorithm: IGeneticAlgorithm
     {
         try
         {
-            List<IChromosome> list = this.Population.CurrentGeneration.Chromosomes.Where<IChromosome>((Func<IChromosome, bool>) (c => !c.Fitness.HasValue)).ToList<IChromosome>();
-            for (int index = 0; index < list.Count; ++index)
+            List<IChromosome> list = Population.CurrentGeneration.Chromosomes.Where<IChromosome>((c => !c.Fitness.HasValue)).ToList();
+            foreach (IChromosome c in list)
             {
-                IChromosome c = list[index];
-                this.TaskExecutor.Add((Action) (() => this.RunEvaluateFitness((object) c)));
+                TaskExecutor.Add((Action) (() => RunEvaluateFitness(c)));
             }
-            if (!this.TaskExecutor.Start())
-                throw new TimeoutException("The fitness evaluation reached the {0} timeout.".With((object) this.TaskExecutor.Timeout));
+            if (!TaskExecutor.Start())
+                throw new TimeoutException("The fitness evaluation reached the {0} timeout.".With(TaskExecutor.Timeout));
         }
         finally
         {
-            this.TaskExecutor.Stop();
-            this.TaskExecutor.Clear();
+            TaskExecutor.Stop();
+            TaskExecutor.Clear();
         }
-        this.Population.CurrentGeneration.Chromosomes = (IList<IChromosome>) this.Population.CurrentGeneration.Chromosomes.OrderByDescending<IChromosome, double>((Func<IChromosome, double>) (c => c.Fitness.Value)).ToList<IChromosome>();
+        List<IChromosome> tempList = Population.CurrentGeneration.Chromosomes.OrderByDescending<IChromosome, double>((c => c.Fitness.Value)).ToList();
+        Population.CurrentGeneration.Chromosomes.Clear();
+        foreach (IChromosome chromosome in tempList)
+        {
+            Population.CurrentGeneration.Chromosomes.Add(chromosome);
+        }
     }
     
     
@@ -201,11 +211,11 @@ public class DFAGeneticAlgorithm: IGeneticAlgorithm
         IChromosome chromosome1 = chromosome as IChromosome;
         try
         {
-            chromosome1.Fitness = new double?(this.Fitness.Evaluate(chromosome1));
+            chromosome1.Fitness = Fitness.Evaluate(chromosome1);
         }
         catch (Exception ex)
         {
-            throw new FitnessException(this.Fitness, "Error executing Fitness.Evaluate for chromosome: {0}".With((object) ex.Message), ex);
+            throw new FitnessException(Fitness, "Error executing Fitness.Evaluate for chromosome: {0}".With(ex.Message), ex);
         }
     }
     
