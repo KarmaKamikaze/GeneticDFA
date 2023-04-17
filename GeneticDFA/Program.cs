@@ -65,7 +65,7 @@ class Program
 
         // Output graph visualizations of the fittest chromosome each generation.
         ga.GenerationRan += (s, e) =>
-            new GraphVisualization((DFAChromosome) ga.BestChromosome, ga.GenerationsNumber).SaveToSvgFile();
+            GraphVisualization.SaveToSvgFile((DFAChromosome) ga.BestChromosome, ga.GenerationsNumber);
 
         // Begin learning.
         Console.WriteLine("GA is learning the DFA...");

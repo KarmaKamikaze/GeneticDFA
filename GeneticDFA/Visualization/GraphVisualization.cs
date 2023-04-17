@@ -2,39 +2,28 @@
 
 namespace GeneticDFA.Visualization;
 
-public class GraphVisualization
+public static class GraphVisualization
 {
-    private readonly DFAChromosome _chromosome;
-    private readonly int _generationNumber;
-    private readonly RootGraph _graph;
-
-    public GraphVisualization(DFAChromosome chromosome, int generationNumber)
-    {
-        _chromosome = chromosome;
-        _generationNumber = generationNumber;
-        _graph = ConstructGraph();
-    }
-
     /// <summary>
     /// Constructs a graph from the given chromosome's states and edges.
     /// </summary>
     /// <returns>A graph root object, containing the constructed graph.</returns>
-    private RootGraph ConstructGraph()
+    private static RootGraph ConstructGraph(DFAChromosome chromosome, int generationNumber)
     {
         // Construct the graph root (this is not a node)
-        RootGraph root = RootGraph.CreateNew($"Gen{_generationNumber}", GraphType.Directed);
+        RootGraph root = RootGraph.CreateNew($"Gen{generationNumber}", GraphType.Directed);
         // Introduce new input attribute to edges and make the default value empty
         Edge.IntroduceAttribute(root, "label", "");
 
         // Make each state into a node
-        foreach (DFAState state in _chromosome.States)
+        foreach (DFAState state in chromosome.States)
         {
             // The node names are unique identifiers
             root.GetOrAddNode(state.ID.ToString());
         }
 
         // Add edges between states
-        foreach (DFAEdge edge in _chromosome.Edges)
+        foreach (DFAEdge edge in chromosome.Edges)
         {
             Node? source = root.GetNode(edge.Source.ID.ToString());
             Node? target = root.GetNode(edge.Target.ID.ToString());
@@ -50,17 +39,19 @@ public class GraphVisualization
     /// <summary>
     /// Saves the graph to a file in DOT format.
     /// </summary>
-    public void SaveToDotFile()
+    public static void SaveToDotFile(DFAChromosome chromosome, int generationNumber)
     {
-        _graph.ToDotFile($"./{_graph.GetName()}.dot");
+        RootGraph graph = ConstructGraph(chromosome, generationNumber);
+        graph.ToDotFile($"./{graph.GetName()}.dot");
     }
 
     /// <summary>
     /// Saves a visualization of the graph to a file in SVG format.
     /// </summary>
-    public void SaveToSvgFile()
+    public static void SaveToSvgFile(DFAChromosome chromosome, int generationNumber)
     {
-        _graph.ComputeLayout(); // default is 'dot' layout
-        _graph.ToSvgFile($"./{_graph.GetName()}.svg");
+        RootGraph graph = ConstructGraph(chromosome, generationNumber);
+        graph.ComputeLayout(); // default is 'dot' layout
+        graph.ToSvgFile($"./{graph.GetName()}.svg");
     }
 }
