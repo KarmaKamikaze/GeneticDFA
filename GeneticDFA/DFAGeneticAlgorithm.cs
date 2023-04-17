@@ -5,9 +5,6 @@ namespace GeneticDFA;
 
 public class DFAGeneticAlgorithm: IGeneticAlgorithm
 {
-    private bool m_stopRequested;
-    private readonly object m_lock = new object();
-    private GeneticAlgorithmState m_state;
     private Stopwatch m_stopwatch;
     
     public DFAGeneticAlgorithm(
@@ -35,15 +32,12 @@ public class DFAGeneticAlgorithm: IGeneticAlgorithm
         CrossoverProbability = crossoverProbability;
         MutationProbability = mutationProbability;
         TimeEvolving = TimeSpan.Zero;
-        State = GeneticAlgorithmState.NotStarted;
         TaskExecutor = new ParallelTaskExecutor();
     }
     
     public event EventHandler GenerationRan;
 
     public event EventHandler TerminationReached;
-
-    public event EventHandler Stopped;
 
     private IPopulation Population { get; }
 
@@ -69,79 +63,29 @@ public class DFAGeneticAlgorithm: IGeneticAlgorithm
 
     public TimeSpan TimeEvolving { get; private set; }
 
-    private GeneticAlgorithmState State
-    {
-        get => m_state;
-        set
-        {
-            int num = m_state == value ? 0 : (value == GeneticAlgorithmState.Stopped ? 1 : 0);
-            m_state = value;
-            if (num == 0)
-                return;
-            Stopped(this, EventArgs.Empty);
-        }
-    }
-
     private ITaskExecutor TaskExecutor { get; }
-
     
     public void Start()
     {
-        lock (m_lock)
-        {
-            State = GeneticAlgorithmState.Started;
-            m_stopwatch = Stopwatch.StartNew();
-            Population.CreateInitialGeneration();
+        m_stopwatch = Stopwatch.StartNew();
+        Population.CreateInitialGeneration();
+        m_stopwatch.Stop();
+        TimeEvolving = m_stopwatch.Elapsed;
+        
+        if (EndCurrentGeneration())
+            return;
+        
+        while (true)
+        { 
+            m_stopwatch.Restart(); 
+            bool flag = EvolveOneGeneration();
             m_stopwatch.Stop();
-            TimeEvolving = m_stopwatch.Elapsed;
-        }
-        Resume();
-    }
-    
-    public void Resume()
-    {
-        try
-        {
-            lock (m_lock)
-                m_stopRequested = false;
-            if (Population.GenerationsNumber == 0)
-                throw new InvalidOperationException("Attempt to resume a genetic algorithm which was not yet started.");
-            if (Population.GenerationsNumber > 1)
-            {
-                if (Termination.HasReached(this))
-                    throw new InvalidOperationException("Attempt to resume a genetic algorithm with a " +
-                                                        "termination ({0}) already reached. " +
-                                                        "Please, specify a new termination or extend the current one."
-                                                            .With(Termination));
-                State = GeneticAlgorithmState.Resumed;
-            }
-            if (EndCurrentGeneration())
-                return;
-            while (!m_stopRequested)
-            {
-                m_stopwatch.Restart();
-                bool flag = EvolveOneGeneration();
-                m_stopwatch.Stop();
-                TimeEvolving += m_stopwatch.Elapsed;
-                if (flag)
-                    break;
-            }
-        }
-        catch
-        {
-            State = GeneticAlgorithmState.Stopped;
-            throw;
+            TimeEvolving += m_stopwatch.Elapsed;
+            if (flag)
+                break;
         }
     }
-    
-    public void Stop()
-    {
-        if (Population.GenerationsNumber == 0)
-            throw new InvalidOperationException("Attempt to stop a genetic algorithm which was not yet started.");
-        lock (m_lock)
-            m_stopRequested = true;
-    }
-    
+
     //Needs proper implementation
     private bool EvolveOneGeneration()
     {
@@ -154,8 +98,7 @@ public class DFAGeneticAlgorithm: IGeneticAlgorithm
         Population.CreateNewGeneration(Reinsert(chromosomeList, parents));
         return EndCurrentGeneration();*/
     }
-    
-    
+
     private bool EndCurrentGeneration()
     {
         EvaluateFitness();
@@ -164,15 +107,9 @@ public class DFAGeneticAlgorithm: IGeneticAlgorithm
         generationRan(this, EventArgs.Empty);
         if (Termination.HasReached(this))
         {
-            State = GeneticAlgorithmState.TerminationReached;
             EventHandler terminationReached = TerminationReached;
             terminationReached(this, EventArgs.Empty);
             return true;
-        }
-        if (m_stopRequested)
-        {
-            TaskExecutor.Stop();
-            State = GeneticAlgorithmState.Stopped;
         }
         return false;
     }
