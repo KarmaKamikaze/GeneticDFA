@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using GeneticSharp;
+﻿using GeneticSharp;
 
 namespace GeneticDFA;
 
@@ -7,8 +6,8 @@ class Program
 {
     static void Main(string[] args)
     {
-        const int minPopulation = 200;
-        const int maxPopulation = 800;
+        const int minPopulation = 1000;
+        const int maxPopulation = 1000;
         const int convergenceGenerationNumber = 100;
         const int maximumGenerationNumber = 1000;
         const int fitnessLowerBound = 100;
@@ -47,7 +46,7 @@ class Program
         // Specific chromosome (gene) function for the DFA learning problem.
         DFAChromosome chromosome = new DFAChromosome();
 
-        Population population = new Population(minPopulation, maxPopulation, chromosome);
+        DFAPopulation population = new DFAPopulation(minPopulation, maxPopulation, chromosome, alphabet);
 
         OrTermination stoppingCriterion = new OrTermination(new GenerationNumberTermination(maximumGenerationNumber),
             new AndTermination(new FitnessStagnationTermination(convergenceGenerationNumber),
@@ -65,12 +64,12 @@ class Program
 
         // Begin learning.
         Console.WriteLine("GA is learning the DFA...");
-        /*ga.Start();
+        ga.Start();
 
         Console.WriteLine();
         Console.WriteLine($"Best solution found has fitness: {ga.BestChromosome.Fitness}");
         Console.WriteLine($"Elapsed time: {ga.TimeEvolving}");
-        Console.ReadKey();*/
+        Console.ReadKey();
     }
     
 }
