@@ -63,7 +63,7 @@ public class DFAFitness : IFitness
         }
         
         //THIS CALL SHOULD BE MOVED TO THE END OF MUTATION AND CROSSOVERS!
-        chromosome.FindAndAssignNonDeterministicEdges();
+        DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(chromosome);
 
         return fitnessScore - WeightNonDeterministicEdges*chromosome.NonDeterministicEdges.Count - 
                WeightMissingDeterministicEdges*NumberOfMissingDeterministicEdges(chromosome) -

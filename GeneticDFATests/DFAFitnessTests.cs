@@ -41,7 +41,7 @@ public class DFAFitnessTests
     {
         //Arrange
         DFAFitness fitness = new DFAFitness(new List<TestTrace>(), new List<char>(), 0, 0, 0, 0, 1, 0, 0);
-        chromosome.FindAndAssignNonDeterministicEdges();
+        DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(chromosome);
         
         //Act 
         double actual = fitness.Evaluate(chromosome);
@@ -72,7 +72,7 @@ public class DFAFitnessTests
     {
         //Arrange
         DFAFitness fitness = new DFAFitness(SampleTraces, alphabet, 1, 1, 1, 1, 1, 1, 1);
-        chromosome.FindAndAssignNonDeterministicEdges();
+        DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(chromosome);
         
         //Act 
         double actual = fitness.Evaluate(chromosome);
