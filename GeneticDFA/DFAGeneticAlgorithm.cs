@@ -36,7 +36,7 @@ public class DFAGeneticAlgorithm: IGeneticAlgorithm
         MutationProbability = mutationProbability;
         TimeEvolving = TimeSpan.Zero;
         State = GeneticAlgorithmState.NotStarted;
-        TaskExecutor = new LinearTaskExecutor();
+        TaskExecutor = new ParallelTaskExecutor();
     }
     
     public event EventHandler GenerationRan;
