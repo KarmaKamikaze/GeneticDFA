@@ -61,7 +61,7 @@ public class DFAGeneticAlgorithm: IGeneticAlgorithm
 
     private IReinsertion Reinsertion { get; }
 
-    public ITermination Termination { get; init; }
+    private ITermination Termination { get; }
 
     public int GenerationsNumber => Population.GenerationsNumber;
 
@@ -82,9 +82,7 @@ public class DFAGeneticAlgorithm: IGeneticAlgorithm
         }
     }
 
-    public bool IsRunning => State is GeneticAlgorithmState.Started or GeneticAlgorithmState.Resumed;
-
-    public ITaskExecutor TaskExecutor { get; set; }
+    private ITaskExecutor TaskExecutor { get; }
 
     
     public void Start()
@@ -179,7 +177,8 @@ public class DFAGeneticAlgorithm: IGeneticAlgorithm
         return false;
     }
     
-    //Possibly needs proper implementation
+    //Possibly needs proper implementation since it only evaluates fitness on chromosomes without a value assigned?
+    //Hinting that the fitness of chromosomes are reset after a mutation or crossover.
     private void EvaluateFitness()
     {
         try
@@ -205,7 +204,7 @@ public class DFAGeneticAlgorithm: IGeneticAlgorithm
         }
     }
     
-    
+    //Could be changed to just take a IChromosome, but for some reason original implementation is this. Maybe for efficiency?
     private void RunEvaluateFitness(object chromosome)
     {
         IChromosome chromosome1 = chromosome as IChromosome;
