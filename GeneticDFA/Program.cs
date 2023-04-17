@@ -1,4 +1,5 @@
-﻿using GeneticSharp;
+using GeneticDFA.Visualization;
+using GeneticSharp;
 
 namespace GeneticDFA;
 
@@ -18,7 +19,7 @@ class Program
         const int weightNonDeterministicEdges = 1;
         const int weightMissingDeterministicEdges = 1;
         const int weightSize = 1;
-        
+
         //Sample traces of SmallDFA
         List<TestTrace> traces = new List<TestTrace>()
         {
@@ -33,14 +34,14 @@ class Program
             new TestTrace("1010", false),
             new TestTrace("00000000000111", false),
         };
-        List<char> alphabet = new List<char>() {'1', '0'};
-        
+        List<char> alphabet = new List<char>() { '1', '0' };
+
         EliteSelection selection = new EliteSelection();
         UniformCrossover crossover = new UniformCrossover();
         UniformMutation mutation = new UniformMutation(true);
 
         // Specific fitness function for the DFA learning problem.
-        DFAFitness fitness = new DFAFitness(traces, alphabet, weightTruePositive, weightTrueNegative, 
+        DFAFitness fitness = new DFAFitness(traces, alphabet, weightTruePositive, weightTrueNegative,
             weightFalsePositive, weightFalseNegative, weightNonDeterministicEdges, weightMissingDeterministicEdges,
             weightSize);
         // Specific chromosome (gene) function for the DFA learning problem.
@@ -62,6 +63,10 @@ class Program
         ga.GenerationRan += (s, e) =>
             Console.WriteLine($"Generation {ga.GenerationsNumber}. Best fitness: {ga.BestChromosome.Fitness!.Value}");
 
+        // Output graph visualizations of the fittest chromosome each generation.
+        ga.GenerationRan += (s, e) =>
+            GraphVisualization.SaveToSvgFile((DFAChromosome) ga.BestChromosome, ga.GenerationsNumber);
+
         // Begin learning.
         Console.WriteLine("GA is learning the DFA...");
         ga.Start();
@@ -71,5 +76,4 @@ class Program
         Console.WriteLine($"Elapsed time: {ga.TimeEvolving}");
         Console.ReadKey();
     }
-    
 }
