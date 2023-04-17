@@ -30,7 +30,7 @@ def write_traces_to_file(failing_traces:list,passing_traces:list,user_input: str
     f = open(f"{file_name}.txt", "a")
     f.write(text_to_write)
     f.close()
-    print(f"The traces generated have been written to file:{file_name}")
+    print(f"The generated traces have been written to file: {file_name}")
 
 def test_trace_generation():
     print("Which dfa do you wish to generate for? \n type 1, 2 or 3 to select \n 1. Small DFA \n 2. Car Alarm DFA \n 3. Brigde DFA")
