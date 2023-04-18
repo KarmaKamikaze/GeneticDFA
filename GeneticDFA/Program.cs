@@ -12,6 +12,7 @@ class Program
         const int convergenceGenerationNumber = 100;
         const int maximumGenerationNumber = 1000;
         const int fitnessLowerBound = 100;
+        const int numberOfFittestIndividualsAcrossAllGenerations = 50;
         const int weightTruePositive = 1;
         const int weightTrueNegative = 1;
         const int weightFalsePositive = 1;
@@ -38,7 +39,7 @@ class Program
         };
         List<char> alphabet = new List<char>() { '1', '0' };
 
-        EliteSelection selection = new EliteSelection();
+        EliteSelection selection = new EliteSelection(numberOfFittestIndividualsAcrossAllGenerations);
         UniformCrossover crossover = new UniformCrossover();
         UniformMutation mutation = new UniformMutation(true);
 

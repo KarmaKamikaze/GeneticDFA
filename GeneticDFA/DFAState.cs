@@ -10,4 +10,9 @@ public class DFAState
 
     public int Id { get; }
     public bool IsAccept { get; set; }
+
+    public DFAState Clone()
+    {
+        return new DFAState(Id, IsAccept);
+    }
 }
