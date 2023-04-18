@@ -4,10 +4,10 @@ public class DFAState
 {
     public DFAState(int id, bool isAccept)
     {
-        ID = id;
+        Id = id;
         IsAccept = isAccept;
     }
 
-    public int ID { get; }
+    public int Id { get; }
     public bool IsAccept { get; set; }
 }
