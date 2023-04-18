@@ -1,4 +1,3 @@
-from datetime import datetime
 import random as rnd
 import re
 import exrex
@@ -28,7 +27,7 @@ def generate_failing_traces(number_of_failing_traces: int, length: int):
     # Generate amount of input traces
     while len(failing_traces) != number_of_failing_traces:
         i = i + 1
-        trace = ''.join(rnd.choices(["A", "B", "C", "X", "Y", "Z"], k=length))
+        trace = ''.join(rnd.choices(["A", "B", "C", "X", "Y", "Z"], k = rnd.randint(0, length)))
         if not re.match(regex, trace):
             if trace not in failing_traces:
                 failing_traces.append(trace)

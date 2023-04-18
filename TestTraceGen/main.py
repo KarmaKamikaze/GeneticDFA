@@ -60,10 +60,10 @@ def test_trace_generation():
 
     if user_input == 1:
         traces = generate_test_traces_for_smalldfa(number_of_failing_traces,
-                                                   number_of_passing_traces, length_of_trace)
+                                                    number_of_passing_traces, length_of_trace)
     elif user_input == 2:
         traces = generate_test_traces_for_caralarmDFA(number_of_failing_traces,
-                                                      number_of_passing_traces, length_of_trace)
+                                                    number_of_passing_traces, length_of_trace)
     elif user_input == 3:
         traces = generate_test_traces_for_brigdeDFA(number_of_failing_traces,
                                                     number_of_passing_traces, length_of_trace)
