@@ -4,8 +4,8 @@ namespace GeneticDFA;
 
 public class DFAFitness : IFitness
 {
-    public DFAFitness(List<TestTrace> traces, List<char> alphabet, double weightTruePositive, 
-        double weightTrueNegative, double weightFalsePositive, double weightFalseNegative, 
+    public DFAFitness(List<TestTrace> traces, List<char> alphabet, double weightTruePositive,
+        double weightTrueNegative, double weightFalsePositive, double weightFalseNegative,
         double weightNonDeterministicEdges, double weightMissingDeterministicEdges, double weightSize)
     {
         Traces = traces;
@@ -28,7 +28,7 @@ public class DFAFitness : IFitness
     private double WeightNonDeterministicEdges { get; }
     private double WeightMissingDeterministicEdges { get; }
     private double WeightSize { get; }
-    
+
     private enum Verdict
     {
         TruePositive,
@@ -41,7 +41,7 @@ public class DFAFitness : IFitness
     {
         DFAChromosome chromosome = (DFAChromosome) paramChromosome;
         double fitnessScore = 0;
-        
+
         foreach (TestTrace trace in Traces)
         {
             Verdict verdict = CheckTrace(chromosome, trace);
@@ -61,18 +61,18 @@ public class DFAFitness : IFitness
                     break;
             }
         }
-        
-        //THIS CALL SHOULD BE MOVED TO THE END OF MUTATION AND CROSSOVERS!
+
+        // THIS CALL SHOULD BE MOVED TO THE END OF MUTATION AND CROSSOVERS!
         DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(chromosome);
 
-        return fitnessScore - WeightNonDeterministicEdges*chromosome.NonDeterministicEdges.Count - 
-               WeightMissingDeterministicEdges*NumberOfMissingDeterministicEdges(chromosome) -
-               WeightSize*chromosome.Size;
+        return fitnessScore - WeightNonDeterministicEdges * chromosome.NonDeterministicEdges.Count -
+               WeightMissingDeterministicEdges * NumberOfMissingDeterministicEdges(chromosome) -
+               WeightSize * chromosome.Size;
     }
 
     private Verdict CheckTrace(DFAChromosome chromosome, TestTrace testTrace)
     {
-        DFAState startState = chromosome.StartState;
+        DFAState startState = chromosome.StartState!;
         bool isTraceAccepted = ExploreState(chromosome, startState, testTrace.Trace);
 
         switch (isTraceAccepted)
@@ -95,39 +95,39 @@ public class DFAFitness : IFitness
             return state.IsAccept;
         }
 
-        //Assuming inputs are chars
+        // Assuming inputs are chars
         char nextInput = traceString[0];
         string remainingTrace = traceString[1..];
         foreach (DFAEdge edge in chromosome.Edges)
         {
-            if (edge.Source.ID == state.ID && edge.Input == nextInput)
+            if (edge.Source.Id == state.Id && edge.Input == nextInput)
             {
                 if (ExploreState(chromosome, edge.Target, remainingTrace))
                     return true;
-            }    
+            }
         }
 
         return false;
     }
-    
+
     private int NumberOfMissingDeterministicEdges(DFAChromosome chromosome)
     {
         int missingDeterministicEdgesCounter = 0;
         int missingDeterministicEdgesForState = Alphabet.Count;
-        
+
         foreach (DFAState state in chromosome.States)
         {
-            List<DFAEdge> edgesWithCurrentStateAsSource = chromosome.Edges.Where(e => e.Source.ID == state.ID).ToList();
+            List<DFAEdge> edgesWithCurrentStateAsSource = chromosome.Edges.Where(e => e.Source.Id == state.Id).ToList();
             foreach (char symbol in Alphabet)
             {
                 if (edgesWithCurrentStateAsSource.Any(e => e.Input == symbol))
                     missingDeterministicEdgesForState -= 1;
             }
-            
+
             missingDeterministicEdgesCounter += missingDeterministicEdgesForState;
             missingDeterministicEdgesForState = Alphabet.Count;
         }
-        
+
         return missingDeterministicEdgesCounter;
     }
 }

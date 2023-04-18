@@ -10,5 +10,4 @@ public class TestTrace
 
     public string Trace { get; }
     public bool IsAccepting { get; }
-    
 }

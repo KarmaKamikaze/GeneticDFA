@@ -19,16 +19,16 @@ public static class GraphVisualization
         foreach (DFAState state in chromosome.States)
         {
             // The node names are unique identifiers
-            root.GetOrAddNode(state.ID.ToString());
+            root.GetOrAddNode(state.Id.ToString());
         }
 
         // Add edges between states
         foreach (DFAEdge edge in chromosome.Edges)
         {
-            Node? source = root.GetNode(edge.Source.ID.ToString());
-            Node? target = root.GetNode(edge.Target.ID.ToString());
+            Node? source = root.GetNode(edge.Source.Id.ToString());
+            Node? target = root.GetNode(edge.Target.Id.ToString());
             // An edge name is only unique between two nodes
-            Edge? newEdge = root.GetOrAddEdge(source, target, edge.ID.ToString());
+            Edge? newEdge = root.GetOrAddEdge(source, target, edge.Id.ToString());
             // Set the input attribute
             newEdge.SetAttribute("label", edge.Input.ToString());
         }

@@ -7,11 +7,11 @@ public class DFAChromosome : IChromosome
     public List<DFAState> States { get; } = new List<DFAState>();
     public List<DFAEdge> Edges { get; } = new List<DFAEdge>();
     public List<DFAEdge> NonDeterministicEdges { get; set; } = new List<DFAEdge>();
-    public DFAState StartState { get; set; }
+    public DFAState? StartState { get; set; }
     public double? Fitness { get; set; }
     public int Size => States.Count + Edges.Count;
-    public int NextStateID { get; set; } = 0;
-    public int NextEdgeID { get; set; } = 0;
+    public int NextStateId { get; set; } = 0;
+    public int NextEdgeId { get; set; } = 0;
 
     public DFAChromosome(List<DFAState> states, List<DFAEdge> edges, DFAState startState)
     {
@@ -22,7 +22,6 @@ public class DFAChromosome : IChromosome
 
     public DFAChromosome()
     {
-        
     }
 
 
@@ -30,11 +29,11 @@ public class DFAChromosome : IChromosome
     {
         return new DFAChromosome();
     }
-    
+
     public IChromosome Clone()
     {
         IChromosome chromosome = CreateNew();
-        //Implement copying of states and edges and stuff. 
+        //Implement copying of states and edges and stuff.
         chromosome.Fitness = Fitness;
         return chromosome;
     }
@@ -50,15 +49,17 @@ public class DFAChromosome : IChromosome
             return 0;
         double? fitness2 = this.Fitness;
         nullable1 = fitness1;
-        return !(fitness2.GetValueOrDefault() > nullable1.GetValueOrDefault() & fitness2.HasValue & nullable1.HasValue) ? -1 : 1;
+        return !(fitness2.GetValueOrDefault() > nullable1.GetValueOrDefault() & fitness2.HasValue & nullable1.HasValue)
+            ? -1
+            : 1;
     }
-    
-    
-    //Code below here will not be used and is simply here to satisfy the interface.
-    //Other classes dependent on these properties and methods are going to be rewritten.
-    
+
+
+    // Code below here will not be used and is simply here to satisfy the interface.
+    // Other classes dependent on these properties and methods are going to be rewritten.
+
     public int Length { get; }
-    
+
     public Gene GenerateGene(int geneIndex)
     {
         throw new NotImplementedException("// TODO: Generate a gene base on DFAChromosome representation.");
@@ -88,5 +89,4 @@ public class DFAChromosome : IChromosome
     {
         throw new NotImplementedException();
     }
-    
 }
