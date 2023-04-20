@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using GeneticDFA;
+using GeneticSharp;
 using Xunit;
 
 namespace GeneticDFATests;
@@ -17,7 +18,7 @@ public class DFAPopulationTests
         // Arrange
         DFAChromosome chromosome = new DFAChromosome();
         List<char> alphabet = new List<char>() { '0', '1' };
-        DFAPopulation population = new DFAPopulation(minSize, maxSize, chromosome, alphabet);
+        DFAPopulation population = new DFAPopulation(minSize, maxSize, chromosome, alphabet, new PerformanceGenerationStrategy());
 
         // Act
         population.CreateInitialGeneration();
@@ -36,7 +37,7 @@ public class DFAPopulationTests
     {
         // Arrange
         DFAChromosome chromosome = new DFAChromosome();
-        DFAPopulation population = new DFAPopulation(100, 100, chromosome, alphabet.ToList());
+        DFAPopulation population = new DFAPopulation(100, 100, chromosome, alphabet.ToList(), new PerformanceGenerationStrategy());
 
         // Act
         population.CreateInitialGeneration();
@@ -55,7 +56,7 @@ public class DFAPopulationTests
         // Arrange
         DFAChromosome chromosome = new DFAChromosome();
         List<char> alphabet = new List<char>() { '0', '1', '2', '3' };
-        DFAPopulation population = new DFAPopulation(100, 100, chromosome, alphabet);
+        DFAPopulation population = new DFAPopulation(100, 100, chromosome, alphabet, new PerformanceGenerationStrategy());
 
         // Act
         population.CreateInitialGeneration();
@@ -78,7 +79,7 @@ public class DFAPopulationTests
     {
         // Arrange
         DFAChromosome chromosome = new DFAChromosome();
-        DFAPopulation population = new DFAPopulation(100, 100, chromosome, alphabet.ToList());
+        DFAPopulation population = new DFAPopulation(100, 100, chromosome, alphabet.ToList(), new PerformanceGenerationStrategy());
 
         // Act
         population.CreateInitialGeneration();
@@ -97,7 +98,7 @@ public class DFAPopulationTests
         // Arrange
         DFAChromosome chromosome = new DFAChromosome();
         List<char> alphabet = new List<char>() { '0', '1', '2' };
-        DFAPopulation population = new DFAPopulation(100, 100, chromosome, alphabet);
+        DFAPopulation population = new DFAPopulation(100, 100, chromosome, alphabet, new PerformanceGenerationStrategy());
 
         // Act
         population.CreateInitialGeneration();
@@ -116,7 +117,7 @@ public class DFAPopulationTests
         // Arrange
         DFAChromosome chromosome = new DFAChromosome();
         List<char> alphabet = new List<char>() { '0', '1', '2' };
-        DFAPopulation population = new DFAPopulation(100, 100, chromosome, alphabet);
+        DFAPopulation population = new DFAPopulation(100, 100, chromosome, alphabet, new PerformanceGenerationStrategy());
 
         // Act
         population.CreateInitialGeneration();
@@ -139,7 +140,7 @@ public class DFAPopulationTests
     {
         // Arrange
         DFAChromosome chromosome = new DFAChromosome();
-        DFAPopulation population = new DFAPopulation(100, 100, chromosome, alphabet.ToList());
+        DFAPopulation population = new DFAPopulation(100, 100, chromosome, alphabet.ToList(), new PerformanceGenerationStrategy());
 
         // Act
         population.CreateInitialGeneration();
@@ -163,7 +164,7 @@ public class DFAPopulationTests
     {
         // Arrange
         DFAChromosome chromosome = new DFAChromosome();
-        DFAPopulation population = new DFAPopulation(100, 100, chromosome, alphabet.ToList());
+        DFAPopulation population = new DFAPopulation(100, 100, chromosome, alphabet.ToList(), new PerformanceGenerationStrategy());
 
         // Act
         population.CreateInitialGeneration();
@@ -183,7 +184,7 @@ public class DFAPopulationTests
         // Arrange
         DFAChromosome chromosome = new DFAChromosome();
         List<char> alphabet = new List<char>() { '0', '1', '2', '3' };
-        DFAPopulation population = new DFAPopulation(100, 100, chromosome, alphabet);
+        DFAPopulation population = new DFAPopulation(100, 100, chromosome, alphabet, new PerformanceGenerationStrategy());
 
         // Act
         population.CreateInitialGeneration();
@@ -206,7 +207,7 @@ public class DFAPopulationTests
     {
         // Arrange
         DFAChromosome chromosome = new DFAChromosome();
-        DFAPopulation population = new DFAPopulation(100, 100, chromosome, alphabet.ToList());
+        DFAPopulation population = new DFAPopulation(100, 100, chromosome, alphabet.ToList(), new PerformanceGenerationStrategy());
 
         // Act
         population.CreateInitialGeneration();
@@ -225,7 +226,7 @@ public class DFAPopulationTests
         // Arrange
         DFAChromosome chromosome = new DFAChromosome();
         List<char> alphabet = new List<char>() { '0', '1', '2', '3' };
-        DFAPopulation population = new DFAPopulation(100, 100, chromosome, alphabet);
+        DFAPopulation population = new DFAPopulation(100, 100, chromosome, alphabet, new PerformanceGenerationStrategy());
 
         // Act
         population.CreateInitialGeneration();

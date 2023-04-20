@@ -27,6 +27,7 @@ public class DFAPopulation : Population
             InitializeChromosomeStates(chromosome);
             InitializeChromosomeEdges(chromosome);
             DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(chromosome);
+            chromosome.Fitness = null;
             chromosomes.Add(chromosome);
         }
 
@@ -112,4 +113,15 @@ public class DFAPopulation : Population
         Generations.Add(CurrentGeneration);
         GenerationStrategy.RegisterNewGeneration(this);
     }
+
+
+    public override void EndCurrentGeneration()
+    {
+        CurrentGeneration.End(MaxSize);
+        if (BestChromosome != null && BestChromosome.CompareTo(CurrentGeneration.BestChromosome) >= 0)
+            return;
+        BestChromosome = CurrentGeneration.BestChromosome;
+        OnBestChromosomeChanged(EventArgs.Empty);
+    }
+
 }

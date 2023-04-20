@@ -12,6 +12,7 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
         IPopulation population,
         IFitness fitness,
         ISelection selection,
+        int eliteSelectionScalingFactor,
         ICrossover crossover,
         IMutation mutation,
         ITermination termination,
@@ -27,6 +28,7 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
         Population = population;
         Fitness = fitness;
         Selection = selection;
+        EliteSelectionScalingFactor = eliteSelectionScalingFactor;
         Crossover = crossover;
         Mutation = mutation;
         Reinsertion = new ElitistReinsertion();
@@ -47,6 +49,8 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
     private IFitness Fitness { get; }
 
     private ISelection Selection { get; }
+
+    private int EliteSelectionScalingFactor { get; }
 
     private ICrossover Crossover { get; }
 
@@ -106,16 +110,21 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
             {
                 IChromosome clone = selectedForModification[i].Clone();
                 Mutation.Mutate(clone, 0);
+                clone.Fitness = null;
                 newPopulation.Add(clone);
             }
             else
             {
                 // Choose i and i + 1 for crossover - increment i an additional time
+                IChromosome clone = selectedForModification[i].Clone();
+                Mutation.Mutate(clone, 0);
+                clone.Fitness = null;
+                newPopulation.Add(clone);
             }
 
         }
 
-        Population.CreateNewGeneration(Reinsertion.SelectChromosomes(Population, newPopulation, selectedElites));
+        Population.CreateNewGeneration(newPopulation);
         return EndCurrentGeneration();
 
         /*
@@ -133,10 +142,13 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
     /// <returns>The scaling factor.</returns>
     private int SelectionScale()
     {
-        double scale = Population.MaxSize * (GenerationsNumber / (MaxGenerationNumber/2));
+        double scale = (GenerationsNumber / ( (double) MaxGenerationNumber/EliteSelectionScalingFactor));
         if (scale < 1)
-            return Convert.ToInt32(scale);
-        return 1;
+        {
+            return Population.MaxSize * scale > 2 ? Convert.ToInt32(Population.MaxSize * scale) : 3;
+        }
+
+        return Population.MaxSize;
     }
 
     private bool EndCurrentGeneration()

@@ -17,7 +17,8 @@ public class DFAMutation : MutationBase
         _nonDeterministicBehaviorProbability = nonDeterministicBehaviorProbability;
 
         List<double> mutationOperatorProbabilities = new List<double>()
-        {nonDeterministicBehaviorProbability, changeTargetProbability, changeTargetProbability, removeEdgeProbability,
+        { changeTargetProbability, changeSourceProbability, changeInputProbability,
+            removeEdgeProbability,
             addEdgeProbability,
             addStateProbability,
             addAcceptStateProbability,
@@ -27,7 +28,7 @@ public class DFAMutation : MutationBase
         CalculateCumulativePercentMutation(mutationOperatorProbabilities, _mutationOperatorRouletteWheel);
     }
 
-    private int SelectMutationFromWheel(IEnumerable<double> rouletteWheel, Func<double> getPointer)
+    private static int SelectMutationFromWheel(IEnumerable<double> rouletteWheel, Func<double> getPointer)
     {
         double pointer = getPointer();
         var choice = rouletteWheel.Select((value, index) => new
@@ -315,7 +316,7 @@ public class DFAMutation : MutationBase
     private bool AddState(DFAChromosome chromosome)
     {
         // Create new state
-        DFAState newState = new DFAState(++chromosome.NextStateId, false);
+        DFAState newState = new DFAState(chromosome.NextStateId++, false);
         // Connect an exiting (source) state with the new (target) state
         DFAState firstSource = chromosome.States[_rnd.GetInt(0, chromosome.States.Count)];
         chromosome.Edges.Add(new DFAEdge(chromosome.NextEdgeId++, firstSource, newState,
@@ -381,7 +382,7 @@ public class DFAMutation : MutationBase
             return isInputEqual != 0 ? isInputEqual : edge1.Target.Id.CompareTo(edge2.Target.Id);
         });
 
-        for (int i = 0; i < chromosome.Edges.Count; i++)
+        for (int i = 0; i < chromosome.Edges.Count-1; i++)
         {
             if (chromosome.Edges[i].Source.Id == chromosome.Edges[i + 1].Source.Id
                 && chromosome.Edges[i].Input == chromosome.Edges[i + 1].Input
