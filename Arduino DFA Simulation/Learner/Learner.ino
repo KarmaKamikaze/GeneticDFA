@@ -32,8 +32,7 @@ RHReliableDatagram rf69_manager(rf69, MY_ADDRESS);
  */
 // Test traces
 const byte max_number_of_characters_in_one_trace = 30;
-char array_of_traces[/* Max 30 traces */]
-                    [max_number_of_characters_in_one_trace] = {"10010000110","011010"};
+char array_of_traces[/* Max 30 traces */][max_number_of_characters_in_one_trace] = {"0010001001111000100011","01001011","101001100100100011011","0101100011","010111010001011","00100110001001110101011","0100111010010011001000100011","10011","011000101011100100011","11","0100011","0011000100011","0100011000100010011","011111","0011","1000010","01001","010001","101010","0","1001","01","10001010","1","0100","00","10","000","1010","010"};
 const int array_size = sizeof(array_of_traces) / sizeof(array_of_traces[0]);
 bool finished = false;
 
@@ -83,13 +82,14 @@ uint8_t buffer[RH_RF69_MAX_MESSAGE_LEN];
 
 void loop() {
   while (!finished) {
+    delay(5000);
     // Loop over traces
     for (int i = 0; i < array_size; i++) {
       // Loop over char in trace
       for (int j = 0; j <= strlen(array_of_traces[i]); j++) {
         // If at end of a trace, tell blackbox its END
         if (j == strlen(array_of_traces[i])) {
-          uint8_t message[] = "END";
+          uint8_t message[] = "$";
           TransmitMessage(message);
           break;
         } else {
@@ -98,6 +98,8 @@ void loop() {
           TransmitMessage(message);
         }
       }
+      //wait for messagde from blackbox
+      while(!rf69_manager.available()){delay(10);}
 
       // Print result from blackbox
       if (rf69_manager.available()) {
@@ -105,10 +107,13 @@ void loop() {
         uint8_t len = sizeof(buffer);
         uint8_t from;
         if (rf69_manager.recvfromAckTimeout(buffer, &len, TIMEOUT, &from)) {
-          if ((char *)buffer == "Trace Accepted!") {
+          if ((char &)buffer == 'A') {
             Serial.print(strcat(array_of_traces[i], ":SUCCESS"));
-          } else if ((char *)buffer == "Trace Failed!") {
+            Serial.print("\n");
+          } 
+          else if ((char &)buffer == 'F')  {
             Serial.print(strcat(array_of_traces[i], ":FAILED"));
+            Serial.print("\n");
           }
         }
       }

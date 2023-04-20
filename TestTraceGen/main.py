@@ -30,13 +30,13 @@ def write_traces_to_file(failing_traces: list, passing_traces: list, user_input:
     # Write passing traces
     text_to_write: str = "passing = ["
     for trace in passing_traces:
-        text_to_write += (trace + ",")
+        text_to_write += ('"'+trace+'"' + ",")
     text_to_write += ("]\n")
 
     # Write failing traces
     text_to_write += "failing = ["
     for trace in failing_traces:
-        text_to_write += (trace + ",")
+        text_to_write += ('"'+trace+'"' + ",")
     text_to_write += ("]")
 
     # Write to file
