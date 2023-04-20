@@ -390,6 +390,8 @@ public class DFAMutation : MutationBase
                 chromosome.Edges.Remove(chromosome.Edges[i]);
         }
 
+        chromosome.States.Remove(state2);
+        
         return true;
     }
 
