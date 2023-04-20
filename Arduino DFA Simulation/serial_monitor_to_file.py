@@ -1,5 +1,6 @@
 # imports
 import json
+import time
 import serial.tools.list_ports
 from datetime import datetime
 
@@ -12,26 +13,29 @@ received_messages: list = []
 
 
 def save_to_file(traces: list) -> None:
-    file_name = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+    file_name = datetime.now().strftime("%d-%m-%Y-%H-%M-%S")
     traces_dict = {
-        'PASSED': list(),
+        'SUCCESS': list(),
         'FAILED': list()
     }
 
     for message in traces:
         parts = message.split(":")
-        trace, verdict = parts[0], parts[1].upper()
+        print(parts)
+        trace, verdict = parts[0], parts[1]
 
-        if verdict == 'PASSED':
-            traces_dict['PASSED'].append(trace)
+        if verdict == 'SUCCESS':
+            traces_dict['SUCCESS'].append(trace)
         elif verdict == 'FAILED':
             traces_dict['FAILED'].append(trace)
 
         print(message)
 
     # create a new file for the received serial data
-    with open(f'{file_name}.json', "w") as file:
-        json.dump(traces_dict, file, ensure_ascii=False, indent=4)
+    file= open(f'{file_name}.json', "w")
+    
+    json.dump(traces_dict, file, indent=4)
+    file.close()
 
 
 # print a list of active ports to user
@@ -51,16 +55,18 @@ for i in range(0, len(ports)):
 serial_instance.baudrate = baud_rate
 serial_instance.port = active_port
 serial_instance.open()
+time.sleep(2)
 
 while 1:
     # message is read from serial
     arduino_data = serial_instance.readline()
-
+    print(arduino_data.decode().strip())
     # add read message to list
-    received_messages.append(arduino_data.decode().rstrip())
+    if 'STOP' not in str(arduino_data):
+        received_messages.append(arduino_data.decode().strip())
 
     # if we read STOP, we stream all data to file
-    if 'STOP' in str(arduino_data.decode()):
+    if 'STOP' in str(arduino_data):
         save_to_file(received_messages)
 
         print(f'A STOP token has been received. All messages have been written to file.')
@@ -69,3 +75,4 @@ while 1:
 
 # close serial stream when arduino is no longer connected
 serial_instance.close()
+5
