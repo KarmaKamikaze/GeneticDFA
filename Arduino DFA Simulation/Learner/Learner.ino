@@ -33,8 +33,7 @@ RHReliableDatagram rf69_manager(rf69, MY_ADDRESS);
 // Test traces
 const byte max_number_of_characters_in_one_trace = 30;
 char array_of_traces[/* Max 30 traces */]
-                    [max_number_of_characters_in_one_trace] = {"10010000110",
-                                                               "011010"};
+                    [max_number_of_characters_in_one_trace] = {"10010000110","011010"};
 const int array_size = sizeof(array_of_traces) / sizeof(array_of_traces[0]);
 bool finished = false;
 
