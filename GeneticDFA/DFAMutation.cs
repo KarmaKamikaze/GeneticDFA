@@ -6,32 +6,15 @@ public class DFAMutation : MutationBase
 {
     private readonly IRandomization _rnd = RandomizationProvider.Current;
 
-    private double _changeInputProbability;
     private readonly double _nonDeterministicBehaviorProbability;
-    private double _changeTargetProbability;
-    private double _changeSourceProbability;
-    private double _removeEdgeProbability;
-    private double _addEdgeProbability;
-    private double _addStateProbability;
-    private double _addAcceptStateProbability;
-    private double _removeAcceptStateProbability;
-    private double _mergeStatesProbability;
-    private List<double> _mutationOperatorRouletteWheel = new List<double>();
+
+    private readonly List<double> _mutationOperatorRouletteWheel = new List<double>();
     private readonly List<char> _alphabet;
 
     public DFAMutation(List<char> alphabet, double nonDeterministicBehaviorProbability, double changeTargetProbability, double changeSourceProbability, double removeEdgeProbability, double addEdgeProbability, double addStateProbability, double addAcceptStateProbability, double removeAcceptStateProbability, double mergeStatesProbability, double changeInputProbability)
     {
         _alphabet = alphabet;
         _nonDeterministicBehaviorProbability = nonDeterministicBehaviorProbability;
-        _changeTargetProbability = changeTargetProbability;
-        _changeSourceProbability = changeSourceProbability;
-        _removeEdgeProbability = removeEdgeProbability;
-        _addEdgeProbability = addEdgeProbability;
-        _addStateProbability = addStateProbability;
-        _addAcceptStateProbability = addAcceptStateProbability;
-        _removeAcceptStateProbability = removeAcceptStateProbability;
-        _mergeStatesProbability = mergeStatesProbability;
-        _changeInputProbability = changeInputProbability;
 
         List<double> mutationOperatorProbabilities = new List<double>()
         {nonDeterministicBehaviorProbability, changeTargetProbability, changeTargetProbability, removeEdgeProbability,
@@ -42,7 +25,6 @@ public class DFAMutation : MutationBase
             mergeStatesProbability
         };
         CalculateCumulativePercentMutation(mutationOperatorProbabilities, _mutationOperatorRouletteWheel);
-
     }
 
     private int SelectMutationFromWheel(IEnumerable<double> rouletteWheel, Func<double> getPointer)
@@ -72,6 +54,7 @@ public class DFAMutation : MutationBase
 
     protected override void PerformMutate(IChromosome chromosome, float probability)
     {
+        DFAChromosome _chromosome = (DFAChromosome) chromosome;
         bool mutationApplied = false;
         Dictionary<MutationOperator, bool> mutationOperatorTried = new Dictionary<MutationOperator, bool>();
         foreach (MutationOperator op in (MutationOperator[]) Enum.GetValues(typeof(MutationOperator)))
@@ -81,8 +64,6 @@ public class DFAMutation : MutationBase
 
         bool focusOnNonDeterministicBehavior = _rnd.GetDouble(0, 1) < _nonDeterministicBehaviorProbability;
 
-        DFAChromosome clone = (DFAChromosome) chromosome.Clone();
-
         while (!mutationApplied)
         {
             switch((MutationOperator) SelectMutationFromWheel(_mutationOperatorRouletteWheel, () => _rnd.GetDouble()))
@@ -90,77 +71,77 @@ public class DFAMutation : MutationBase
                 case MutationOperator.ChangeInputProbability:
                     if (!mutationOperatorTried[MutationOperator.ChangeInputProbability])
                     {
-                        mutationApplied = EdgeModification(clone, focusOnNonDeterministicBehavior, ChangeInput);
+                        mutationApplied = EdgeModification(_chromosome, focusOnNonDeterministicBehavior, ChangeInput);
                         if (mutationApplied)
-                            DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(clone);
+                            DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(_chromosome);
                         mutationOperatorTried[MutationOperator.ChangeInputProbability] = true;
                     }
                     break;
                 case MutationOperator.ChangeTargetProbability:
                     if (!mutationOperatorTried[MutationOperator.ChangeTargetProbability])
                     {
-                        mutationApplied = EdgeModification(clone, focusOnNonDeterministicBehavior, ChangeTarget);
+                        mutationApplied = EdgeModification(_chromosome, focusOnNonDeterministicBehavior, ChangeTarget);
                         if (mutationApplied)
-                            DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(clone);
+                            DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(_chromosome);
                         mutationOperatorTried[MutationOperator.ChangeTargetProbability] = true;
                     }
                     break;
                 case MutationOperator.ChangeSourceProbability:
                     if (!mutationOperatorTried[MutationOperator.ChangeSourceProbability])
                     {
-                        mutationApplied = EdgeModification(clone, focusOnNonDeterministicBehavior, ChangeSource);
+                        mutationApplied = EdgeModification(_chromosome, focusOnNonDeterministicBehavior, ChangeSource);
                         if (mutationApplied)
-                            DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(clone);
+                            DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(_chromosome);
                         mutationOperatorTried[MutationOperator.ChangeSourceProbability] = true;
                     }
                     break;
                 case MutationOperator.RemoveEdgeProbability:
                     if (!mutationOperatorTried[MutationOperator.RemoveEdgeProbability])
                     {
-                        mutationApplied = RemoveEdge(clone, focusOnNonDeterministicBehavior);
+                        mutationApplied = RemoveEdge(_chromosome, focusOnNonDeterministicBehavior);
                         if (mutationApplied)
-                            DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(clone);
+                            DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(_chromosome);
                         mutationOperatorTried[MutationOperator.RemoveEdgeProbability] = true;
                     }
                     break;
                 case MutationOperator.AddEdgeProbability:
                     if (!mutationOperatorTried[MutationOperator.AddEdgeProbability])
                     {
-                        mutationApplied = AddEdge(clone);
+                        mutationApplied = AddEdge(_chromosome);
                         if (mutationApplied)
-                            DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(clone);
+                            DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(_chromosome);
                         mutationOperatorTried[MutationOperator.AddEdgeProbability] = true;
                     }
                     break;
                 case MutationOperator.AddStateProbability:
                     if (!mutationOperatorTried[MutationOperator.AddStateProbability])
                     {
-                        mutationApplied = AddState(clone);
+                        mutationApplied = AddState(_chromosome);
                         if (mutationApplied)
-                            DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(clone);
+                            DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(_chromosome);
                         mutationOperatorTried[MutationOperator.AddStateProbability] = true;
                     }
                     break;
                 case MutationOperator.AddAcceptStateProbability:
                     if (!mutationOperatorTried[MutationOperator.AddAcceptStateProbability])
                     {
-                        mutationApplied = AddAcceptState(clone);
+                        mutationApplied = AddAcceptState(_chromosome);
                         mutationOperatorTried[MutationOperator.AddAcceptStateProbability] = true;
                     }
                     break;
                 case MutationOperator.RemoveAcceptStateProbability:
                     if (!mutationOperatorTried[MutationOperator.RemoveAcceptStateProbability])
                     {
-                        mutationApplied = RemoveAcceptState(clone);
+                        mutationApplied = RemoveAcceptState(_chromosome);
                         mutationOperatorTried[MutationOperator.RemoveAcceptStateProbability] = true;
                     }
                     break;
                 case MutationOperator.MergeStatesProbability:
                     if (!mutationOperatorTried[MutationOperator.MergeStatesProbability])
                     {
-                        mutationApplied = MergeStates(clone, focusOnNonDeterministicBehavior);
+                        mutationApplied = MergeStates(_chromosome, focusOnNonDeterministicBehavior);
                         if (mutationApplied)
-                            DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(clone);
+                            DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(_chromosome);
                         mutationOperatorTried[MutationOperator.MergeStatesProbability] = true;
                     }
                     break;
@@ -373,27 +354,40 @@ public class DFAMutation : MutationBase
         DFAState state1 = states[_rnd.GetInt(0, states.Count)];
         DFAState state2 = chromosome.States.Where(s => s != state1).ToList()[_rnd.GetInt(0, chromosome.States.Count-1)];
 
-        DFAState mergedState = new DFAState(chromosome.NextStateId++, state1.IsAccept || state2.IsAccept);
-        if (chromosome.StartState == state1 || chromosome.StartState == state2)
-            chromosome.StartState = mergedState;
+        state1.IsAccept = state1.IsAccept || state2.IsAccept;
+        if (chromosome.StartState == state2)
+            chromosome.StartState = state1;
 
-        List<DFAEdge> ingoingEdgesState1 = chromosome.Edges.Where(e => e.Target == state1).ToList();
         List<DFAEdge> ingoingEdgesState2 = chromosome.Edges.Where(e => e.Target == state2).ToList();
 
-        List<DFAEdge> ingoingEdgesState2NoDuplicates = ingoingEdgesState2
-            .Where(e => !ingoingEdgesState1.Any(e2 => e2.Source == e.Source && e2.Input == e.Input)).ToList();
-
-        
-        List<DFAEdge> ingoingEdgesMergedState = new List<DFAEdge>();
-        foreach (DFAEdge edge in ingoingEdgesState1)
+        foreach (DFAEdge edge in ingoingEdgesState2)
         {
-            ingoingEdgesMergedState.Add(new DFAEdge(chromosome.NextEdgeId++, edge.Source, mergedState, edge.Input));
+            edge.Target = state1;
         }
 
-        
-        
+        List<DFAEdge> outgoingEdgesState2 = chromosome.Edges.Where(e => e.Source == state2).ToList();
 
+        foreach (DFAEdge edge in outgoingEdgesState2)
+        {
+            edge.Source = state1;
+        }
 
+        chromosome.Edges.Sort(delegate(DFAEdge edge1, DFAEdge edge2)
+        {
+            int areSourcesEqual = edge1.Source.Id.CompareTo(edge2.Source.Id);
+            if (areSourcesEqual != 0)
+                return areSourcesEqual;
+            int isInputEqual = edge1.Input.CompareTo(edge2.Input);
+            return isInputEqual != 0 ? isInputEqual : edge1.Target.Id.CompareTo(edge2.Target.Id);
+        });
+
+        for (int i = 0; i < chromosome.Edges.Count; i++)
+        {
+            if (chromosome.Edges[i].Source.Id == chromosome.Edges[i + 1].Source.Id
+                && chromosome.Edges[i].Input == chromosome.Edges[i + 1].Input
+                && chromosome.Edges[i].Target.Id == chromosome.Edges[i + 1].Target.Id)
+                chromosome.Edges.Remove(chromosome.Edges[i]);
+        }
 
         return true;
     }

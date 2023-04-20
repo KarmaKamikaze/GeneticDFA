@@ -41,7 +41,7 @@ class Program
 
         EliteSelection selection = new EliteSelection(numberOfFittestIndividualsAcrossAllGenerations);
         UniformCrossover crossover = new UniformCrossover();
-        UniformMutation mutation = new UniformMutation(true);
+        DFAMutation mutation = new DFAMutation();
 
         // Specific fitness function for the DFA learning problem.
         DFAFitness fitness = new DFAFitness(traces, alphabet, weightTruePositive, weightTrueNegative,
@@ -50,14 +50,15 @@ class Program
         // Specific chromosome (gene) function for the DFA learning problem.
         DFAChromosome chromosome = new DFAChromosome();
 
-        DFAPopulation population = new DFAPopulation(minPopulation, maxPopulation, chromosome, alphabet);
+        PerformanceGenerationStrategy generationStrategy = new PerformanceGenerationStrategy(10);
+        DFAPopulation population = new DFAPopulation(minPopulation, maxPopulation, chromosome, alphabet, generationStrategy);
 
         OrTermination stoppingCriterion = new OrTermination(new GenerationNumberTermination(maximumGenerationNumber),
             new AndTermination(new FitnessStagnationTermination(convergenceGenerationNumber),
                 new FitnessThresholdTermination(fitnessLowerBound)));
 
         DFAGeneticAlgorithm ga = new DFAGeneticAlgorithm(population, fitness, selection, crossover, mutation,
-            stoppingCriterion, crossoverProbability, mutationProbability);
+            stoppingCriterion, maximumGenerationNumber, crossoverProbability, mutationProbability);
 
         // Output continuous evaluation of each generation.
         ga.GenerationRan += (s, e) =>

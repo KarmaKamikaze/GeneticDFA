@@ -4,10 +4,11 @@ namespace GeneticDFA;
 
 public class DFAPopulation : Population
 {
-    public DFAPopulation(int minSize, int maxSize, IChromosome adamChromosome, List<char> alphabet) : base(minSize,
+    public DFAPopulation(int minSize, int maxSize, IChromosome adamChromosome, List<char> alphabet, IGenerationStrategy generationStrategy) : base(minSize,
         maxSize, adamChromosome)
     {
         Alphabet = alphabet;
+        GenerationStrategy = generationStrategy;
     }
 
     private List<char> Alphabet { get; }

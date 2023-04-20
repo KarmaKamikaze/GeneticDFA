@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using GeneticSharp;
 
 namespace GeneticDFA;
@@ -14,6 +15,7 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
         ICrossover crossover,
         IMutation mutation,
         ITermination termination,
+        int maxGenerationNumber,
         double crossoverProbability,
         double mutationProbability)
     {
@@ -29,6 +31,7 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
         Mutation = mutation;
         Reinsertion = new ElitistReinsertion();
         Termination = termination;
+        MaxGenerationNumber = maxGenerationNumber;
         CrossoverProbability = crossoverProbability;
         MutationProbability = mutationProbability;
         TimeEvolving = TimeSpan.Zero;
@@ -59,11 +62,15 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
 
     public int GenerationsNumber => Population.GenerationsNumber;
 
+    public int MaxGenerationNumber { get; }
+
     public IChromosome BestChromosome => Population.BestChromosome;
 
     public TimeSpan TimeEvolving { get; private set; }
 
     private ITaskExecutor TaskExecutor { get; }
+
+    private IRandomization _rnd = RandomizationProvider.Current;
 
     public void Start()
     {
@@ -89,7 +96,27 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
     // Needs proper implementation
     private bool EvolveOneGeneration()
     {
-        throw new NotImplementedException();
+        IList<IChromosome> selectedElites =
+            Selection.SelectChromosomes(SelectionScale(), Population.CurrentGeneration);
+        IList<IChromosome> selectedForModification = DFARouletteWheelSelection.SelectChromosomes(Population.MaxSize, selectedElites);
+        IList<IChromosome> newPopulation = new List<IChromosome>();
+        for (int i = 0; i < selectedForModification.Count; i++)
+        {
+            if (_rnd.GetDouble(0, 1) < MutationProbability)
+            {
+                IChromosome clone = selectedForModification[i].Clone();
+                Mutation.Mutate(clone, 0);
+                newPopulation.Add(clone);
+            }
+            else
+            {
+                // Choose i and i + 1 for crossover - increment i an additional time
+            }
+
+        }
+
+        Population.CreateNewGeneration(Reinsertion.SelectChromosomes(Population, newPopulation, selectedElites));
+        return EndCurrentGeneration();
 
         /*
         IList<IChromosome> parents = SelectParents();
@@ -97,6 +124,19 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
         Mutate(chromosomeList);
         Population.CreateNewGeneration(Reinsert(chromosomeList, parents));
         return EndCurrentGeneration(); */
+    }
+
+    /// <summary>
+    /// Calculates a scaling factor, used to determine how many selections must be considered for mutation
+    /// and crossover.
+    /// </summary>
+    /// <returns>The scaling factor.</returns>
+    private int SelectionScale()
+    {
+        double scale = Population.MaxSize * (GenerationsNumber / (MaxGenerationNumber/2));
+        if (scale < 1)
+            return Convert.ToInt32(scale);
+        return 1;
     }
 
     private bool EndCurrentGeneration()
