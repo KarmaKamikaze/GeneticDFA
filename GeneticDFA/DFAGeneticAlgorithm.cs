@@ -6,7 +6,8 @@ namespace GeneticDFA;
 public class DFAGeneticAlgorithm : IGeneticAlgorithm
 {
     private Stopwatch m_stopwatch;
-
+    private readonly object m_lock = new object();
+    
     public DFAGeneticAlgorithm(
         IPopulation population,
         IFitness fitness,
@@ -116,7 +117,10 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
                         IChromosome clone = selectedForModification[i1].Clone();
                         Mutation.Mutate(clone, 0);
                         clone.Fitness = null;
-                        newPopulation.Add(clone);
+                        lock (m_lock)
+                        {
+                            newPopulation.Add(clone);
+                        }
                     }));
                 }
                 else
@@ -127,7 +131,10 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
                         IChromosome clone = selectedForModification[i1].Clone();
                         Mutation.Mutate(clone, 0);
                         clone.Fitness = null;
-                        newPopulation.Add(clone);
+                        lock (m_lock)
+                        {
+                            newPopulation.Add(clone);
+                        }
                     }));
                 }
 
@@ -135,7 +142,7 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
             if (!TaskExecutor.Start())
                 throw new TimeoutException(
                     "The fitness evaluation reached the {0} timeout.".With(TaskExecutor.Timeout));
-        }
+        } 
         finally
         {
             TaskExecutor.Stop();
@@ -144,6 +151,7 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
 
         Population.CreateNewGeneration(newPopulation);
         return EndCurrentGeneration();
+        
     }
 
     /// <summary>
@@ -186,7 +194,7 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
         try
         {
             List<IChromosome> list = Population.CurrentGeneration.Chromosomes
-                .Where<IChromosome>((c => !c.Fitness.HasValue)).ToList();
+                .Where<IChromosome>(c => !c.Fitness.HasValue).ToList();
             foreach (IChromosome c in list)
             {
                 TaskExecutor.Add((Action) (() => RunEvaluateFitness(c)));

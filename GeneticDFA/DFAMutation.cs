@@ -241,7 +241,8 @@ public class DFAMutation : MutationBase
 
     private bool AddEdge(DFAChromosome chromosome)
     {
-        List<DFAState> possibleStates = chromosome.States.Where(s => chromosome.Edges.Count(e => e.Source == s) < chromosome.States.Count*_alphabet.Count).ToList();
+        List<DFAState> reachableStates = DFAChromosomeHelper.FindReachableStates(chromosome);
+        List<DFAState> possibleStates = reachableStates.Where(s => chromosome.Edges.Count(e => e.Source == s) < chromosome.States.Count*_alphabet.Count).ToList();
         if (possibleStates.Count == 0)
             return false;
         DFAState source = possibleStates[_rnd.GetInt(0, possibleStates.Count)];
@@ -288,7 +289,8 @@ public class DFAMutation : MutationBase
         if (chromosome.States.Count == 1)
             return false;
 
-        List<DFAState> nonAcceptStates = chromosome.States.Where(s => s.IsAccept == false).ToList();
+        List<DFAState> reachableStates = DFAChromosomeHelper.FindReachableStates(chromosome);
+        List<DFAState> nonAcceptStates = reachableStates.Where(s => s.IsAccept == false).ToList();
         if (nonAcceptStates.Count == 0)
             return false;
         nonAcceptStates[_rnd.GetInt(0, nonAcceptStates.Count)].IsAccept = true;
@@ -304,7 +306,10 @@ public class DFAMutation : MutationBase
         List<DFAState> acceptStates = chromosome.States.Where(s => s.IsAccept).ToList();
         if(acceptStates.Count == 1)
         {
-            List<DFAState> nonAcceptStates = chromosome.States.Where(s => s.IsAccept == false).ToList();
+            List<DFAState> reachableStates = DFAChromosomeHelper.FindReachableStates(chromosome);
+            List<DFAState> nonAcceptStates = reachableStates.Where(s => s.IsAccept == false).ToList();
+            if (nonAcceptStates.Count == 0)
+                return false;
             nonAcceptStates[_rnd.GetInt(0, nonAcceptStates.Count)].IsAccept = true;
         }
 
@@ -318,7 +323,8 @@ public class DFAMutation : MutationBase
         // Create new state
         DFAState newState = new DFAState(chromosome.NextStateId++, false);
         // Connect an exiting (source) state with the new (target) state
-        DFAState firstSource = chromosome.States[_rnd.GetInt(0, chromosome.States.Count)];
+        List<DFAState> reachableStates = DFAChromosomeHelper.FindReachableStates(chromosome);
+        DFAState firstSource = reachableStates[_rnd.GetInt(0, reachableStates.Count)];
         chromosome.Edges.Add(new DFAEdge(chromosome.NextEdgeId++, firstSource, newState,
             _alphabet[_rnd.GetInt(0, _alphabet.Count)]));
 

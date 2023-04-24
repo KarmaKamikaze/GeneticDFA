@@ -104,7 +104,6 @@ public class DFAPopulation : Population
         DFAChromosomeHelper.FixUnreachability(chromosome, Alphabet);
     }
 
-
     // Copied from source code, but without gene validation, since we do not use the gene properties on chromosomes
     public override void CreateNewGeneration(IList<IChromosome> chromosomes)
     {
