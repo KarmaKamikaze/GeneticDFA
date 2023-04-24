@@ -7,10 +7,9 @@ FSM SmallDFA = FSM(A);
 
 void RunSmallDFA(char input) {
   SmallDFA.update();
-
   switch (input)
   {
-    case 0:
+    case '0':
       if (SmallDFA.isInState(A)) {
         SmallDFA.transitionTo(A);
       }
@@ -22,7 +21,7 @@ void RunSmallDFA(char input) {
       }
       break;
 
-    case 1:
+    case '1':
       if (SmallDFA.isInState(A)) {
         SmallDFA.transitionTo(B);
       }
@@ -36,12 +35,14 @@ void RunSmallDFA(char input) {
 
     case '$':
       if (SmallDFA.isInState(C)) {
-      uint8_t reply[15] = "Trace Accepted!";
+      uint8_t reply[] = "A";
+      TransmitVerdict(reply);
     } else {
       SmallDFA.transitionTo(TRASH);
-      uint8_t reply[13] = "Trace Failed!";
-    }
+      uint8_t reply[] = "F";
       TransmitVerdict(reply);
+    }
+      
       SmallDFA.transitionTo(A);
       SmallDFA.update();
     break;
