@@ -41,7 +41,8 @@ def generate_passing_traces(number_of_passing_traces: int):
         trace = exrex.getone(regex, limit=2)
         if re.match(regex, trace):
             if trace not in passing_traces:
-                passing_traces.append(trace)
+                if len(trace) < 20:
+                    passing_traces.append(trace)
 
     print(f"It took {i} attempts to create {number_of_passing_traces} passing traces.")
     return passing_traces
