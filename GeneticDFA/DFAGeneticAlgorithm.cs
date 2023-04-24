@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using GeneticSharp;
 
 namespace GeneticDFA;
@@ -66,7 +65,7 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
 
     public int GenerationsNumber => Population.GenerationsNumber;
 
-    public int MaxGenerationNumber { get; }
+    private int MaxGenerationNumber { get; }
 
     public IChromosome BestChromosome => Population.BestChromosome;
 
@@ -74,7 +73,7 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
 
     private ITaskExecutor TaskExecutor { get; }
 
-    private IRandomization _rnd = RandomizationProvider.Current;
+    private readonly IRandomization _rnd = RandomizationProvider.Current;
 
     public void Start()
     {
@@ -104,35 +103,47 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
             Selection.SelectChromosomes(SelectionScale(), Population.CurrentGeneration);
         IList<IChromosome> selectedForModification = DFARouletteWheelSelection.SelectChromosomes(Population.MaxSize, selectedElites);
         IList<IChromosome> newPopulation = new List<IChromosome>();
-        for (int i = 0; i < selectedForModification.Count; i++)
-        {
-            if (_rnd.GetDouble(0, 1) < MutationProbability)
-            {
-                IChromosome clone = selectedForModification[i].Clone();
-                Mutation.Mutate(clone, 0);
-                clone.Fitness = null;
-                newPopulation.Add(clone);
-            }
-            else
-            {
-                // Choose i and i + 1 for crossover - increment i an additional time
-                IChromosome clone = selectedForModification[i].Clone();
-                Mutation.Mutate(clone, 0);
-                clone.Fitness = null;
-                newPopulation.Add(clone);
-            }
 
+        try
+        {
+            for (int i = 0; i < selectedForModification.Count; i++)
+            {
+                if (_rnd.GetDouble(0, 1) < MutationProbability)
+                {
+                    int i1 = i;
+                    TaskExecutor.Add((Action) (() =>
+                    {
+                        IChromosome clone = selectedForModification[i1].Clone();
+                        Mutation.Mutate(clone, 0);
+                        clone.Fitness = null;
+                        newPopulation.Add(clone);
+                    }));
+                }
+                else
+                {
+                    int i1 = i;
+                    TaskExecutor.Add((Action) (() =>
+                    {
+                        IChromosome clone = selectedForModification[i1].Clone();
+                        Mutation.Mutate(clone, 0);
+                        clone.Fitness = null;
+                        newPopulation.Add(clone);
+                    }));
+                }
+
+            }
+            if (!TaskExecutor.Start())
+                throw new TimeoutException(
+                    "The fitness evaluation reached the {0} timeout.".With(TaskExecutor.Timeout));
+        }
+        finally
+        {
+            TaskExecutor.Stop();
+            TaskExecutor.Clear();
         }
 
         Population.CreateNewGeneration(newPopulation);
         return EndCurrentGeneration();
-
-        /*
-        IList<IChromosome> parents = SelectParents();
-        IList<IChromosome> chromosomeList = Cross(parents);
-        Mutate(chromosomeList);
-        Population.CreateNewGeneration(Reinsert(chromosomeList, parents));
-        return EndCurrentGeneration(); */
     }
 
     /// <summary>
