@@ -1,0 +1,36 @@
+{
+    "SUCCESS": [
+        "XYAZXBC",
+        "AXBCY",
+        "X",
+        "AXBCABC",
+        "AXBC",
+        "XAB",
+        "AXYZXYZ",
+        "AXYZ",
+        "AB",
+        "ABCAXBCABCAYZB",
+        "XABCYAZ",
+        "XABCYZX",
+        "XYZAXBCAYZB",
+        "A",
+        "AXYZX",
+        "XYZXYZX",
+        "XABCAYZB",
+        "AXYZXB",
+        "ABC",
+        "AX"
+    ],
+    "FAILED": [
+        "ZX",
+        "ZBXXAABY",
+        "CYYBACYBCB",
+        "YYBCBAYYXZX",
+        "CAABZCXXZXXA",
+        "BYBXCBZYCYAB",
+        "Z",
+        "C",
+        "BZYABXXAXAZ",
+        "ZACXAYXCCY"
+    ]
+}

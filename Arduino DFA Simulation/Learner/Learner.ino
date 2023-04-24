@@ -32,7 +32,7 @@ RHReliableDatagram rf69_manager(rf69, MY_ADDRESS);
  */
 // Test traces
 const byte max_number_of_characters_in_one_trace = 30;
-char array_of_traces[/* Max 30 traces */][max_number_of_characters_in_one_trace] = {"01001011","101001100100100011011","0101100011","0100111010010011001000100011","10011","011000101011100100011","11","0100011","0011000100011","0100011000100010011","011111","0011","1000010","01001","010001","101010","0","1001","01","10001010","1","0100","00","10","000","1010","010"};
+char array_of_traces[/* Max 30 traces */][max_number_of_characters_in_one_trace] = {"XYAZXBC","AXBCY","X","AXBCABC","AXBC","XAB","AXYZXYZ","AXYZ","AB","ABCAXBCABCAYZB","XABCYAZ","XABCYZX","XYZAXBCAYZB","A","AXYZX","XYZXYZX","XABCAYZB","AXYZXB","ABC","AX","ZX","ZBXXAABY","CYYBACYBCB","YYBCBAYYXZX","CAABZCXXZXXA","BYBXCBZYCYAB","Z","C","BZYABXXAXAZ","ZACXAYXCCY"};
 const int array_size = sizeof(array_of_traces) / sizeof(array_of_traces[0]);
 bool finished = false;
 
