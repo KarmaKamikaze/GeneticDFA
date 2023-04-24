@@ -76,11 +76,11 @@ void RunCarAlarmDFA(char input) {
       break;
 
     case '$':
-      if (!CarAlarmDFA.isInState(AO) && !CarAlarmDFA.isInState(TRASH)) {
-      uint8_t reply[15] = "Trace Accepted!";
+      if (CarAlarmDFA.isInState(AO) || CarAlarmDFA.isInState(TRASH)) {
+      uint8_t reply[] = "F";
       TransmitVerdict(reply);
       } else {
-      uint8_t reply[13] = "Trace Failed!";
+      uint8_t reply[] = "A";
       TransmitVerdict(reply);
       }
       
@@ -93,4 +93,5 @@ void RunCarAlarmDFA(char input) {
       break;
     
   }
+  CarAlarmDFA.update();
 }

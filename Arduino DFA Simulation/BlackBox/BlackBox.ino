@@ -87,12 +87,14 @@ void loop() {
       Serial.println((char &)buffer);
 
       if ((char &)buffer == '$'){
-      RunSmallDFA('$');
+      //RunSmallDFA('$');
+      //RunCarAlarmDFA('$');
+        RunBridgeDFA('$');
       } else {
       // Call simulation
-      RunSmallDFA((char &)buffer);
-      // RunCarAlarmDFA((char*)buffer);
-      // RunBridgeDFA((char*)buffer);
+      //RunSmallDFA((char &)buffer);
+      //RunCarAlarmDFA((char &)buffer);
+      RunBridgeDFA((char  &)buffer);
       }
     }
   }
