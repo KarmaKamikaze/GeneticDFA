@@ -107,13 +107,11 @@ void loop() {
         uint8_t len = sizeof(buffer);
         uint8_t from;
         if (rf69_manager.recvfromAckTimeout(buffer, &len, TIMEOUT, &from)) {
-          if ((char &)buffer == 'A') {
-            Serial.print(strcat(array_of_traces[i], ":SUCCESS"));
-            Serial.print("\n");
+          if ((char *)buffer == 'A') {
+            Serial.print(strcat(array_of_traces[i], ":SUCCESS\n"));
           } 
-          else if ((char &)buffer == 'F')  {
-            Serial.print(strcat(array_of_traces[i], ":FAILED"));
-            Serial.print("\n");
+          else if ((char *)buffer == 'F')  {
+            Serial.print(strcat(array_of_traces[i], ":FAILED\n"));
           }
         }
       }
