@@ -108,19 +108,16 @@ void loop() {
         uint8_t from;
         if (rf69_manager.recvfromAckTimeout(buffer, &len, TIMEOUT, &from)) {
           if ((char &)buffer == 'A') {
-            Serial.print(strcat(array_of_traces[i], ":SUCCESS"));
-            Serial.print("\n");
+            Serial.print(strcat(array_of_traces[i], ":PASSED\n"));
           } 
           else if ((char &)buffer == 'F')  {
-            Serial.print(strcat(array_of_traces[i], ":FAILED"));
-            Serial.print("\n");
+            Serial.print(strcat(array_of_traces[i], ":FAILED\n"));
           }
         }
       }
     }
     // When no more traces, print "STOP" to stop python monitor
-    Serial.print("STOP");
-    Serial.print("\n");
+    Serial.print("STOP\n");
     finished = true;
   }
   // Once all traces have been tested, indicate that we are finished by blinking
