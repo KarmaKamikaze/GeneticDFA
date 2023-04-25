@@ -86,11 +86,11 @@ void RunBridgeDFA(char input) {
 
       case '$':
         if (BridgeDFA.isInState(BB) || BridgeDFA.isInState(TRASH)) {
-        uint8_t reply[] = "F";
+        uint8_t reply[] = "F"; // Failed
         TransmitVerdict(reply);
         }
         else {
-        uint8_t reply[] = "A";
+        uint8_t reply[] = "A"; // Accept
         TransmitVerdict(reply);
         }
         

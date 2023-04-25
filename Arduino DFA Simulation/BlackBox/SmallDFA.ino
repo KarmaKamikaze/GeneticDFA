@@ -35,11 +35,11 @@ void RunSmallDFA(char input) {
 
     case '$':
       if (SmallDFA.isInState(C)) {
-      uint8_t reply[] = "A";
+      uint8_t reply[] = "A"; // Accept
       TransmitVerdict(reply);
     } else {
       SmallDFA.transitionTo(TRASH);
-      uint8_t reply[] = "F";
+      uint8_t reply[] = "F"; // Failed
       TransmitVerdict(reply);
     }
       
