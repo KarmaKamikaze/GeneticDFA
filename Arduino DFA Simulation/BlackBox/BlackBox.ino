@@ -94,7 +94,7 @@ void loop() {
       // Call simulation
       //RunSmallDFA((char &)buffer);
       //RunCarAlarmDFA((char &)buffer);
-      RunBridgeDFA((char  &)buffer);
+      RunBridgeDFA((char *)*buffer);
       }
     }
   }
@@ -104,8 +104,7 @@ void TransmitVerdict(uint8_t reply[]) {
   Serial.print("Transmitting trace verdict: ");
   Serial.println((char *)reply);
 
-  while((!rf69_manager.sendtoWait(reply, strlen((char *)reply), DEST_ADDRESS))){
-    delay(10);
+  if(!rf69_manager.sendtoWait(reply, strlen((char *)reply), DEST_ADDRESS)){
   Serial.println("sendtoWait failed.");
   }
 
