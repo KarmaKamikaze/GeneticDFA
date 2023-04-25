@@ -15,27 +15,24 @@ received_messages: list = []
 def save_to_file(traces: list) -> None:
     file_name = datetime.now().strftime("%d-%m-%Y-%H-%M-%S")
     traces_dict = {
-        'SUCCESS': list(),
+        'PASSED': list(),
         'FAILED': list()
     }
 
     for message in traces:
         parts = message.split(":")
-        print(parts)
-        trace, verdict = parts[0], parts[1]
+        trace, verdict = parts[0], parts[1].upper()
 
-        if verdict == 'SUCCESS':
-            traces_dict['SUCCESS'].append(trace)
+        if verdict == 'PASSED':
+            traces_dict['PASSED'].append(trace)
         elif verdict == 'FAILED':
             traces_dict['FAILED'].append(trace)
 
         print(message)
 
     # create a new file for the received serial data
-    file= open(f'{file_name}.json', "w")
-    
-    json.dump(traces_dict, file, indent=4)
-    file.close()
+    with open(f'{file_name}.json', "w") as file:
+        json.dump(traces_dict, file, ensure_ascii=False, indent=4)
 
 
 # print a list of active ports to user
@@ -55,12 +52,10 @@ for i in range(0, len(ports)):
 serial_instance.baudrate = baud_rate
 serial_instance.port = active_port
 serial_instance.open()
-time.sleep(2)
 
 while 1:
     # message is read from serial
     arduino_data = serial_instance.readline()
-    print(arduino_data.decode().strip())
     # add read message to list
     if 'STOP' not in str(arduino_data):
         received_messages.append(arduino_data.decode().strip())
