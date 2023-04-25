@@ -89,7 +89,7 @@ void loop() {
       if ((char &)buffer == '$'){
       //RunSmallDFA('$');
       //RunCarAlarmDFA('$');
-        RunBridgeDFA('$');
+      RunBridgeDFA('$');
       } else {
       // Call simulation
       //RunSmallDFA((char &)buffer);
