@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using GeneticDFA;
 using Xunit;
@@ -30,23 +29,6 @@ public class DFAMutationTests
         new object[] { TestDFAs.SmallDFA.Clone(), 5 },
         new object[] { TestDFAs.NFA.Clone(), 7 }
     };
-    /*
-    [Fact]
-    public void RemoveEdgeCorrectBehaviorNoEdges()
-    {
-        //Arrange
-        List<char> alphabet = new List<char>() {'1', '0'};
-        DFAMutation mutation = new DFAMutation(alphabet, 0,0,0,1,0,0,0,0,0,0);
-        List<DFAState> states = new List<DFAState>() {new DFAState(1, true), new DFAState(2, false)};
-        DFAChromosome chromosome = new DFAChromosome(states, new List<DFAEdge>(), states[0]);
-        
-        //Act
-        Exception? exception = Record.Exception(() => mutation.Mutate(chromosome, 0));
-        
-        //Assert
-        Assert.Null(exception);
-    }
-    */
 
     [Theory]
     [MemberData(nameof(AddAcceptStateTestData))]
@@ -100,7 +82,7 @@ public class DFAMutationTests
     };
     
     [Theory]
-    [MemberData(nameof(RemoveAcceptStateMoveAccStateTestData))]
+    [MemberData(nameof(TestDFAsData))]
     public void RemoveAcceptStateMovesAcceptState(DFAChromosome chromosome)
     {
         //Arrange
@@ -115,7 +97,7 @@ public class DFAMutationTests
         Assert.NotEqual(currentAcceptState, chromosome.States.First(s => s.IsAccept));
     }
     
-    public static readonly IEnumerable<object[]> RemoveAcceptStateMoveAccStateTestData = new List<object[]>()
+    public static readonly IEnumerable<object[]> TestDFAsData = new List<object[]>()
     {
         new object[] { TestDFAs.SmallDFA.Clone()},
         new object[] { TestDFAs.NFA.Clone() },
@@ -154,6 +136,43 @@ public class DFAMutationTests
     }
     
     [Fact]
+    public void AddStateAddsNewEdgesAreRelatedToTheNewState()
+    {
+        //Arrange
+        List<char> alphabet = new List<char>() {'1', '0'};
+        DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0);
+        DFAChromosome chromosome = (DFAChromosome) TestDFAs.SmallDFA.Clone();
+        
+        
+        //Act
+        mutation.Mutate(chromosome, 0);
+        
+        //Assert
+        DFAState newState = chromosome.States[3];
+        Assert.True(chromosome.Edges.Count(e => e.Source == newState || e.Target == newState) == 2);
+    }
+    
+    [Theory]
+    [MemberData(nameof(TestDFAsData))]
+    public void AddStateOnlyAddsUniqueEdges(DFAChromosome chromosome)
+    {
+        //Arrange
+        List<char> alphabet = new List<char>() {'1', '0'};
+        DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0);
+        
+        //Act
+        mutation.Mutate(chromosome, 0);
+        
+        //Assert
+        Assert.All(chromosome.Edges, e =>
+        {
+            Assert.Single(chromosome.Edges,
+                e2 => e2.Source == e.Source && e2.Input == e.Input && e2.Target == e.Target);
+        });
+    }
+    
+    
+    [Fact]
     public void AddStateEnsuresReachability()
     {
         //Arrange
@@ -165,8 +184,90 @@ public class DFAMutationTests
         mutation.Mutate(chromosome, 0);
         
         //Assert
-        //Assert.True(expected, chromosome.Edges.Count);
+        DFAState newState = chromosome.States[3];
+        List<DFAState> reachableStates = DFAChromosomeHelper.FindReachableStates(chromosome);
+        Assert.Contains(chromosome.Edges, e => reachableStates.Contains(e.Source) && e.Target == newState);
     }
+
+    [Theory]
+    [MemberData(nameof(AddEdgeExactlyOneTestData))]
+    public void AddEdgeAddsExactlyOneEdge(DFAChromosome chromosome, int expected)
+    {
+        //Arrange
+        List<char> alphabet = new List<char>() {'1', '0'};
+        DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0);
+        
+        //Act
+        mutation.Mutate(chromosome, 0);
+        
+        //Assert
+        Assert.Equal(expected, chromosome.Edges.Count);
+        
+    }
+    
+    public static readonly IEnumerable<object[]> AddEdgeExactlyOneTestData = new List<object[]>()
+    {
+        new object[] { TestDFAs.SmallDFA.Clone(), 7},
+        new object[] { TestDFAs.NFA.Clone(), 9 },
+    };
+    
+    [Theory]
+    [MemberData(nameof(TestDFAsData))]
+    public void AddEdgeOnlyAddsUniqueEdges(DFAChromosome chromosome)
+    {
+        //Arrange
+        List<char> alphabet = new List<char>() {'1', '0'};
+        DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0);
+        
+        //Act
+        mutation.Mutate(chromosome, 0);
+        
+        //Assert
+        Assert.All(chromosome.Edges, e =>
+        {
+            Assert.Single(chromosome.Edges,
+                e2 => e2.Source == e.Source && e2.Input == e.Input && e2.Target == e.Target);
+        });
+    }
+
+    [Theory]
+    [MemberData(nameof(TestDFAsData))]
+    public void ChangeSourceEnsuresUniqueness(DFAChromosome chromosome)
+    {
+        //Arrange
+        List<char> alphabet = new List<char>() {'1', '0'};
+        DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0);
+
+        //Act
+        mutation.Mutate(chromosome, 0);
+
+        //Assert
+        Assert.All(chromosome.Edges, e =>
+        {
+            Assert.Single(chromosome.Edges,
+                e2 => e2.Source == e.Source && e2.Input == e.Input && e2.Target == e.Target);
+        });
+    }
+
+    [Theory]
+    [MemberData(nameof(TestDFAsData))]
+    public void ChangeSourceModifiesOnlyOneEdge(DFAChromosome chromosome)
+    {
+        //Arrange
+        List<char> alphabet = new List<char>() {'1', '0'};
+        DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0);
+        DFAChromosome preMutationChromosome = (DFAChromosome) chromosome.Clone();
+        
+        //Act
+        mutation.Mutate(chromosome, 0);
+        
+        //Assert
+        List<DFAEdge> modifiedEdges = chromosome.Edges
+            .Where(e => preMutationChromosome.Edges.Any(e2 => e2.Id == e.Id && e2.Source.Id != e.Source.Id)).ToList();
+        Assert.Single(modifiedEdges);
+
+    }
+    
     
     
 }

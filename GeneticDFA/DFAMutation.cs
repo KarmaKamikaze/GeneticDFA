@@ -196,7 +196,8 @@ public class DFAMutation : MutationBase
     {
         List<DFAEdge> edgesWithSameTargetAndInput =
             chromosome.Edges.Where(e => e.Input == edge.Input && e.Target == edge.Target).ToList();
-        List<DFAState> possibleSources = chromosome.States.Where(s => edgesWithSameTargetAndInput.All(e => e.Source != s)).ToList();
+        List<DFAState> possibleSources = chromosome.States.Where(s => edgesWithSameTargetAndInput.All(e => e.Source.Id != s.Id)).ToList();
+
         if (possibleSources.Count == 0)
             return false;
         DFAState source = possibleSources[_rnd.GetInt(0, possibleSources.Count)];
@@ -208,7 +209,7 @@ public class DFAMutation : MutationBase
     {
         List<DFAEdge> edgesWithSameSourceAndInput =
             chromosome.Edges.Where(e => e.Source == edge.Source && e.Input == edge.Input).ToList();
-        List<DFAState> possibleTargets = chromosome.States.Where(s => edgesWithSameSourceAndInput.All(e => e.Target != s)).ToList();
+        List<DFAState> possibleTargets = chromosome.States.Where(s => edgesWithSameSourceAndInput.All(e => e.Target.Id != s.Id)).ToList();
         if (possibleTargets.Count == 0)
             return false;
         DFAState target = possibleTargets[_rnd.GetInt(0, possibleTargets.Count)];
