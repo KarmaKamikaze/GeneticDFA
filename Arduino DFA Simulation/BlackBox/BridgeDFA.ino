@@ -11,7 +11,6 @@ State BB = State(InStateAction);
 FSM BridgeDFA = FSM(AA);
 
 void RunBridgeDFA(char input) {
-  bool stringComplete = false;
   BridgeDFA.update();
 
   //Let it be noted that: A = ArriveEast, B = EnterEast, C = LeaveEast, X = ArriveWest, Y = EnterWest and Z = LeaveWest
@@ -86,12 +85,12 @@ void RunBridgeDFA(char input) {
       break;
 
       case '$':
-        if (!BridgeDFA.isInState(BB) && !BridgeDFA.isInState(TRASH)) {
-        uint8_t reply[15] = "Trace Accepted!";
+        if (BridgeDFA.isInState(BB) || BridgeDFA.isInState(TRASH)) {
+        uint8_t reply[] = "F";
         TransmitVerdict(reply);
         }
         else {
-        uint8_t reply[13] = "Trace Failed!";
+        uint8_t reply[] = "A";
         TransmitVerdict(reply);
         }
         
