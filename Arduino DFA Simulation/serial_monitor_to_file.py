@@ -56,11 +56,11 @@ while 1:
     # message is read from serial
     arduino_data = serial_instance.readline()
     # add read message to list
-    if 'STOP' not in str(arduino_data):
+    if 'STOP' not in str(arduino_data.decode()):
         received_messages.append(arduino_data.decode().strip())
 
     # if we read STOP, we stream all data to file
-    if 'STOP' in str(arduino_data):
+    if 'STOP' in str(arduino_data.decode()):
         save_to_file(received_messages)
 
         print(f'A STOP token has been received. All messages have been written to file.')
