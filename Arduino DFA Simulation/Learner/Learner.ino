@@ -82,7 +82,7 @@ uint8_t buffer[RH_RF69_MAX_MESSAGE_LEN];
 
 void loop() {
   while (!finished) {
-    delay(5000);
+    delay(5000); // This delay is here, to ensure the user has time to open the Python script which listens to the serial port.
     // Loop over traces
     for (int i = 0; i < array_size; i++) {
       // Loop over char in trace
@@ -107,10 +107,10 @@ void loop() {
         uint8_t len = sizeof(buffer);
         uint8_t from;
         if (rf69_manager.recvfromAckTimeout(buffer, &len, TIMEOUT, &from)) {
-          if ((char &)buffer == 'A') {
+          if (((char *)buffer)[0] == 'A') {
             Serial.print(strcat(array_of_traces[i], ":PASSED\n"));
           } 
-          else if ((char &)buffer == 'F')  {
+          else if (((char *)buffer)[0] == 'F')  {
             Serial.print(strcat(array_of_traces[i], ":FAILED\n"));
           }
         }
