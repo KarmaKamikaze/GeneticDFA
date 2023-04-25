@@ -17,7 +17,7 @@ public class DFAMutation : MutationBase
         _nonDeterministicBehaviorProbability = nonDeterministicBehaviorProbability;
 
         List<double> mutationOperatorProbabilities = new List<double>()
-        { changeTargetProbability, changeSourceProbability, changeInputProbability,
+        { changeInputProbability, changeTargetProbability, changeSourceProbability,
             removeEdgeProbability,
             addEdgeProbability,
             addStateProbability,
