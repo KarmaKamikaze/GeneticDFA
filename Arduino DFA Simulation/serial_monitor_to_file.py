@@ -69,4 +69,3 @@ while 1:
 
 # close serial stream when arduino is no longer connected
 serial_instance.close()
-5
