@@ -84,7 +84,7 @@ void loop() {
       Serial.print("Received DFA trace from: 0x");
       Serial.print(from, HEX);
       Serial.print(": ");
-      Serial.println((char &)buffer);
+      Serial.println(((char*)buffer)[0]);
 
       if ((char &)buffer == '$'){
       //RunSmallDFA('$');
