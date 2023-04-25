@@ -278,3 +278,6 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# Python
+__pycache__/
