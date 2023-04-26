@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using GeneticDFA;
+using GeneticSharp;
 using Xunit;
 
 namespace GeneticDFATests;
@@ -10,7 +11,7 @@ public class DFAMutationTests
 
     [Theory]
     [MemberData(nameof(RemoveEdgesTestData))]
-    public void RemoveEdgeCorrectBehaviorWithEdges(DFAChromosome chromosome, int expected)
+    public void RemoveEdgeCorrectBehavior(DFAChromosome chromosome, int expected)
     {
         //Arrange
         List<char> alphabet = new List<char>() {'1', '0'};
@@ -19,7 +20,6 @@ public class DFAMutationTests
         //Act
         mutation.Mutate(chromosome, 0);
 
-        
         //Assert
         Assert.Equal(expected, chromosome.Edges.Count);
     }
@@ -103,13 +103,13 @@ public class DFAMutationTests
         new object[] { TestDFAs.NFA.Clone() },
     };
 
-    [Fact]
-    public void AddStateAddsExactlyOneState()
+    [Theory]
+    [MemberData(nameof(TestDFAsData))]
+    public void AddStateAddsExactlyOneState(DFAChromosome chromosome)
     {
         //Arrange
         List<char> alphabet = new List<char>() {'1', '0'};
         DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0);
-        DFAChromosome chromosome = (DFAChromosome) TestDFAs.SmallDFA.Clone();
         int expected = chromosome.States.Count + 1;
         
         //Act
@@ -119,13 +119,13 @@ public class DFAMutationTests
         Assert.Equal(expected, chromosome.States.Count);
     }
     
-    [Fact]
-    public void AddStateAddsExactlyTwoEdges()
+    [Theory]
+    [MemberData(nameof(TestDFAsData))]
+    public void AddStateAddsExactlyTwoEdges(DFAChromosome chromosome)
     {
         //Arrange
         List<char> alphabet = new List<char>() {'1', '0'};
         DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0);
-        DFAChromosome chromosome = (DFAChromosome) TestDFAs.SmallDFA.Clone();
         int expected = chromosome.Edges.Count + 2;
         
         //Act
@@ -135,20 +135,19 @@ public class DFAMutationTests
         Assert.Equal(expected, chromosome.Edges.Count);
     }
     
-    [Fact]
-    public void AddStateAddsNewEdgesAreRelatedToTheNewState()
+    [Theory]
+    [MemberData(nameof(TestDFAsData))]
+    public void AddStateAddsNewEdgesAreRelatedToTheNewState(DFAChromosome chromosome)
     {
         //Arrange
         List<char> alphabet = new List<char>() {'1', '0'};
         DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0);
-        DFAChromosome chromosome = (DFAChromosome) TestDFAs.SmallDFA.Clone();
-        
         
         //Act
         mutation.Mutate(chromosome, 0);
         
         //Assert
-        DFAState newState = chromosome.States[3];
+        DFAState newState = chromosome.States[^1];
         Assert.True(chromosome.Edges.Count(e => e.Source == newState || e.Target == newState) == 2);
     }
     
@@ -172,19 +171,19 @@ public class DFAMutationTests
     }
     
     
-    [Fact]
-    public void AddStateEnsuresReachability()
+    [Theory]
+    [MemberData(nameof(TestDFAsData))]
+    public void AddStateEnsuresReachability(DFAChromosome chromosome)
     {
         //Arrange
         List<char> alphabet = new List<char>() {'1', '0'};
         DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0);
-        DFAChromosome chromosome = (DFAChromosome) TestDFAs.SmallDFA.Clone();
 
         //Act
         mutation.Mutate(chromosome, 0);
         
         //Assert
-        DFAState newState = chromosome.States[3];
+        DFAState newState = chromosome.States[^1];
         List<DFAState> reachableStates = DFAChromosomeHelper.FindReachableStates(chromosome);
         Assert.Contains(chromosome.Edges, e => reachableStates.Contains(e.Source) && e.Target == newState);
     }
@@ -340,5 +339,106 @@ public class DFAMutationTests
             .Where(e => preMutationChromosome.Edges.Any(e2 => e2.Id == e.Id && e2.Input != e.Input)).ToList();
         Assert.Single(modifiedEdges);
     }
+
+    [Theory]
+    [MemberData(nameof(TestDFAsData))]
+    public void MergeStatesRemovesOneState(DFAChromosome chromosome)
+    {
+        //Arrange
+        List<char> alphabet = new List<char>() {'1', '0'};
+        DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0);
+        int expected = chromosome.States.Count-1;
+        
+        //Act
+        mutation.Mutate(chromosome, 0);
+        
+        //Arrange
+        Assert.Equal(expected, chromosome.States.Count);
+    }
+    
+    [Theory]
+    [MemberData(nameof(TestDFAsData))]
+    public void MergeStatesNoEdgesRelatedToTheRemovedState(DFAChromosome chromosome)
+    {
+        //Arrange
+        List<char> alphabet = new List<char>() {'1', '0'};
+        DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0);
+        DFAChromosome preMutationChromosome = (DFAChromosome) chromosome.Clone();
+        
+        //Act
+        mutation.Mutate(chromosome, 0);
+        
+        //Arrange
+        DFAState removedState = preMutationChromosome.States.First(s => !chromosome.States.Contains(s));
+        Assert.Empty(chromosome.Edges.Where(e => e.Source == removedState || e.Target == removedState));
+    }
+    
+    [Theory]
+    [MemberData(nameof(TestDFAsData))]
+    public void MergeStatesEnsuresUniqueness(DFAChromosome chromosome)
+    {
+        //Arrange
+        List<char> alphabet = new List<char>() {'1', '0'};
+        DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0);
+
+        //Act
+        mutation.Mutate(chromosome, 0);
+
+        //Assert
+        Assert.All(chromosome.Edges, e =>
+        {
+            Assert.Single(chromosome.Edges,
+                e2 => e2.Source == e.Source && e2.Input == e.Input && e2.Target == e.Target);
+        });
+    }
+    
+    [Theory]
+    [MemberData(nameof(TestDFAsData))]
+    public void MergeStatesChangesIngoingEdgesCorrectly(DFAChromosome chromosome)
+    {
+        //Arrange
+        List<char> alphabet = new List<char>() {'1', '0'};
+        RandomizationProvider.Current = new TestRandomization();
+        DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0);
+        DFAChromosome preMutationChromosome = (DFAChromosome) chromosome.Clone();
+        
+        //Act
+        mutation.Mutate(chromosome, 0);
+        RandomizationProvider.Current = new FastRandomRandomization();
+        
+        //Assert
+        List<DFAEdge> edgesThatHaveBeenChanged = preMutationChromosome.Edges.Where(e =>
+            e.Target == preMutationChromosome.States[1] && chromosome.Edges.Any(e1 => e1.Id == e.Id)).ToList();
+        Assert.All(edgesThatHaveBeenChanged, e =>
+        {
+            DFAEdge edge = chromosome.Edges.First(e2 => e2.Id == e.Id);
+            Assert.True(edge.Target == chromosome.States[0]);
+        });
+    }
+    
+    [Theory]
+    [MemberData(nameof(TestDFAsData))]
+    public void MergeStatesChangesOutgoingEdgesCorrectly(DFAChromosome chromosome)
+    {
+        //Arrange
+        List<char> alphabet = new List<char>() {'1', '0'};
+        RandomizationProvider.Current = new TestRandomization();
+        DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0);
+        DFAChromosome preMutationChromosome = (DFAChromosome) chromosome.Clone();
+        
+        //Act
+        mutation.Mutate(chromosome, 0);
+        RandomizationProvider.Current = new FastRandomRandomization();
+        
+        //Assert
+        List<DFAEdge> edgesThatHaveBeenChanged = preMutationChromosome.Edges.Where(e =>
+            e.Source == preMutationChromosome.States[1] && chromosome.Edges.Any(e1 => e1.Id == e.Id)).ToList();
+        Assert.All(edgesThatHaveBeenChanged, e =>
+        {
+            DFAEdge edge = chromosome.Edges.First(e2 => e2.Id == e.Id);
+            Assert.True(edge.Source == chromosome.States[0]);
+        });
+    }
+    
     
 }
