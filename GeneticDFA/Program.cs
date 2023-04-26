@@ -11,18 +11,18 @@ class Program
     {
         const int minPopulation = 10000;
         const int maxPopulation = 10000;
-        const int convergenceGenerationNumber = 100;
-        const int maximumGenerationNumber = 1000;
-        const int eliteSelectionScalingFactor = 20;
-        const int fitnessLowerBound = 100;
+        const int convergenceGenerationNumber = 30;
+        const int maximumGenerationNumber = 100;
+        const int eliteSelectionScalingFactor = 2;
+        const int fitnessLowerBound = 500;
         const int numberOfFittestIndividualsAcrossAllGenerations = 500;
         const int weightTruePositive = 10;
         const int weightTrueNegative = 10;
-        const double weightFalsePositive = 3;
-        const double weightFalseNegative = 3;
-        const double weightNonDeterministicEdges = 0.6;
+        const double weightFalsePositive = 10;
+        const double weightFalseNegative = 10;
+        const double weightNonDeterministicEdges = 0.5;
         const double weightMissingDeterministicEdges = 0.5;
-        const double weightSize = 0.3;
+        const double weightSize = 0.5;
         const double crossoverProbability = 0.5;
         const double mutationProbability = 0.5;
         const double nonDeterministicBehaviorProbability = 0.5;
@@ -36,7 +36,6 @@ class Program
         const double removeAcceptStateProbability = 0.1;
         const double mergeStatesProbability = 0.1;
         
-  
         string testTracePath = $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/traces.json";
 
         List<TestTrace> traces = DFAUtility.ImportTestTraces(testTracePath);
@@ -55,7 +54,7 @@ class Program
         // Specific chromosome (gene) function for the DFA learning problem.
         DFAChromosome chromosome = new DFAChromosome();
 
-        PerformanceGenerationStrategy generationStrategy = new PerformanceGenerationStrategy(10);
+        PerformanceGenerationStrategy generationStrategy = new PerformanceGenerationStrategy(1);
         DFAPopulation population = new DFAPopulation(minPopulation, maxPopulation, chromosome, alphabet, generationStrategy);
 
         OrTermination stoppingCriterion = new OrTermination(new GenerationNumberTermination(maximumGenerationNumber),

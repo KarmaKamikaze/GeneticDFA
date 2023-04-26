@@ -37,7 +37,7 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
         CrossoverProbability = crossoverProbability;
         MutationProbability = mutationProbability;
         TimeEvolving = TimeSpan.Zero;
-        TaskExecutor = new ParallelTaskExecutor();
+        TaskExecutor = new ParallelTaskExecutor() {MinThreads = 500, MaxThreads = 500};
     }
 
     public event EventHandler GenerationRan;
@@ -182,8 +182,8 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
         generationRan(this, EventArgs.Empty);
         if (Termination.HasReached(this))
         {
-            EventHandler terminationReached = TerminationReached;
-            terminationReached(this, EventArgs.Empty);
+            //EventHandler terminationReached = TerminationReached;
+            //terminationReached(this, EventArgs.Empty);
             return true;
         }
 

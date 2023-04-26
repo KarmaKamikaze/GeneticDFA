@@ -16,6 +16,7 @@ public class DFAMutation : MutationBase
         _alphabet = alphabet;
         _nonDeterministicBehaviorProbability = nonDeterministicBehaviorProbability;
 
+        // Setup the probabilities in a list
         List<double> mutationOperatorProbabilities = new List<double>()
         { changeInputProbability, changeTargetProbability, changeSourceProbability,
             removeEdgeProbability,
@@ -27,7 +28,7 @@ public class DFAMutation : MutationBase
         };
         CalculateCumulativePercentMutation(mutationOperatorProbabilities, _mutationOperatorRouletteWheel);
     }
-
+    
     private static int SelectMutationFromWheel(IEnumerable<double> rouletteWheel, Func<double> getPointer)
     {
         double pointer = getPointer();
@@ -40,6 +41,7 @@ public class DFAMutation : MutationBase
         return choice!.Index;
     }
 
+    // Setups the roulette wheel
     private static void CalculateCumulativePercentMutation(
       IList<double> mutationOperatorProbabilities,
       ICollection<double> rouletteWheel)
@@ -56,7 +58,9 @@ public class DFAMutation : MutationBase
     protected override void PerformMutate(IChromosome chromosome, float probability)
     {
         DFAChromosome _chromosome = (DFAChromosome) chromosome;
-        bool mutationApplied = false;
+        bool mutationApplied = false; // Flag used to determine whether a mutation has successfully been applied
+        // Dictionary used to check whether a specific mutation operator has been tried.
+        // Thus we avoid executing the operator again
         Dictionary<MutationOperator, bool> mutationOperatorTried = new Dictionary<MutationOperator, bool>();
         foreach (MutationOperator op in (MutationOperator[]) Enum.GetValues(typeof(MutationOperator)))
         {
@@ -152,6 +156,8 @@ public class DFAMutation : MutationBase
         }
     }
 
+    // Randomly shuffles a list.
+    // This allows for randomness while making sure that the same element can not be chosen more than once
     private void ShuffleList<T>(IList<T> list)
     {
         for (int i = 0; i < list.Count; i++)
@@ -161,12 +167,14 @@ public class DFAMutation : MutationBase
         }
     }
 
+    // Used for modifying edges based on its delegate parameter
     private bool EdgeModification(DFAChromosome chromosome, bool nonDeterminism,
         Func<DFAChromosome, DFAEdge, bool> mutationOperator)
     {
         List<DFAEdge> possibleEdgesToSelect = ChooseSetOfEdges(chromosome, nonDeterminism);
         ShuffleList(possibleEdgesToSelect);
 
+        // Attempt to mutate each edge chosen based on the nonDeterminism flag
         foreach (DFAEdge edge in possibleEdgesToSelect)
         {
             if (mutationOperator(chromosome, edge))
@@ -175,6 +183,8 @@ public class DFAMutation : MutationBase
             }
         }
 
+        // If no mutation has occured, we try on the edges not selected earlier.
+        // However, this only happens if the edges selected earlier were not all edges
         if (possibleEdgesToSelect.Count != chromosome.Edges.Count)
         {
             possibleEdgesToSelect = ChooseSetOfEdges(chromosome, !nonDeterminism);
@@ -192,12 +202,15 @@ public class DFAMutation : MutationBase
         return false;
     }
 
+    // Method used as delegate parameter to EdgeModification. 
     private bool ChangeSource(DFAChromosome chromosome, DFAEdge edge)
     {
+        // First find the sources that the edge could be changed to without causing duplicates
         List<DFAEdge> edgesWithSameTargetAndInput =
             chromosome.Edges.Where(e => e.Input == edge.Input && e.Target == edge.Target).ToList();
         List<DFAState> possibleSources = chromosome.States.Where(s => edgesWithSameTargetAndInput.All(e => e.Source.Id != s.Id)).ToList();
 
+        // If no sources was found, return false and attempt changing source on another edge
         if (possibleSources.Count == 0)
             return false;
         DFAState source = possibleSources[_rnd.GetInt(0, possibleSources.Count)];
@@ -205,11 +218,15 @@ public class DFAMutation : MutationBase
         return true;
     }
 
+    // Method used as delegate parameter to EdgeModification. 
     private bool ChangeTarget(DFAChromosome chromosome, DFAEdge edge)
     {
+        // First find the targets that the edge could be changed to without causing duplicates
         List<DFAEdge> edgesWithSameSourceAndInput =
             chromosome.Edges.Where(e => e.Source == edge.Source && e.Input == edge.Input).ToList();
         List<DFAState> possibleTargets = chromosome.States.Where(s => edgesWithSameSourceAndInput.All(e => e.Target.Id != s.Id)).ToList();
+        
+        // If no targets was found, return false and attempt changing target on another edge
         if (possibleTargets.Count == 0)
             return false;
         DFAState target = possibleTargets[_rnd.GetInt(0, possibleTargets.Count)];
@@ -217,11 +234,15 @@ public class DFAMutation : MutationBase
         return true;
     }
 
+    // Method used as delegate parameter to EdgeModification. 
     private bool ChangeInput(DFAChromosome chromosome, DFAEdge edge)
     {
+        // First find the inputs that the edge could be changed to without causing duplicates
         List<DFAEdge> edgesWithSameSourceAndTarget =
             chromosome.Edges.Where(e => e.Source == edge.Source && e.Target == edge.Target).ToList();
         List<char> possibleInputs = _alphabet.Where(i => edgesWithSameSourceAndTarget.All(e => e.Input != i)).ToList();
+        
+        // If no inputs was found, return false and attempt changing input on another edge
         if (possibleInputs.Count == 0)
             return false;
         char input = possibleInputs[_rnd.GetInt(0, possibleInputs.Count)];
@@ -242,13 +263,17 @@ public class DFAMutation : MutationBase
 
     private bool AddEdge(DFAChromosome chromosome)
     {
+        // Only use reachable states as sources
         List<DFAState> reachableStates = DFAChromosomeHelper.FindReachableStates(chromosome);
-        List<DFAState> possibleStates = reachableStates.Where(s => chromosome.Edges.Count(e => e.Source == s) < chromosome.States.Count*_alphabet.Count).ToList();
-        if (possibleStates.Count == 0)
+        // If a state has outgoing edges to each state with each input symbol, it is not a valid source
+        List<DFAState> possibleSources = reachableStates.Where(s => chromosome.Edges.Count(e => e.Source == s) < chromosome.States.Count*_alphabet.Count).ToList();
+        if (possibleSources.Count == 0)
             return false;
-        DFAState source = possibleStates[_rnd.GetInt(0, possibleStates.Count)];
+        DFAState source = possibleSources[_rnd.GetInt(0, possibleSources.Count)];
         List<DFAEdge> existingEdgesWithCurrentSource = chromosome.Edges.Where(e => e.Source == source).ToList();
-
+        // Possible inputs are inputs where the state does not have a transition to every state.
+        // This list is never empty, since we know that the source chosen is valid.
+        // Thus there must be an input where the state does not have all possible edges
         List<char> possibleInputs = _alphabet.Where(i => existingEdgesWithCurrentSource.Count(
             e => e.Input == i) < chromosome.States.Count).ToList();
         char input = possibleInputs[_rnd.GetInt(0, possibleInputs.Count)];
