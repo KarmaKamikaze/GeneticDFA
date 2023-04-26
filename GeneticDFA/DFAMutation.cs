@@ -35,6 +35,7 @@ public class DFAMutation : MutationBase
         CalculateCumulativePercentMutation(mutationOperatorProbabilities, _mutationOperatorRouletteWheel);
     }
     
+    // Selects a mutation from the roulette wheel
     private static int SelectMutationFromWheel(IEnumerable<double> rouletteWheel, Func<double> getPointer)
     {
         double pointer = getPointer();
