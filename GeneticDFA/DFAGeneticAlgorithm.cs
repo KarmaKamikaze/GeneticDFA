@@ -37,7 +37,7 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
         CrossoverProbability = crossoverProbability;
         MutationProbability = mutationProbability;
         TimeEvolving = TimeSpan.Zero;
-        TaskExecutor = new ParallelTaskExecutor() {MinThreads = 500, MaxThreads = 500};
+        TaskExecutor = new ParallelTaskExecutor() {MinThreads = 3000, MaxThreads = 3000};
     }
 
     public event EventHandler GenerationRan;

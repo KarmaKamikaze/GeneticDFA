@@ -37,6 +37,9 @@ class Program
         const double mergeStatesProbability = 0.1;
 
         
+        
+        
+        
         string testTracePath = $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/traces.json";
 
         List<TestTrace> traces = DFAUtility.ImportTestTraces(testTracePath);
