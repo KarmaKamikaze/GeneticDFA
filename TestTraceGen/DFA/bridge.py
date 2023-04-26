@@ -2,7 +2,10 @@ import random as rnd
 import re
 import exrex
 
-regex = "^(X(ABC)*YZ|(A|X(ABC)*(YA|AY)Z)((XY|(XB|BX)C(ABC)*(YA|AY))Z)*(BC|(XB|BX)C(ABC)*YZ))*(X(ABC)*(YA|A(Y|B|BC)|A|(YA|AY|Y)Z)?|(A|X(ABC)*(YA|AY)Z)((XY|(XB|BX)C(ABC)*(YA|AY))Z)*(X(Y|B|YZ)|(XB|BX)C(ABC)*(YA|A(Y|B|BC)|A|(YA|AY|Y)Z)?|B(X|C)|X|B)?|(X|(A|X(ABC)*(YA|AY)Z)((XY|(XB|BX)C(ABC)*(YA|AY))Z)*(XB|BX)C)(ABC)*Y)?$"
+regex = "^(X(ABC)*YZ|(A|X(ABC)*(YA|AY)Z)((XY|(XB|BX)C(ABC)*(YA|AY))Z)*(BC|(XB|BX)C(ABC)*YZ))"\
+    "*(X(ABC)*(YA|A(Y|B|BC)|A|(YA|AY|Y)Z)?|(A|X(ABC)*(YA|AY)Z)((XY|(XB|BX)C(ABC)*(YA|AY))Z)*"\
+    "(X(Y|B|YZ)|(XB|BX)C(ABC)*(YA|A(Y|B|BC)|A|(YA|AY|Y)Z)?|B(X|C)|X|B)?|(X|(A|X(ABC)*(YA|AY)Z)"\
+    "((XY|(XB|BX)C(ABC)*(YA|AY))Z)*(XB|BX)C)(ABC)*Y)?$"
 
 
 def generate_test_traces_for_brigdeDFA(number_of_failing_traces: int,

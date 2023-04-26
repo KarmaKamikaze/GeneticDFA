@@ -2,7 +2,9 @@ import random as rnd
 import re
 import exrex
 
-regex = "^(c(l(u|au))*o|(l|c(l(u|au))*lo)(c(o|(u|au)(l(u|au))*lo))*(u|c(u|au)(l(u|au))*o))*(c(l(u|au))*(l(a|o|u|au)|l|o)?|(l|c(l(u|au))*lo)(c(o|(u|au)(l(u|au))*lo))*(c(a|(u|au)(l(u|au))*(l(a|o|u|au)|o|l)?|o)|c|u)?)?$"
+regex = "^(c(l(u|au))*o|(l|c(l(u|au))*lo)(c(o|(u|au)(l(u|au))*lo))*(u|c(u|au)(l(u|au))*o))*(c(l(u|au))*"\
+    "(l(a|o|u|au)|l|o)?|(l|c(l(u|au))*lo)(c(o|(u|au)(l(u|au))*lo))*(c(a|(u|au)(l(u|au))*(l(a|o|u|au)|o|l)?"\
+    "|o)|c|u)?)?$"
 
 
 def generate_test_traces_for_caralarmDFA(number_of_failing_traces: int,
@@ -37,7 +39,7 @@ def generate_passing_traces(number_of_passing_traces: int):
         trace = exrex.getone(regex, limit=2)
         if re.match(regex, trace):
             if trace not in passing_traces:
-                if len(trace) < 20:
+                if len(trace) <= 20:
                     passing_traces.append(trace)
 
     print(f"It took {i} attempts to create {number_of_passing_traces} passing traces.")
