@@ -13,7 +13,7 @@ def get_input():
             print("Error in input. Please try again.")
 
 
-def write_traces_to_file(failing_traces: list, passing_traces: list, user_input: int):
+def write_traces_to_file(failing_traces: list, passing_traces: list, user_input: int, file_type: int):
     """ Writes traces generated to a file """
     # Generate filename
     time = datetime.now().strftime("%Y-%m-%d %H-%M-%S")
@@ -26,21 +26,37 @@ def write_traces_to_file(failing_traces: list, passing_traces: list, user_input:
     else:
         print("Error in input. Exiting.")
         exit()
+    if file_type == 1:
+        # Write passing traces
+        text_to_write: str = "passing = ["
+        for trace in passing_traces:
+            text_to_write += ('"'+trace+'"' + ",")
+        text_to_write += ("]\n")
 
-    # Write passing traces
-    text_to_write: str = "passing = ["
-    for trace in passing_traces:
-        text_to_write += ('"'+trace+'"' + ",")
-    text_to_write += ("]\n")
+        # Write failing traces
+        text_to_write += "failing = ["
+        for trace in failing_traces:
+            text_to_write += ('"'+trace+'"' + ",")
+        text_to_write += ("]")
 
-    # Write failing traces
-    text_to_write += "failing = ["
-    for trace in failing_traces:
-        text_to_write += ('"'+trace+'"' + ",")
-    text_to_write += ("]")
+        # Write to file
+        f = open(f"{file_name}.txt", "a")
+    elif file_type == 2:
+        # Write passing traces
+        text_to_write: str = "{"
+        text_to_write += '"PASSED": ['
+        for trace in passing_traces:
+            text_to_write += ('"'+trace+'"' + ",")
+        text_to_write += ("],\n")
 
-    # Write to file
-    f = open(f"{file_name}.txt", "a")
+        # Write failing traces
+        text_to_write += '"FAILED": ['
+        for trace in failing_traces:
+            text_to_write += ('"'+trace+'"' + ",")
+        text_to_write += ("]}")
+
+        # Write to file
+        f = open(f"{file_name}.json", "a")
     f.write(text_to_write)
     f.close()
     print(f"The generated traces have been written to file: {file_name}")
@@ -57,6 +73,8 @@ def test_trace_generation():
     number_of_failing_traces: int = get_input()
     print("How many char long should it be?")
     length_of_trace: int = get_input()
+    print("What output file? \n 1. Text file for arduino\n 2. Json for GA")
+    file_type: int = get_input()
 
     if user_input == 1:
         traces = generate_test_traces_for_smalldfa(number_of_failing_traces,
@@ -70,7 +88,7 @@ def test_trace_generation():
     else:
         print("Wrong input\n")
         return
-    write_traces_to_file(traces[0], traces[1], user_input)
+    write_traces_to_file(traces[0], traces[1], user_input, file_type)
     print("Press enter to close the script.")
     input()
 
