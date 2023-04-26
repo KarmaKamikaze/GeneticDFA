@@ -78,6 +78,8 @@ class Program
         ga.GenerationRan += (s, e) =>
             GraphVisualization.SaveToSvgFile((DFAChromosome) ga.BestChromosome, ga.GenerationsNumber);
 
+        ga.TerminationReached += (s, e) => Console.WriteLine("GA has terminated");
+        
         // Begin learning.
         Console.WriteLine("GA is learning the DFA...");
         ga.Start();

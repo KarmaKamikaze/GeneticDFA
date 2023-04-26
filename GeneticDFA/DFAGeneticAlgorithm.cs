@@ -182,8 +182,8 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
         generationRan(this, EventArgs.Empty);
         if (Termination.HasReached(this))
         {
-            //EventHandler terminationReached = TerminationReached;
-            //terminationReached(this, EventArgs.Empty);
+            EventHandler terminationReached = TerminationReached;
+            terminationReached(this, EventArgs.Empty);
             return true;
         }
 
