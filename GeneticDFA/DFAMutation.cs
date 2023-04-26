@@ -11,13 +11,19 @@ public class DFAMutation : MutationBase
     private readonly List<double> _mutationOperatorRouletteWheel = new List<double>();
     private readonly List<char> _alphabet;
 
-    public DFAMutation(List<char> alphabet, double nonDeterministicBehaviorProbability, double changeTargetProbability, double changeSourceProbability, double removeEdgeProbability, double addEdgeProbability, double addStateProbability, double addAcceptStateProbability, double removeAcceptStateProbability, double mergeStatesProbability, double changeInputProbability)
+    public DFAMutation(List<char> alphabet, double nonDeterministicBehaviorProbability, double changeTargetProbability,
+        double changeSourceProbability, double removeEdgeProbability, double addEdgeProbability,
+        double addStateProbability, double addAcceptStateProbability, double removeAcceptStateProbability,
+        double mergeStatesProbability, double changeInputProbability)
     {
         _alphabet = alphabet;
         _nonDeterministicBehaviorProbability = nonDeterministicBehaviorProbability;
 
         List<double> mutationOperatorProbabilities = new List<double>()
-        { changeInputProbability, changeTargetProbability, changeSourceProbability,
+        {
+            changeInputProbability,
+            changeTargetProbability,
+            changeSourceProbability,
             removeEdgeProbability,
             addEdgeProbability,
             addStateProbability,
@@ -41,8 +47,8 @@ public class DFAMutation : MutationBase
     }
 
     private static void CalculateCumulativePercentMutation(
-      IList<double> mutationOperatorProbabilities,
-      ICollection<double> rouletteWheel)
+        IList<double> mutationOperatorProbabilities,
+        ICollection<double> rouletteWheel)
     {
         double num1 = mutationOperatorProbabilities.Sum();
         double num2 = 0.0;
@@ -67,7 +73,7 @@ public class DFAMutation : MutationBase
 
         while (!mutationApplied)
         {
-            switch((MutationOperator) SelectMutationFromWheel(_mutationOperatorRouletteWheel, () => _rnd.GetDouble()))
+            switch ((MutationOperator) SelectMutationFromWheel(_mutationOperatorRouletteWheel, () => _rnd.GetDouble()))
             {
                 case MutationOperator.ChangeInputProbability:
                     if (!mutationOperatorTried[MutationOperator.ChangeInputProbability])
@@ -77,6 +83,7 @@ public class DFAMutation : MutationBase
                             DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(_chromosome);
                         mutationOperatorTried[MutationOperator.ChangeInputProbability] = true;
                     }
+
                     break;
                 case MutationOperator.ChangeTargetProbability:
                     if (!mutationOperatorTried[MutationOperator.ChangeTargetProbability])
@@ -86,6 +93,7 @@ public class DFAMutation : MutationBase
                             DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(_chromosome);
                         mutationOperatorTried[MutationOperator.ChangeTargetProbability] = true;
                     }
+
                     break;
                 case MutationOperator.ChangeSourceProbability:
                     if (!mutationOperatorTried[MutationOperator.ChangeSourceProbability])
@@ -95,6 +103,7 @@ public class DFAMutation : MutationBase
                             DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(_chromosome);
                         mutationOperatorTried[MutationOperator.ChangeSourceProbability] = true;
                     }
+
                     break;
                 case MutationOperator.RemoveEdgeProbability:
                     if (!mutationOperatorTried[MutationOperator.RemoveEdgeProbability])
@@ -104,6 +113,7 @@ public class DFAMutation : MutationBase
                             DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(_chromosome);
                         mutationOperatorTried[MutationOperator.RemoveEdgeProbability] = true;
                     }
+
                     break;
                 case MutationOperator.AddEdgeProbability:
                     if (!mutationOperatorTried[MutationOperator.AddEdgeProbability])
@@ -113,6 +123,7 @@ public class DFAMutation : MutationBase
                             DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(_chromosome);
                         mutationOperatorTried[MutationOperator.AddEdgeProbability] = true;
                     }
+
                     break;
                 case MutationOperator.AddStateProbability:
                     if (!mutationOperatorTried[MutationOperator.AddStateProbability])
@@ -122,6 +133,7 @@ public class DFAMutation : MutationBase
                             DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(_chromosome);
                         mutationOperatorTried[MutationOperator.AddStateProbability] = true;
                     }
+
                     break;
                 case MutationOperator.AddAcceptStateProbability:
                     if (!mutationOperatorTried[MutationOperator.AddAcceptStateProbability])
@@ -129,6 +141,7 @@ public class DFAMutation : MutationBase
                         mutationApplied = AddAcceptState(_chromosome);
                         mutationOperatorTried[MutationOperator.AddAcceptStateProbability] = true;
                     }
+
                     break;
                 case MutationOperator.RemoveAcceptStateProbability:
                     if (!mutationOperatorTried[MutationOperator.RemoveAcceptStateProbability])
@@ -136,6 +149,7 @@ public class DFAMutation : MutationBase
                         mutationApplied = RemoveAcceptState(_chromosome);
                         mutationOperatorTried[MutationOperator.RemoveAcceptStateProbability] = true;
                     }
+
                     break;
                 case MutationOperator.MergeStatesProbability:
                     if (!mutationOperatorTried[MutationOperator.MergeStatesProbability])
@@ -145,6 +159,7 @@ public class DFAMutation : MutationBase
                             DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(_chromosome);
                         mutationOperatorTried[MutationOperator.MergeStatesProbability] = true;
                     }
+
                     break;
                 default:
                     throw new ArgumentException("Probability selection error.");
@@ -196,7 +211,8 @@ public class DFAMutation : MutationBase
     {
         List<DFAEdge> edgesWithSameTargetAndInput =
             chromosome.Edges.Where(e => e.Input == edge.Input && e.Target == edge.Target).ToList();
-        List<DFAState> possibleSources = chromosome.States.Where(s => edgesWithSameTargetAndInput.All(e => e.Source.Id != s.Id)).ToList();
+        List<DFAState> possibleSources = chromosome.States
+            .Where(s => edgesWithSameTargetAndInput.All(e => e.Source.Id != s.Id)).ToList();
 
         if (possibleSources.Count == 0)
             return false;
@@ -209,7 +225,8 @@ public class DFAMutation : MutationBase
     {
         List<DFAEdge> edgesWithSameSourceAndInput =
             chromosome.Edges.Where(e => e.Source == edge.Source && e.Input == edge.Input).ToList();
-        List<DFAState> possibleTargets = chromosome.States.Where(s => edgesWithSameSourceAndInput.All(e => e.Target.Id != s.Id)).ToList();
+        List<DFAState> possibleTargets = chromosome.States
+            .Where(s => edgesWithSameSourceAndInput.All(e => e.Target.Id != s.Id)).ToList();
         if (possibleTargets.Count == 0)
             return false;
         DFAState target = possibleTargets[_rnd.GetInt(0, possibleTargets.Count)];
@@ -243,7 +260,8 @@ public class DFAMutation : MutationBase
     private bool AddEdge(DFAChromosome chromosome)
     {
         List<DFAState> reachableStates = DFAChromosomeHelper.FindReachableStates(chromosome);
-        List<DFAState> possibleStates = reachableStates.Where(s => chromosome.Edges.Count(e => e.Source == s) < chromosome.States.Count*_alphabet.Count).ToList();
+        List<DFAState> possibleStates = reachableStates.Where(s =>
+            chromosome.Edges.Count(e => e.Source == s) < chromosome.States.Count * _alphabet.Count).ToList();
         if (possibleStates.Count == 0)
             return false;
         DFAState source = possibleStates[_rnd.GetInt(0, possibleStates.Count)];
@@ -268,7 +286,9 @@ public class DFAMutation : MutationBase
     private static List<DFAState> ChooseSetOfStates(DFAChromosome chromosome, bool nonDeterminism)
     {
         List<DFAEdge> edges = ChooseSetOfEdges(chromosome, nonDeterminism);
-        return edges.Count == 0 ? chromosome.States : chromosome.States.Where(s => edges.Any(e => e.Source == s)).ToList();
+        return edges.Count == 0
+            ? chromosome.States
+            : chromosome.States.Where(s => edges.Any(e => e.Source == s)).ToList();
     }
 
     private static List<DFAEdge> ChooseSetOfEdges(DFAChromosome chromosome, bool nonDeterminism)
@@ -305,7 +325,7 @@ public class DFAMutation : MutationBase
             return false;
 
         List<DFAState> acceptStates = chromosome.States.Where(s => s.IsAccept).ToList();
-        if(acceptStates.Count == 1)
+        if (acceptStates.Count == 1)
         {
             List<DFAState> reachableStates = DFAChromosomeHelper.FindReachableStates(chromosome);
             List<DFAState> nonAcceptStates = reachableStates.Where(s => s.IsAccept == false).ToList();
@@ -360,7 +380,8 @@ public class DFAMutation : MutationBase
 
         List<DFAState> states = ChooseSetOfStates(chromosome, nonDeterminism);
         DFAState state1 = states[_rnd.GetInt(0, states.Count)];
-        DFAState state2 = chromosome.States.Where(s => s != state1).ToList()[_rnd.GetInt(0, chromosome.States.Count-1)];
+        DFAState state2 =
+            chromosome.States.Where(s => s != state1).ToList()[_rnd.GetInt(0, chromosome.States.Count - 1)];
 
         state1.IsAccept = state1.IsAccept || state2.IsAccept;
         if (chromosome.StartState == state2)
@@ -389,7 +410,7 @@ public class DFAMutation : MutationBase
             return isInputEqual != 0 ? isInputEqual : edge1.Target.Id.CompareTo(edge2.Target.Id);
         });
 
-        for (int i = 0; i < chromosome.Edges.Count-1; i++)
+        for (int i = 0; i < chromosome.Edges.Count - 1; i++)
         {
             if (chromosome.Edges[i].Source.Id == chromosome.Edges[i + 1].Source.Id
                 && chromosome.Edges[i].Input == chromosome.Edges[i + 1].Input
@@ -398,7 +419,7 @@ public class DFAMutation : MutationBase
         }
 
         chromosome.States.Remove(state2);
-        
+
         return true;
     }
 

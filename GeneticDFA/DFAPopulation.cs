@@ -4,7 +4,8 @@ namespace GeneticDFA;
 
 public class DFAPopulation : Population
 {
-    public DFAPopulation(int minSize, int maxSize, IChromosome adamChromosome, List<char> alphabet, IGenerationStrategy generationStrategy) : base(minSize,
+    public DFAPopulation(int minSize, int maxSize, IChromosome adamChromosome, List<char> alphabet,
+        IGenerationStrategy generationStrategy) : base(minSize,
         maxSize, adamChromosome)
     {
         Alphabet = alphabet;
@@ -122,5 +123,4 @@ public class DFAPopulation : Population
         BestChromosome = CurrentGeneration.BestChromosome;
         OnBestChromosomeChanged(EventArgs.Empty);
     }
-
 }

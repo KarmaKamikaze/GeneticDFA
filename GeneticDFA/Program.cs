@@ -35,8 +35,8 @@ class Program
         const double addAcceptStateProbability = 0.1;
         const double removeAcceptStateProbability = 0.1;
         const double mergeStatesProbability = 0.1;
-        
-  
+
+
         string testTracePath = $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/traces.json";
 
         List<TestTrace> traces = DFAUtility.ImportTestTraces(testTracePath);
@@ -44,8 +44,8 @@ class Program
 
         EliteSelection selection = new EliteSelection(numberOfFittestIndividualsAcrossAllGenerations);
         UniformCrossover crossover = new UniformCrossover();
-        DFAMutation mutation = new DFAMutation(alphabet, nonDeterministicBehaviorProbability, changeTargetProbability, 
-            changeSourceProbability, removeEdgeProbability, addEdgeProbability, addStateProbability, 
+        DFAMutation mutation = new DFAMutation(alphabet, nonDeterministicBehaviorProbability, changeTargetProbability,
+            changeSourceProbability, removeEdgeProbability, addEdgeProbability, addStateProbability,
             addAcceptStateProbability, removeAcceptStateProbability, mergeStatesProbability, changeInputProbability);
 
         // Specific fitness function for the DFA learning problem.
@@ -56,13 +56,14 @@ class Program
         DFAChromosome chromosome = new DFAChromosome();
 
         PerformanceGenerationStrategy generationStrategy = new PerformanceGenerationStrategy(10);
-        DFAPopulation population = new DFAPopulation(minPopulation, maxPopulation, chromosome, alphabet, generationStrategy);
+        DFAPopulation population =
+            new DFAPopulation(minPopulation, maxPopulation, chromosome, alphabet, generationStrategy);
 
         OrTermination stoppingCriterion = new OrTermination(new GenerationNumberTermination(maximumGenerationNumber),
             new AndTermination(new FitnessStagnationTermination(convergenceGenerationNumber),
                 new FitnessThresholdTermination(fitnessLowerBound)));
 
-        DFAGeneticAlgorithm ga = new DFAGeneticAlgorithm(population, fitness, selection, eliteSelectionScalingFactor, 
+        DFAGeneticAlgorithm ga = new DFAGeneticAlgorithm(population, fitness, selection, eliteSelectionScalingFactor,
             crossover, mutation, stoppingCriterion, maximumGenerationNumber, crossoverProbability, mutationProbability);
 
         // Output continuous evaluation of each generation.

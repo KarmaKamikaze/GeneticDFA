@@ -25,7 +25,7 @@ public static class GraphVisualization
 
             if (state.IsAccept)
                 newNode.SetAttribute("shape", "doublecircle");
-            if (state.Id == chromosome.StartState.Id)
+            if (state.Id == chromosome.StartState!.Id)
             {
                 Node? startState = root.GetOrAddNode("S");
                 startState.SetAttribute("shape", "point");

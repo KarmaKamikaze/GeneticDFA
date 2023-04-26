@@ -10,6 +10,5 @@ public class DFARouletteWheelSelection : RouletteWheelSelection
         IRandomization rnd = RandomizationProvider.Current;
         CalculateCumulativePercentFitness(chromosomes, rouletteWheel);
         return SelectFromWheel(numberOfSelections, chromosomes, rouletteWheel, () => rnd.GetDouble());
-
     }
 }
