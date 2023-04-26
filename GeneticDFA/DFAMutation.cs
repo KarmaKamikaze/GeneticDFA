@@ -32,33 +32,8 @@ public class DFAMutation : MutationBase
             removeAcceptStateProbability,
             mergeStatesProbability
         };
-        CalculateCumulativePercentMutation(mutationOperatorProbabilities, _mutationOperatorRouletteWheel);
-    }
-    
-    private static int SelectMutationFromWheel(IEnumerable<double> rouletteWheel, Func<double> getPointer)
-    {
-        double pointer = getPointer();
-        var choice = rouletteWheel.Select((value, index) => new
-        {
-            Value = value,
-            Index = index
-        }).FirstOrDefault(result => result.Value >= pointer);
-
-        return choice!.Index;
-    }
-
-    // Setups the roulette wheel
-    private static void CalculateCumulativePercentMutation(
-        IList<double> mutationOperatorProbabilities,
-        ICollection<double> rouletteWheel)
-    {
-        double num1 = mutationOperatorProbabilities.Sum();
-        double num2 = 0.0;
-        foreach (double t in mutationOperatorProbabilities)
-        {
-            num2 += t / num1;
-            rouletteWheel.Add(num2);
-        }
+        DFARouletteWheelSelection.CalculateCumulativePercentMutation(mutationOperatorProbabilities,
+            _mutationOperatorRouletteWheel);
     }
 
     protected override void PerformMutate(IChromosome chromosome, float probability)
@@ -77,7 +52,8 @@ public class DFAMutation : MutationBase
 
         while (!mutationApplied)
         {
-            switch ((MutationOperator) SelectMutationFromWheel(_mutationOperatorRouletteWheel, () => _rnd.GetDouble()))
+            switch ((MutationOperator) DFARouletteWheelSelection.SelectMutationFromWheel(_mutationOperatorRouletteWheel,
+                        () => _rnd.GetDouble()))
             {
                 case MutationOperator.ChangeInputProbability:
                     if (!mutationOperatorTried[MutationOperator.ChangeInputProbability])
@@ -217,7 +193,7 @@ public class DFAMutation : MutationBase
         return false;
     }
 
-    // Method used as delegate parameter to EdgeModification. 
+    // Method used as delegate parameter to EdgeModification.
     private bool ChangeSource(DFAChromosome chromosome, DFAEdge edge)
     {
         // First find the sources that the edge could be changed to without causing duplicates
@@ -234,7 +210,7 @@ public class DFAMutation : MutationBase
         return true;
     }
 
-    // Method used as delegate parameter to EdgeModification. 
+    // Method used as delegate parameter to EdgeModification.
     private bool ChangeTarget(DFAChromosome chromosome, DFAEdge edge)
     {
         // First find the targets that the edge could be changed to without causing duplicates
@@ -251,14 +227,14 @@ public class DFAMutation : MutationBase
         return true;
     }
 
-    // Method used as delegate parameter to EdgeModification. 
+    // Method used as delegate parameter to EdgeModification.
     private bool ChangeInput(DFAChromosome chromosome, DFAEdge edge)
     {
         // First find the inputs that the edge could be changed to without causing duplicates
         List<DFAEdge> edgesWithSameSourceAndTarget =
             chromosome.Edges.Where(e => e.Source == edge.Source && e.Target == edge.Target).ToList();
         List<char> possibleInputs = _alphabet.Where(i => edgesWithSameSourceAndTarget.All(e => e.Input != i)).ToList();
-        
+
         // If no inputs was found, return false and attempt changing input on another edge
         if (possibleInputs.Count == 0)
             return false;
@@ -284,8 +260,8 @@ public class DFAMutation : MutationBase
         // since there is no benefit to adding an outgoing edge from an unreachable state
         List<DFAState> reachableStates = DFAChromosomeHelper.FindReachableStates(chromosome);
         // If a state has outgoing edges to each state with each input symbol, it is not a valid source
-        List<DFAState> possibleSources = reachableStates.Where(s => 
-            chromosome.Edges.Count(e => e.Source == s) < chromosome.States.Count*_alphabet.Count).ToList();
+        List<DFAState> possibleSources = reachableStates.Where(s =>
+            chromosome.Edges.Count(e => e.Source == s) < chromosome.States.Count * _alphabet.Count).ToList();
         if (possibleSources.Count == 0)
             return false;
         DFAState source = possibleSources[_rnd.GetInt(0, possibleSources.Count)];
@@ -415,7 +391,7 @@ public class DFAMutation : MutationBase
             return false;
 
         List<DFAState> states = ChooseSetOfStates(chromosome, nonDeterminism);
-        
+
         // Choose two states to merge. state2 will be merged into state1
         DFAState state1 = states[_rnd.GetInt(0, states.Count)];
         DFAState state2 =
