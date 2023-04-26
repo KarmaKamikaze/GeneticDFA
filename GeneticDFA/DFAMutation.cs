@@ -240,11 +240,10 @@ public class DFAMutation : MutationBase
         // First find the targets that the edge could be changed to without causing duplicates
         List<DFAEdge> edgesWithSameSourceAndInput =
             chromosome.Edges.Where(e => e.Source == edge.Source && e.Input == edge.Input).ToList();
-
-        // If no targets was found, return false and attempt changing target on another edge
         List<DFAState> possibleTargets = chromosome.States
             .Where(s => edgesWithSameSourceAndInput.All(e => e.Target.Id != s.Id)).ToList();
 
+        // If no targets was found, return false and attempt changing target on another edge
         if (possibleTargets.Count == 0)
             return false;
         DFAState target = possibleTargets[_rnd.GetInt(0, possibleTargets.Count)];
@@ -281,13 +280,13 @@ public class DFAMutation : MutationBase
 
     private bool AddEdge(DFAChromosome chromosome)
     {
-        // Only use reachable states as sources
+        // Only use reachable states as sources,
+        // since there is no benefit to adding an outgoing edge from an unreachable state
         List<DFAState> reachableStates = DFAChromosomeHelper.FindReachableStates(chromosome);
         // If a state has outgoing edges to each state with each input symbol, it is not a valid source
         List<DFAState> possibleSources = reachableStates.Where(s => 
             chromosome.Edges.Count(e => e.Source == s) < chromosome.States.Count*_alphabet.Count).ToList();
         if (possibleSources.Count == 0)
-
             return false;
         DFAState source = possibleSources[_rnd.GetInt(0, possibleSources.Count)];
         List<DFAEdge> existingEdgesWithCurrentSource = chromosome.Edges.Where(e => e.Source == source).ToList();
@@ -300,6 +299,7 @@ public class DFAMutation : MutationBase
         List<DFAEdge> existingEdgesWithCurrentSourceAndInput =
             existingEdgesWithCurrentSource.Where(e => e.Input == input).ToList();
 
+        // Possible targets is also never empty due to same reasoning as for possible inputs
         List<DFAState> possibleTargets = chromosome.States
             .Where(s => existingEdgesWithCurrentSourceAndInput.All(e => e.Target != s)).ToList();
         DFAState target = possibleTargets[_rnd.GetInt(0, possibleTargets.Count)];
@@ -309,7 +309,7 @@ public class DFAMutation : MutationBase
         return true;
     }
 
-
+    // Helper method used to choose the set of states to focus mutation on based on the nondeterminism flag
     private static List<DFAState> ChooseSetOfStates(DFAChromosome chromosome, bool nonDeterminism)
     {
         List<DFAEdge> edges = ChooseSetOfEdges(chromosome, nonDeterminism);
@@ -318,6 +318,7 @@ public class DFAMutation : MutationBase
             : chromosome.States.Where(s => edges.Any(e => e.Source == s)).ToList();
     }
 
+    // Helper method used to choose the set of edges to focus mutation on based on the nondeterminism flag
     private static List<DFAEdge> ChooseSetOfEdges(DFAChromosome chromosome, bool nonDeterminism)
     {
         List<DFAEdge> edges;
@@ -326,6 +327,7 @@ public class DFAMutation : MutationBase
         else
             edges = chromosome.Edges.Where(e => !chromosome.NonDeterministicEdges.Contains(e)).ToList();
 
+        // If the list is empty, we simply choose all edges.
         if (edges.Count == 0)
             edges = chromosome.Edges;
 
@@ -334,11 +336,14 @@ public class DFAMutation : MutationBase
 
     private bool AddAcceptState(DFAChromosome chromosome)
     {
+        // As there must be at least one accept state, we can not add another one, if there is only one state
         if (chromosome.States.Count == 1)
             return false;
 
+        // Only use reachable states, since there is no benefit to making an unreachable state an accept state
         List<DFAState> reachableStates = DFAChromosomeHelper.FindReachableStates(chromosome);
         List<DFAState> nonAcceptStates = reachableStates.Where(s => s.IsAccept == false).ToList();
+        // If there is no states that can be made an accept state, return false
         if (nonAcceptStates.Count == 0)
             return false;
         nonAcceptStates[_rnd.GetInt(0, nonAcceptStates.Count)].IsAccept = true;
@@ -348,10 +353,12 @@ public class DFAMutation : MutationBase
 
     private bool RemoveAcceptState(DFAChromosome chromosome)
     {
+        // Since we must have at least one accept state, we return false if there is only one state
         if (chromosome.States.Count == 1)
             return false;
 
         List<DFAState> acceptStates = chromosome.States.Where(s => s.IsAccept).ToList();
+        // If there is only one accept state, we first add an accept state before removing the original accept state
         if (acceptStates.Count == 1)
         {
             List<DFAState> reachableStates = DFAChromosomeHelper.FindReachableStates(chromosome);
@@ -370,7 +377,8 @@ public class DFAMutation : MutationBase
     {
         // Create new state
         DFAState newState = new DFAState(chromosome.NextStateId++, false);
-        // Connect an exiting (source) state with the new (target) state
+        // Connect an exiting (source) state with the new (target) state.
+        // Only use reachable states to ensure reachability
         List<DFAState> reachableStates = DFAChromosomeHelper.FindReachableStates(chromosome);
         DFAState firstSource = reachableStates[_rnd.GetInt(0, reachableStates.Count)];
         chromosome.Edges.Add(new DFAEdge(chromosome.NextEdgeId++, firstSource, newState,
@@ -402,18 +410,23 @@ public class DFAMutation : MutationBase
 
     private bool MergeStates(DFAChromosome chromosome, bool nonDeterminism)
     {
+        // Merging is not possible if there is less than two states
         if (chromosome.States.Count < 2)
             return false;
 
         List<DFAState> states = ChooseSetOfStates(chromosome, nonDeterminism);
+        
+        // Choose two states to merge. state2 will be merged into state1
         DFAState state1 = states[_rnd.GetInt(0, states.Count)];
         DFAState state2 =
             chromosome.States.Where(s => s != state1).ToList()[_rnd.GetInt(0, chromosome.States.Count - 1)];
 
+        // Modify the properties of state1 based on state2
         state1.IsAccept = state1.IsAccept || state2.IsAccept;
         if (chromosome.StartState == state2)
             chromosome.StartState = state1;
 
+        // Change the target of ingoing edges of state2 to be state1
         List<DFAEdge> ingoingEdgesState2 = chromosome.Edges.Where(e => e.Target == state2).ToList();
 
         foreach (DFAEdge edge in ingoingEdgesState2)
@@ -421,6 +434,7 @@ public class DFAMutation : MutationBase
             edge.Target = state1;
         }
 
+        // Change the source of outgoing edges of state2 to be state1
         List<DFAEdge> outgoingEdgesState2 = chromosome.Edges.Where(e => e.Source == state2).ToList();
 
         foreach (DFAEdge edge in outgoingEdgesState2)
@@ -428,6 +442,7 @@ public class DFAMutation : MutationBase
             edge.Source = state1;
         }
 
+        // Sort the edges so that duplicates are grouped
         chromosome.Edges.Sort(delegate(DFAEdge edge1, DFAEdge edge2)
         {
             int areSourcesEqual = edge1.Source.Id.CompareTo(edge2.Source.Id);
@@ -437,6 +452,7 @@ public class DFAMutation : MutationBase
             return isInputEqual != 0 ? isInputEqual : edge1.Target.Id.CompareTo(edge2.Target.Id);
         });
 
+        // Remove duplicates
         for (int i = 0; i < chromosome.Edges.Count - 1; i++)
         {
             if (chromosome.Edges[i].Source.Id == chromosome.Edges[i + 1].Source.Id
