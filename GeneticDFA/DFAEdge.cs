@@ -19,5 +19,4 @@ public class DFAEdge
     {
         return new DFAEdge(Id, source, target, Input);
     }
-    
 }
