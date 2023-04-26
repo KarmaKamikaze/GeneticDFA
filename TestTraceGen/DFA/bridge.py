@@ -2,16 +2,7 @@ import random as rnd
 import re
 import exrex
 
-regex = "X(ABC)*(YA|A(Y|B|BC)|A|(YA|AY|Y)Z)|(A|X(ABC)*(YA|AY)Z)((XY|(XB|BX)C(ABC)*(YA|AY))Z)*(X(Y|B|YZ)|(XB|BX)(C(" \
-        "ABC)*(YA|A(Y|B|BC)|A|(YA|AY|Y)Z)|C)|B(X|C)|X)|(X(ABC)*YZ|(A|X(ABC)*(YA|AY)Z)((XY|(XB|BX)C(ABC)*(YA|AY))Z)*(" \
-        "BC|(XB|BX)C(ABC)*YZ))(X(ABC)*YZ|(A|X(ABC)*(YA|AY)Z)((XY|(XB|BX)C(ABC)*(YA|AY))Z)*(BC|(XB|BX)C(ABC)*YZ))*(X(" \
-        "ABC)*(YA|A(Y|B|BC)|A|(YA|AY|Y)Z)|(A|X(ABC)*(YA|AY)Z)((XY|(XB|BX)C(ABC)*(YA|AY))Z)*(X(Y|B|YZ)|(XB|BX)(C(" \
-        "ABC)*(YA|A(Y|B|BC)|A|(YA|AY|Y)Z)|C)|B(X|C)|X)|X|A)|(X|(A|X(ABC)*(YA|AY)Z)((XY|(XB|BX)C(ABC)*(YA|AY))Z)*(" \
-        "XB|BX)C|(X(ABC)*YZ|(A|X(ABC)*(YA|AY)Z)((XY|(XB|BX)C(ABC)*(YA|AY))Z)*(BC|(XB|BX)C(ABC)*YZ))(X(ABC)*YZ|(A|X(" \
-        "ABC)*(YA|AY)Z)((XY|(XB|BX)C(ABC)*(YA|AY))Z)*(BC|(XB|BX)C(ABC)*YZ))*(X|(A|X(ABC)*(YA|AY)Z)((XY|(XB|BX)C(" \
-        "ABC)*(YA|AY))Z)*(XB|BX)C))(ABC)*Y|(A|X(ABC)*(YA|AY)Z|(X(ABC)*YZ|(A|X(ABC)*(YA|AY)Z)((XY|(XB|BX)C(ABC)*(" \
-        "YA|AY))Z)*(BC|(XB|BX)C(ABC)*YZ))(X(ABC)*YZ|(A|X(ABC)*(YA|AY)Z)((XY|(XB|BX)C(ABC)*(YA|AY))Z)*(BC|(XB|BX)C(" \
-        "ABC)*YZ))*(A|X(ABC)*(YA|AY)Z))((XY|(XB|BX)C(ABC)*(YA|AY))Z)*B|X|A"
+regex = "^(X(ABC)*YZ|(A|X(ABC)*(YA|AY)Z)((XY|(XB|BX)C(ABC)*(YA|AY))Z)*(BC|(XB|BX)C(ABC)*YZ))*(X(ABC)*(YA|A(Y|B|BC)|A|(YA|AY|Y)Z)?|(A|X(ABC)*(YA|AY)Z)((XY|(XB|BX)C(ABC)*(YA|AY))Z)*(X(Y|B|YZ)|(XB|BX)C(ABC)*(YA|A(Y|B|BC)|A|(YA|AY|Y)Z)?|B(X|C)|X|B)?|(X|(A|X(ABC)*(YA|AY)Z)((XY|(XB|BX)C(ABC)*(YA|AY))Z)*(XB|BX)C)(ABC)*Y)?$"
 
 
 def generate_test_traces_for_brigdeDFA(number_of_failing_traces: int,
@@ -46,7 +37,7 @@ def generate_passing_traces(number_of_passing_traces: int):
         trace = exrex.getone(regex, limit=2)
         if re.match(regex, trace):
             if trace not in passing_traces:
-                if len(trace) < 20:
+                if len(trace) <= 20:
                     passing_traces.append(trace)
 
     print(f"It took {i} attempts to create {number_of_passing_traces} passing traces.")

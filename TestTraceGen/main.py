@@ -71,7 +71,7 @@ def test_trace_generation():
     number_of_passing_traces: int = get_input()
     print("How many failing traces should be generated?")
     number_of_failing_traces: int = get_input()
-    print("How many char long should it be?")
+    print("How many char long should failing traces be? Between 10-15 recommended")
     length_of_trace: int = get_input()
     print("What output file? \n 1. Text file for arduino\n 2. Json for GA")
     file_type: int = get_input()
