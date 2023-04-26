@@ -1,3 +1,5 @@
+using System.Reflection;
+using GeneticDFA.Utility;
 using GeneticDFA.Visualization;
 using GeneticSharp;
 
@@ -34,22 +36,11 @@ class Program
         const double removeAcceptStateProbability = 0.1;
         const double mergeStatesProbability = 0.1;
         
-        
-        //Sample traces of SmallDFA
-        List<TestTrace> traces = new List<TestTrace>()
-        {
-            new TestTrace("11", true),
-            new TestTrace("00011", true),
-            new TestTrace("110011", true),
-            new TestTrace("1011", true),
-            new TestTrace("0101101011", true),
-            new TestTrace("110", false),
-            new TestTrace("01", false),
-            new TestTrace("00111", false),
-            new TestTrace("1010", false),
-            new TestTrace("00000000000111", false),
-        };
-        List<char> alphabet = new List<char>() { '1', '0' };
+  
+        string testTracePath = $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/traces.json";
+
+        List<TestTrace> traces = DFAUtility.ImportTestTraces(testTracePath);
+        List<char> alphabet = DFAUtility.DiscoverAlphabet(traces).ToList();
 
         EliteSelection selection = new EliteSelection(numberOfFittestIndividualsAcrossAllGenerations);
         UniformCrossover crossover = new UniformCrossover();
