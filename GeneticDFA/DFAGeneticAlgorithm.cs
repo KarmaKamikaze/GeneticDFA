@@ -100,8 +100,10 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
     // Needs proper implementation
     private bool EvolveOneGeneration()
     {
+        // First use Elitist selection to include elites
         IList<IChromosome> selectedElites =
             Selection.SelectChromosomes(SelectionScale(), Population.CurrentGeneration);
+        // Use roulette wheel selection on the selected elites. This can cause elites to be mutated multiple times
         IList<IChromosome> selectedForModification = DFARouletteWheelSelection.SelectChromosomes(Population.MaxSize, selectedElites);
         IList<IChromosome> newPopulation = new List<IChromosome>();
 
@@ -117,6 +119,7 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
                         IChromosome clone = selectedForModification[i1].Clone();
                         Mutation.Mutate(clone, 0);
                         clone.Fitness = null;
+                        // Use mutex since otherwise two threads will attempt to access the shared list at the same time
                         lock (m_lock)
                         {
                             newPopulation.Add(clone);
@@ -124,7 +127,8 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
                     }));
                 }
                 else
-                {
+                { 
+                    // Replace with crossover
                     int i1 = i;
                     TaskExecutor.Add((Action) (() =>
                     {
@@ -185,10 +189,7 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
 
         return false;
     }
-
-    // Possibly needs proper implementation since it only evaluates fitness on chromosomes without a value assigned?
-    // Hinting that the fitness of chromosomes are reset after a mutation or crossover.
-    // Depends on how we are going to adjust fitness after mutation and crossover. Probably best to set it to null.
+    
     private void EvaluateFitness()
     {
         try
@@ -210,7 +211,6 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
             TaskExecutor.Clear();
         }
 
-        // Scuffed, but the setter on the Chromosomes list is internal :skull:
         List<IChromosome> tempList = Population.CurrentGeneration.Chromosomes
             .OrderByDescending<IChromosome, double>((c => c.Fitness!.Value)).ToList();
         Population.CurrentGeneration.Chromosomes.Clear();
@@ -220,7 +220,6 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
         }
     }
 
-    // Could be changed to just take a IChromosome, but for some reason original implementation is this. Maybe for efficiency?
     private void RunEvaluateFitness(object chromosome)
     {
         IChromosome chromosome1 = (chromosome as IChromosome)!;
