@@ -2,7 +2,7 @@ import random as rnd
 import re
 import exrex
 
-regex = "0*1(00*1)*1((1|0)0*1(00*1)*1)*"
+regex = "^0*1(00*1)*1((1|0)0*1(00*1)*1)*$"
 
 
 def generate_test_traces_for_smalldfa(number_of_failing_traces: int,
@@ -18,7 +18,7 @@ def generate_failing_traces(number_of_failing_traces: int, length: int):
     # Generate input amount of traces
     while len(failing_traces) != number_of_failing_traces:
         i = i + 1
-        trace = ''.join(rnd.choices(['0', '1'], k = rnd.randint(0, length)))
+        trace = ''.join(rnd.choices(['0', '1'], k = rnd.randint(1, length)))
         if not re.match(regex, trace):
             if trace not in failing_traces:
                 failing_traces.append(trace)
@@ -37,7 +37,8 @@ def generate_passing_traces(number_of_passing_traces: int):
         trace = exrex.getone(regex, limit=3)
         if re.match(regex, trace):
             if trace not in passing_traces:
-                passing_traces.append(trace)
+                if len(trace) <= 20:
+                    passing_traces.append(trace)
 
     print(f"It took {i} attempts to create {number_of_passing_traces} passing traces.")
     return passing_traces

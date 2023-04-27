@@ -1,0 +1,2 @@
+passing = ["claula","clauloulcaululouc","cla","co","clo","c","clauolcoca","lcaulaulocu","clauococ","clocaulouclauoc","clauol","l","coclauolu","lu","lcaulauloulcouc","clulo","cluo","cluococloc","cluloculoca","cl",]
+failing = ["aclouocu","ocucloocoac","ao","ouuouuo","accacaoolcoo","alocllcccluu","ocacucuua","acoll","uclaouaulul","ooo",]
