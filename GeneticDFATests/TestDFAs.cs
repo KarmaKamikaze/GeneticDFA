@@ -40,9 +40,9 @@ public class TestDFAs
         new DFAEdge(3, NFAStates[1], NFAStates[1], '0'),
         new DFAEdge(4, NFAStates[1], NFAStates[2], '0'),
         new DFAEdge(5, NFAStates[2], NFAStates[3], '1'),
-        new DFAEdge(7, NFAStates[3], NFAStates[0], '1'),
-        new DFAEdge(8, NFAStates[3], NFAStates[1], '0'),
-        new DFAEdge(9, NFAStates[3], NFAStates[2], '1'),
+        new DFAEdge(6, NFAStates[3], NFAStates[0], '1'),
+        new DFAEdge(7, NFAStates[3], NFAStates[1], '0'),
+        new DFAEdge(8, NFAStates[3], NFAStates[2], '1'),
     };
 
     public static readonly DFAChromosome NFA = new DFAChromosome(NFAStates, NFAEdges, NFAStates[0]);

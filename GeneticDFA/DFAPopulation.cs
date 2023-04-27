@@ -4,10 +4,12 @@ namespace GeneticDFA;
 
 public class DFAPopulation : Population
 {
-    public DFAPopulation(int minSize, int maxSize, IChromosome adamChromosome, List<char> alphabet) : base(minSize,
+    public DFAPopulation(int minSize, int maxSize, IChromosome adamChromosome, List<char> alphabet,
+        IGenerationStrategy generationStrategy) : base(minSize,
         maxSize, adamChromosome)
     {
         Alphabet = alphabet;
+        GenerationStrategy = generationStrategy;
     }
 
     private List<char> Alphabet { get; }
@@ -26,6 +28,7 @@ public class DFAPopulation : Population
             InitializeChromosomeStates(chromosome);
             InitializeChromosomeEdges(chromosome);
             DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(chromosome);
+            chromosome.Fitness = null;
             chromosomes.Add(chromosome);
         }
 
@@ -102,7 +105,6 @@ public class DFAPopulation : Population
         DFAChromosomeHelper.FixUnreachability(chromosome, Alphabet);
     }
 
-
     // Copied from source code, but without gene validation, since we do not use the gene properties on chromosomes
     public override void CreateNewGeneration(IList<IChromosome> chromosomes)
     {
@@ -110,5 +112,15 @@ public class DFAPopulation : Population
         CurrentGeneration = new Generation(++GenerationsNumber, chromosomes);
         Generations.Add(CurrentGeneration);
         GenerationStrategy.RegisterNewGeneration(this);
+    }
+
+
+    public override void EndCurrentGeneration()
+    {
+        CurrentGeneration.End(MaxSize);
+        if (BestChromosome != null && BestChromosome.CompareTo(CurrentGeneration.BestChromosome) >= 0)
+            return;
+        BestChromosome = CurrentGeneration.BestChromosome;
+        OnBestChromosomeChanged(EventArgs.Empty);
     }
 }

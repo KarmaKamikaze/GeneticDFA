@@ -32,9 +32,25 @@ public class DFAChromosome : IChromosome
 
     public IChromosome Clone()
     {
-        IChromosome chromosome = CreateNew();
-        //Implement copying of states and edges and stuff.
+        DFAChromosome chromosome = (DFAChromosome) CreateNew();
+
+        foreach (DFAState state in States)
+        {
+            chromosome.States.Add(state.Clone());
+        }
+
+        foreach (DFAEdge edge in Edges)
+        {
+            chromosome.Edges.Add(edge.Clone(
+                chromosome.States.Find(s => s.Id == edge.Source.Id)!,
+                chromosome.States.Find(s => s.Id == edge.Target.Id)!));
+        }
+
+        chromosome.StartState = chromosome.States.Find(s => s.Id == StartState!.Id);
         chromosome.Fitness = Fitness;
+        chromosome.NextStateId = NextStateId;
+        chromosome.NextEdgeId = NextEdgeId;
+
         return chromosome;
     }
 

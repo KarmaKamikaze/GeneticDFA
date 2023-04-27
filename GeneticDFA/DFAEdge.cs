@@ -14,4 +14,9 @@ public class DFAEdge
     public DFAState Source { get; set; }
     public DFAState Target { get; set; }
     public char Input { get; set; }
+
+    public DFAEdge Clone(DFAState source, DFAState target)
+    {
+        return new DFAEdge(Id, source, target, Input);
+    }
 }
