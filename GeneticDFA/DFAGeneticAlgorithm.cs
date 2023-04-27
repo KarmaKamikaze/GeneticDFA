@@ -129,16 +129,20 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
                 }
                 else
                 {
-                    // Replace with crossover
-                    int i1 = i;
+                    int i1 = i++;
+                    int i2 = i;
                     TaskExecutor.Add((Action) (() =>
                     {
-                        IChromosome clone = selectedForModification[i1].Clone();
-                        Mutation.Mutate(clone, 0);
-                        clone.Fitness = null;
+                        IList<IChromosome> parents = new List<IChromosome>() { selectedForModification[i1].Clone(), 
+                            selectedForModification[i2].Clone() };
+                        IList<IChromosome> children = Crossover.Cross(parents);
+                        children[0].Fitness = null;
+                        children[1].Fitness = null;
+                        
                         lock (m_lock)
                         {
-                            newPopulation.Add(clone);
+                            newPopulation.Add(children[0]);
+                            newPopulation.Add(children[1]);
                         }
                     }));
                 }
