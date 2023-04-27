@@ -23,8 +23,8 @@ public class DFACrossover : CrossoverBase
             return parents;
 
         // Create two new child chromosomes using the CreateChild helper function.
-        DFAChromosome child1 = CreateChild(parent1, parent2);
-        DFAChromosome child2 = CreateChild(parent2, parent1);
+        DFAChromosome child1 = CreateChild((DFAChromosome) parent1.Clone(), (DFAChromosome) parent2.Clone());
+        DFAChromosome child2 = CreateChild((DFAChromosome) parent2.Clone(), (DFAChromosome) parent1.Clone());
 
         // Fix any unreachability in the child chromosomes using the FixUnreachability method.
         DFAChromosomeHelper.FixUnreachability(child1, Alphabet);
@@ -32,7 +32,7 @@ public class DFACrossover : CrossoverBase
 
         child1.SetNewId();
         child2.SetNewId();
-
+        
         return new List<IChromosome>() {child1, child2};
     }
 
