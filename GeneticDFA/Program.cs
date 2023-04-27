@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Reflection;
 using GeneticDFA.Utility;
 using GeneticDFA.Visualization;
@@ -11,20 +12,20 @@ class Program
     {
         const int minPopulation = 10000;
         const int maxPopulation = 10000;
-        const int convergenceGenerationNumber = 30;
+        const int convergenceGenerationNumber = 20;
         const int maximumGenerationNumber = 100;
         const int eliteSelectionScalingFactor = 2;
         const int fitnessLowerBound = 500;
-        const int numberOfFittestIndividualsAcrossAllGenerations = 500;
+        int numberOfFittestIndividualsAcrossAllGenerations = Convert.ToInt32(0.05*minPopulation);
         const int weightTruePositive = 10;
         const int weightTrueNegative = 10;
         const double weightFalsePositive = 10;
         const double weightFalseNegative = 10;
-        const double weightNonDeterministicEdges = 0.5;
+        const double weightNonDeterministicEdges = 1;
         const double weightMissingDeterministicEdges = 0.5;
-        const double weightSize = 0.5;
-        const double crossoverProbability = 0.5;
+        const double weightSize = 1;
         const double mutationProbability = 0.5;
+        const double crossoverProbability = 1 - mutationProbability;
         const double nonDeterministicBehaviorProbability = 0.5;
         const double changeTargetProbability = 0.1;
         const double changeSourceProbability = 0.1;
@@ -42,6 +43,8 @@ class Program
         List<TestTrace> traces = DFAUtility.ImportTestTraces(testTracePath);
         List<char> alphabet = DFAUtility.DiscoverAlphabet(traces).ToList();
 
+        double fitnessUpperBound = weightTruePositive * traces.Count(t => t.IsAccepting) + weightTrueNegative * traces.Count(t => !t.IsAccepting);
+        
         EliteSelection selection = new EliteSelection(numberOfFittestIndividualsAcrossAllGenerations);
         DFACrossover crossover = new DFACrossover(2, 2, 0, alphabet);
         DFAMutation mutation = new DFAMutation(alphabet, nonDeterministicBehaviorProbability, changeTargetProbability,
@@ -69,7 +72,8 @@ class Program
 
         // Output continuous evaluation of each generation.
         ga.GenerationRan += (s, e) =>
-            Console.WriteLine($"Generation {ga.GenerationsNumber}. Best fitness: {ga.BestChromosome.Fitness!.Value}");
+            Console.WriteLine($"Generation {ga.GenerationsNumber}. Best fitness: {ga.BestChromosome.Fitness!.Value}. " +
+                              $"Accuracy: {Math.Round(100*(ga.BestChromosome.Fitness!.Value / fitnessUpperBound),2)}%");
 
         // Output graph visualizations of the fittest chromosome each generation.
         ga.GenerationRan += (s, e) =>

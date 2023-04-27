@@ -145,6 +145,8 @@ public class DFAMutation : MutationBase
                     throw new ArgumentException("Probability selection error.");
             }
         }
+
+        _chromosome.SetNewId();
     }
 
     // Randomly shuffles a list.

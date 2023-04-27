@@ -53,6 +53,7 @@ public class DFAChromosome : IChromosome
             chromosome.States.Add(state.Clone());
         }
 
+
         foreach (DFAEdge edge in Edges)
         {
             chromosome.Edges.Add(edge.Clone(

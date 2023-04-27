@@ -37,7 +37,7 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
         CrossoverProbability = crossoverProbability;
         MutationProbability = mutationProbability;
         TimeEvolving = TimeSpan.Zero;
-        TaskExecutor = new ParallelTaskExecutor() {MinThreads = 3000, MaxThreads = 3000};
+        TaskExecutor = new ParallelTaskExecutor() {MinThreads = Population.MinSize, MaxThreads = Population.MaxSize};
     }
 
     public event EventHandler GenerationRan;
@@ -110,7 +110,7 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
 
         try
         {
-            for (int i = 0; i < selectedForModification.Count; i++)
+            for (int i = 0; i < selectedForModification.Count - 1; i++)
             {
                 if (_rnd.GetDouble(0, 1) < MutationProbability)
                 {
@@ -131,7 +131,8 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
                     int i2 = i;
                     TaskExecutor.Add((Action) (() =>
                     {
-                        if (((DFAChromosome) selectedForModification[i1]).Id == ((DFAChromosome) selectedForModification[i2]).Id)
+                        if (((DFAChromosome) selectedForModification[i1]).Id ==
+                            ((DFAChromosome) selectedForModification[i2]).Id)
                         {
                             IChromosome chromosome1 = MutateChromosome(selectedForModification[i1].Clone());
                             IChromosome chromosome2 = MutateChromosome(selectedForModification[i2].Clone());

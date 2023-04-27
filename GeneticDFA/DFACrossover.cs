@@ -4,7 +4,8 @@ namespace GeneticDFA;
 
 public class DFACrossover : CrossoverBase
 {
-    public DFACrossover(int parentsNumber, int childrenNumber, int minChromosomeLength, List<char> alphabet) : base(parentsNumber, childrenNumber, minChromosomeLength)
+    public DFACrossover(int parentsNumber, int childrenNumber, int minChromosomeLength, List<char> alphabet) : base(
+        parentsNumber, childrenNumber, minChromosomeLength)
     {
         Alphabet = alphabet;
     }
@@ -28,6 +29,9 @@ public class DFACrossover : CrossoverBase
         // Fix any unreachability in the child chromosomes using the FixUnreachability method.
         DFAChromosomeHelper.FixUnreachability(child1, Alphabet);
         DFAChromosomeHelper.FixUnreachability(child2, Alphabet);
+
+        child1.SetNewId();
+        child2.SetNewId();
 
         return new List<IChromosome>() {child1, child2};
     }
@@ -53,6 +57,12 @@ public class DFACrossover : CrossoverBase
         child.States.AddRange(notSelectedStatesP2);
         child.StartState = parent1.StartState;
 
+        // Update the Id's of states to ensure uniqueness.
+        foreach (DFAState state in child.States)
+        {
+            state.Id = child.NextStateId++;
+        }
+
         // Find the edges from parent 1 that should be copied over to the child
         List<DFAEdge> edgesFromP1 = parent1.Edges.Where(e => selectedStatesP1.Contains(e.Source)).ToList();
         foreach (DFAEdge edge in edgesFromP1)
@@ -66,7 +76,7 @@ public class DFACrossover : CrossoverBase
         }
 
         // Find the edges from parent 2 that should be copied over to the child (Opposite of the above)
-        List<DFAEdge> edgesFromP2 = parent1.Edges.Where(e => notSelectedStatesP2.Contains(e.Source)).ToList();
+        List<DFAEdge> edgesFromP2 = parent2.Edges.Where(e => notSelectedStatesP2.Contains(e.Source)).ToList();
         foreach (DFAEdge edge in edgesFromP2)
         {
             // If the target state of an edge is not in the not selected states from parent 2,
@@ -79,6 +89,11 @@ public class DFACrossover : CrossoverBase
 
         child.Edges.AddRange(edgesFromP1);
         child.Edges.AddRange(edgesFromP2);
+
+        foreach (DFAEdge edge in child.Edges)
+        {
+            edge.Id = child.NextEdgeId++;
+        }
 
         // If none of the states are marked as accept states in the child chromosome,
         // randomly select a state to mark as an accept state.
@@ -99,11 +114,11 @@ public class DFACrossover : CrossoverBase
         Queue<DFAState> queue = new Queue<DFAState>();
         queue.Enqueue(chromosome.StartState!);
 
-        // Return immediately if the number of states is 3 or less.
+
         if (Math.Floor((double) chromosome.States.Count / 2) < 2)
             return selectedStates;
 
-        while (queue.Count != 0)
+        for (int i = 0; i < chromosome.States.Count; i++)
         {
             DFAState state = queue.Dequeue();
 
