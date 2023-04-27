@@ -2,7 +2,7 @@ import random as rnd
 import re
 import exrex
 
-regex = "0*1(00*1)*1((1|0)0*1(00*1)*1)*"
+regex = "^0*1(00*1)*1((1|0)0*1(00*1)*1)*$"
 
 
 def generate_test_traces_for_smalldfa(number_of_failing_traces: int,

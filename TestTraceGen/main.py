@@ -57,8 +57,6 @@ def test_trace_generation():
     number_of_failing_traces: int = get_input()
     print("How many char long should failing traces be? Between 10-15 recommended")
     length_of_trace: int = get_input()
-    print("What output file? \n 1. Text file for arduino\n 2. Json for GA")
-    file_type: int = get_input()
 
     if user_input == 1:
         traces = generate_test_traces_for_smalldfa(number_of_failing_traces,
@@ -72,7 +70,7 @@ def test_trace_generation():
     else:
         print("Wrong input\n")
         return
-    write_traces_to_file(traces[0], traces[1], user_input, file_type)
+    write_traces_to_file(traces[0], traces[1], user_input)
     print("Press enter to close the script.")
     input()
 
