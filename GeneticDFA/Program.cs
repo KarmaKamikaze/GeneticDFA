@@ -43,7 +43,7 @@ class Program
         List<char> alphabet = DFAUtility.DiscoverAlphabet(traces).ToList();
 
         EliteSelection selection = new EliteSelection(numberOfFittestIndividualsAcrossAllGenerations);
-        DFACrossover crossover = new DFACrossover(2, 2, 0);
+        DFACrossover crossover = new DFACrossover(2, 2, 0, alphabet);
         DFAMutation mutation = new DFAMutation(alphabet, nonDeterministicBehaviorProbability, changeTargetProbability,
             changeSourceProbability, removeEdgeProbability, addEdgeProbability, addStateProbability,
             addAcceptStateProbability, removeAcceptStateProbability, mergeStatesProbability, changeInputProbability);
