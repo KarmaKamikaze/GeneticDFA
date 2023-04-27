@@ -37,16 +37,13 @@ class Program
         const double mergeStatesProbability = 0.1;
 
         
-        
-        
-        
         string testTracePath = $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/traces.json";
 
         List<TestTrace> traces = DFAUtility.ImportTestTraces(testTracePath);
         List<char> alphabet = DFAUtility.DiscoverAlphabet(traces).ToList();
 
         EliteSelection selection = new EliteSelection(numberOfFittestIndividualsAcrossAllGenerations);
-        UniformCrossover crossover = new UniformCrossover();
+        DFACrossover crossover = new DFACrossover(2, 2, 0);
         DFAMutation mutation = new DFAMutation(alphabet, nonDeterministicBehaviorProbability, changeTargetProbability,
             changeSourceProbability, removeEdgeProbability, addEdgeProbability, addStateProbability,
             addAcceptStateProbability, removeAcceptStateProbability, mergeStatesProbability, changeInputProbability);
