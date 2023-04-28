@@ -131,4 +131,24 @@ public class DFACrossoverTests
                 e => { Assert.True(chromosome.States.Contains(e.Source) && chromosome.States.Contains(e.Target)); });
         });
     }
+
+    [Fact]
+    public void CrossoverEnsuresPresenceOfAnAcceptState()
+    {
+        //Arrange
+        List<char> alphabet = new List<char>() {'0', '1'};
+        DFACrossover crossover = new DFACrossover(2, 2, 0, alphabet);
+        DFAChromosome chromosome1 = (DFAChromosome) TestDFAs.SmallDFA.Clone();
+        DFAChromosome chromosome2 = (DFAChromosome) TestDFAs.NFA.Clone();
+
+        //Act
+        IList<IChromosome> children = crossover.Cross(new List<IChromosome>() {chromosome1, chromosome2});
+
+        //Assert
+        Assert.All(children, c =>
+        {
+            DFAChromosome chromosome = (DFAChromosome) c;
+            Assert.Contains(chromosome.States, s => s.IsAccept);
+        });
+    }
 }

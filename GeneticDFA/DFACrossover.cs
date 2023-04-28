@@ -11,7 +11,7 @@ public class DFACrossover : CrossoverBase
     }
 
     private readonly IRandomization _rnd = RandomizationProvider.Current;
-    private List<char> Alphabet;
+    private List<char> Alphabet { get; }
 
     protected override IList<IChromosome> PerformCross(IList<IChromosome> parents)
     {
@@ -57,7 +57,7 @@ public class DFACrossover : CrossoverBase
         child.States.AddRange(notSelectedStatesP2);
         child.StartState = parent1.StartState;
 
-        // Update the Id's of states to ensure uniqueness.
+        // Update the Ids of states to ensure uniqueness.
         foreach (DFAState state in child.States)
         {
             state.Id = child.NextStateId++;
@@ -90,6 +90,7 @@ public class DFACrossover : CrossoverBase
         child.Edges.AddRange(edgesFromP1);
         child.Edges.AddRange(edgesFromP2);
 
+        // Update the IDs of edges to ensure uniqueness
         foreach (DFAEdge edge in child.Edges)
         {
             edge.Id = child.NextEdgeId++;
@@ -114,11 +115,11 @@ public class DFACrossover : CrossoverBase
         Queue<DFAState> queue = new Queue<DFAState>();
         queue.Enqueue(chromosome.StartState!);
 
-
-        if (Math.Floor((double) chromosome.States.Count / 2) < 2)
+        // Return the start state if there are 3 or less states, since we can in those cases at most select one state.
+        if (chromosome.States.Count <= 3)
             return selectedStates;
 
-        for (int i = 0; i < chromosome.States.Count; i++)
+        for (int i = 0; i < chromosome.States.Count && queue.Count != 0; i++)
         {
             DFAState state = queue.Dequeue();
 
@@ -130,7 +131,7 @@ public class DFACrossover : CrossoverBase
                     {
                         queue.Enqueue(edge.Target);
                         selectedStates.Add(edge.Target);
-                        // Return once half the state space has been explored.
+                        // Return once half the state space has been selected.
                         if (selectedStates.Count >= Math.Floor((double) chromosome.States.Count / 2))
                             return selectedStates;
                     }
