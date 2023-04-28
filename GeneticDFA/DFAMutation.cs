@@ -430,12 +430,14 @@ public class DFAMutation : MutationBase
             return isInputEqual != 0 ? isInputEqual : edge1.Target.Id.CompareTo(edge2.Target.Id);
         });
 
-        // Remove duplicates
-        for (int i = 0; i < chromosome.Edges.Count - 1; i++)
+        // Remove duplicates. Iterates backwards since removing an element from a list causes the elements ahead of
+        // the list to move in order to fill the empty space.
+        // By iterating backwards, only elements we have already analysed are moved.
+        for (int i = chromosome.Edges.Count - 1; i >= 1; i--)
         {
-            if (chromosome.Edges[i].Source.Id == chromosome.Edges[i + 1].Source.Id
-                && chromosome.Edges[i].Input == chromosome.Edges[i + 1].Input
-                && chromosome.Edges[i].Target.Id == chromosome.Edges[i + 1].Target.Id)
+            if (chromosome.Edges[i].Source.Id == chromosome.Edges[i - 1].Source.Id
+                && chromosome.Edges[i].Input == chromosome.Edges[i - 1].Input
+                && chromosome.Edges[i].Target.Id == chromosome.Edges[i - 1].Target.Id)
                 chromosome.Edges.Remove(chromosome.Edges[i]);
         }
 

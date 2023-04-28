@@ -23,7 +23,7 @@ class Program
         const double weightNonDeterministicEdges = 1;
         const double weightMissingDeterministicEdges = 0.5;
         const double weightSize = 1;
-        const double mutationProbability = 0.5;
+        const double mutationProbability = 0;
         const double crossoverProbability = 1 - mutationProbability;
         const double nonDeterministicBehaviorProbability = 0.5;
         const double changeTargetProbability = 0.1;

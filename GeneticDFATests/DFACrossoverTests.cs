@@ -8,55 +8,49 @@ namespace GeneticDFATests;
 
 public class DFACrossoverTests
 {
-    [Fact]
-    public void CrossoverMaintainsNumberOfStates()
+    [Theory]
+    [MemberData(nameof(Alphabets))]
+    public void CrossoverMaintainsNumberOfStates(List<char> alphabet)
     {
         //Arrange
-        List<char> alphabet = new List<char>() {'0', '1'};
         DFACrossover crossover = new DFACrossover(2, 2, 0, alphabet);
-        DFAChromosome chromosome1 = (DFAChromosome) TestDFAs.SmallDFA.Clone();
-        DFAChromosome chromosome2 = (DFAChromosome) TestDFAs.NFA.Clone();
+        DFAPopulation population =
+            new DFAPopulation(2, 2, new DFAChromosome(), alphabet, new PerformanceGenerationStrategy());
+        population.CreateInitialGeneration();
 
         //Act
-        IList<IChromosome> children = crossover.Cross(new List<IChromosome>() {chromosome1, chromosome2});
+        List<DFAChromosome> parents = new List<DFAChromosome>()
+            {(DFAChromosome) population.CurrentGeneration.Chromosomes[0], (DFAChromosome) population.CurrentGeneration.Chromosomes[1]};
+        IList<IChromosome> children = crossover.Cross(new List<IChromosome>()
+            {parents[0], parents[1]});
         DFAChromosome child1 = (DFAChromosome) children[0];
         DFAChromosome child2 = (DFAChromosome) children[1];
 
         //Assert
-        Assert.Equal(chromosome1.States.Count + chromosome2.States.Count,
+        Assert.Equal(parents[0].States.Count + parents[1].States.Count,
             child1.States.Count + child2.States.Count);
     }
 
-    [Fact]
-    public void CrossoverMaintainsAtLeastNumberOfEdges()
+    [Theory]
+    [MemberData(nameof(Alphabets))]
+    public void CrossoverMaintainsStateUniqueness(List<char> alphabet)
     {
         //Arrange
-        List<char> alphabet = new List<char>() {'0', '1'};
         DFACrossover crossover = new DFACrossover(2, 2, 0, alphabet);
-        DFAChromosome chromosome1 = (DFAChromosome) TestDFAs.SmallDFA.Clone();
-        DFAChromosome chromosome2 = (DFAChromosome) TestDFAs.NFA.Clone();
+        DFAPopulation population =
+            new DFAPopulation(100, 100, new DFAChromosome(), alphabet, new PerformanceGenerationStrategy());
+        population.CreateInitialGeneration();
 
         //Act
-        IList<IChromosome> children = crossover.Cross(new List<IChromosome>() {chromosome1, chromosome2});
-        DFAChromosome child1 = (DFAChromosome) children[0];
-        DFAChromosome child2 = (DFAChromosome) children[1];
-
-        //Assert
-        Assert.True(chromosome1.Edges.Count + chromosome2.Edges.Count <=
-                    child1.Edges.Count + child2.Edges.Count);
-    }
-
-    [Fact]
-    public void CrossoverMaintainsStateUniqueness()
-    {
-        //Arrange
-        List<char> alphabet = new List<char>() {'0', '1'};
-        DFACrossover crossover = new DFACrossover(2, 2, 0, alphabet);
-        DFAChromosome chromosome1 = (DFAChromosome) TestDFAs.SmallDFA.Clone();
-        DFAChromosome chromosome2 = (DFAChromosome) TestDFAs.NFA.Clone();
-
-        //Act
-        IList<IChromosome> children = crossover.Cross(new List<IChromosome>() {chromosome1, chromosome2});
+        List<IChromosome> children = new List<IChromosome>();
+        for (int i = 0; i < population.CurrentGeneration.Chromosomes.Count - 1; i += 2)
+        {
+            children.AddRange(crossover.Cross(new List<IChromosome>()
+            {
+                population.CurrentGeneration.Chromosomes[i],
+                population.CurrentGeneration.Chromosomes[i + 1]
+            }));
+        }
 
         //Assert
         Assert.All(children, c =>
@@ -66,17 +60,26 @@ public class DFACrossoverTests
         });
     }
 
-    [Fact]
-    public void CrossoverMaintainsEdgeIDUniqueness()
+    [Theory]
+    [MemberData(nameof(Alphabets))]
+    public void CrossoverMaintainsEdgeIDUniqueness(List<char> alphabet)
     {
         //Arrange
-        List<char> alphabet = new List<char>() {'0', '1'};
         DFACrossover crossover = new DFACrossover(2, 2, 0, alphabet);
-        DFAChromosome chromosome1 = (DFAChromosome) TestDFAs.SmallDFA.Clone();
-        DFAChromosome chromosome2 = (DFAChromosome) TestDFAs.NFA.Clone();
+        DFAPopulation population =
+            new DFAPopulation(100, 100, new DFAChromosome(), alphabet, new PerformanceGenerationStrategy());
+        population.CreateInitialGeneration();
 
         //Act
-        IList<IChromosome> children = crossover.Cross(new List<IChromosome>() {chromosome1, chromosome2});
+        List<IChromosome> children = new List<IChromosome>();
+        for (int i = 0; i < population.CurrentGeneration.Chromosomes.Count - 1; i += 2)
+        {
+            children.AddRange(crossover.Cross(new List<IChromosome>()
+            {
+                population.CurrentGeneration.Chromosomes[i],
+                population.CurrentGeneration.Chromosomes[i + 1]
+            }));
+        }
 
         //Assert
         Assert.All(children, c =>
@@ -86,17 +89,26 @@ public class DFACrossoverTests
         });
     }
 
-    [Fact]
-    public void CrossoverMaintainsEdgePropertiesUniqueness()
+    [Theory]
+    [MemberData(nameof(Alphabets))]
+    public void CrossoverMaintainsEdgePropertiesUniqueness(List<char> alphabet)
     {
         //Arrange
-        List<char> alphabet = new List<char>() {'0', '1'};
         DFACrossover crossover = new DFACrossover(2, 2, 0, alphabet);
-        DFAChromosome chromosome1 = (DFAChromosome) TestDFAs.SmallDFA.Clone();
-        DFAChromosome chromosome2 = (DFAChromosome) TestDFAs.NFA.Clone();
+        DFAPopulation population =
+            new DFAPopulation(100, 100, new DFAChromosome(), alphabet, new PerformanceGenerationStrategy());
+        population.CreateInitialGeneration();
 
         //Act
-        IList<IChromosome> children = crossover.Cross(new List<IChromosome>() {chromosome1, chromosome2});
+        List<IChromosome> children = new List<IChromosome>();
+        for (int i = 0; i < population.CurrentGeneration.Chromosomes.Count - 1; i += 2)
+        {
+            children.AddRange(crossover.Cross(new List<IChromosome>()
+            {
+                population.CurrentGeneration.Chromosomes[i],
+                population.CurrentGeneration.Chromosomes[i + 1]
+            }));
+        }
 
         //Assert
         Assert.All(children, c =>
@@ -111,17 +123,26 @@ public class DFACrossoverTests
         });
     }
 
-    [Fact]
-    public void CrossoverDoesNotCauseEdgesToPointOutsideTheSetOfStates()
+    [Theory]
+    [MemberData(nameof(Alphabets))]
+    public void CrossoverDoesNotCauseEdgesToPointOutsideTheSetOfStates(List<char> alphabet)
     {
         //Arrange
-        List<char> alphabet = new List<char>() {'0', '1'};
         DFACrossover crossover = new DFACrossover(2, 2, 0, alphabet);
-        DFAChromosome chromosome1 = (DFAChromosome) TestDFAs.SmallDFA.Clone();
-        DFAChromosome chromosome2 = (DFAChromosome) TestDFAs.NFA.Clone();
+        DFAPopulation population =
+            new DFAPopulation(100, 100, new DFAChromosome(), alphabet, new PerformanceGenerationStrategy());
+        population.CreateInitialGeneration();
 
         //Act
-        IList<IChromosome> children = crossover.Cross(new List<IChromosome>() {chromosome1, chromosome2});
+        List<IChromosome> children = new List<IChromosome>();
+        for (int i = 0; i < population.CurrentGeneration.Chromosomes.Count - 1; i += 2)
+        {
+            children.AddRange(crossover.Cross(new List<IChromosome>()
+            {
+                population.CurrentGeneration.Chromosomes[i],
+                population.CurrentGeneration.Chromosomes[i + 1]
+            }));
+        }
 
         //Assert
         Assert.All(children, c =>
@@ -132,17 +153,26 @@ public class DFACrossoverTests
         });
     }
 
-    [Fact]
-    public void CrossoverEnsuresPresenceOfAnAcceptState()
+    [Theory]
+    [MemberData(nameof(Alphabets))]
+    public void CrossoverEnsuresPresenceOfAnAcceptState(List<char> alphabet)
     {
         //Arrange
-        List<char> alphabet = new List<char>() {'0', '1'};
         DFACrossover crossover = new DFACrossover(2, 2, 0, alphabet);
-        DFAChromosome chromosome1 = (DFAChromosome) TestDFAs.SmallDFA.Clone();
-        DFAChromosome chromosome2 = (DFAChromosome) TestDFAs.NFA.Clone();
+        DFAPopulation population =
+            new DFAPopulation(100, 100, new DFAChromosome(), alphabet, new PerformanceGenerationStrategy());
+        population.CreateInitialGeneration();
 
         //Act
-        IList<IChromosome> children = crossover.Cross(new List<IChromosome>() {chromosome1, chromosome2});
+        List<IChromosome> children = new List<IChromosome>();
+        for (int i = 0; i < population.CurrentGeneration.Chromosomes.Count - 1; i += 2)
+        {
+            children.AddRange(crossover.Cross(new List<IChromosome>()
+            {
+                population.CurrentGeneration.Chromosomes[i],
+                population.CurrentGeneration.Chromosomes[i + 1]
+            }));
+        }
 
         //Assert
         Assert.All(children, c =>
@@ -151,4 +181,14 @@ public class DFACrossoverTests
             Assert.Contains(chromosome.States, s => s.IsAccept);
         });
     }
+
+    public static readonly IEnumerable<object[]> Alphabets = new List<object[]>()
+    {
+        new object[] {new List<char>() {'0'}},
+        new object[] {new List<char>() {'0', '1'}},
+        new object[] {new List<char>() {'0', '1', '2'}},
+        new object[] {new List<char>() {'0', '1', '2', '3'}},
+        new object[] {new List<char>() {'0', '1', '2', '3', '4'}},
+        new object[] {new List<char>() {'0', '1', '2', '3', '4', '5'}},
+    };
 }

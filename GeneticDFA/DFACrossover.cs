@@ -32,7 +32,7 @@ public class DFACrossover : CrossoverBase
 
         child1.SetNewId();
         child2.SetNewId();
-        
+
         return new List<IChromosome>() {child1, child2};
     }
 
@@ -71,7 +71,12 @@ public class DFACrossover : CrossoverBase
             // randomly select a target state from the not selected states from parent 2.
             if (!selectedStatesP1.Contains(edge.Target))
             {
-                edge.Target = notSelectedStatesP2[_rnd.GetInt(0, notSelectedStatesP2.Count)];
+                List<DFAState> possibleTargets = notSelectedStatesP2.Where(s =>
+                    !edgesFromP1.Any(e => e.Source == edge.Source && e.Input == edge.Input && e.Target == s)).ToList();
+                if (possibleTargets.Count == 0)
+                    edgesFromP1.Remove(edge);
+                else
+                    edge.Target = possibleTargets[_rnd.GetInt(0, possibleTargets.Count)];
             }
         }
 
@@ -83,7 +88,12 @@ public class DFACrossover : CrossoverBase
             // randomly select a target state from the selected states from parent 1.
             if (!notSelectedStatesP2.Contains(edge.Target))
             {
-                edge.Target = selectedStatesP1[_rnd.GetInt(0, selectedStatesP1.Count)];
+                List<DFAState> possibleTargets = selectedStatesP1.Where(s =>
+                    !edgesFromP2.Any(e => e.Source == edge.Source && e.Input == edge.Input && e.Target == s)).ToList();
+                if (possibleTargets.Count == 0)
+                    edgesFromP2.Remove(edge);
+                else
+                    edge.Target = possibleTargets[_rnd.GetInt(0, possibleTargets.Count)];
             }
         }
 
