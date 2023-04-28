@@ -9,66 +9,42 @@ class Program
 {
     static void Main(string[] args)
     {
-        const int minPopulation = 10000;
-        const int maxPopulation = 10000;
-        const int convergenceGenerationNumber = 30;
-        const int maximumGenerationNumber = 100;
-        const int eliteSelectionScalingFactor = 2;
-        const int fitnessLowerBound = 500;
-        const int numberOfFittestIndividualsAcrossAllGenerations = 500;
-        const int weightTruePositive = 10;
-        const int weightTrueNegative = 10;
-        const double weightFalsePositive = 10;
-        const double weightFalseNegative = 10;
-        const double weightNonDeterministicEdges = 0.5;
-        const double weightMissingDeterministicEdges = 0.5;
-        const double weightSize = 0.5;
-        const double crossoverProbability = 0.5;
-        const double mutationProbability = 0.5;
-        const double nonDeterministicBehaviorProbability = 0.5;
-        const double changeTargetProbability = 0.1;
-        const double changeSourceProbability = 0.1;
-        const double changeInputProbability = 0.1;
-        const double removeEdgeProbability = 0.1;
-        const double addEdgeProbability = 0.2;
-        const double addStateProbability = 0.1;
-        const double addAcceptStateProbability = 0.1;
-        const double removeAcceptStateProbability = 0.1;
-        const double mergeStatesProbability = 0.1;
+        SettingsService settingsService = new SettingsService();
+        Settings settings = settingsService.LoadSettings();
 
-        
-        
-        
-        
+
         string testTracePath = $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/traces.json";
 
         List<TestTrace> traces = DFAUtility.ImportTestTraces(testTracePath);
         List<char> alphabet = DFAUtility.DiscoverAlphabet(traces).ToList();
 
-        EliteSelection selection = new EliteSelection(numberOfFittestIndividualsAcrossAllGenerations);
+        EliteSelection selection = new EliteSelection(settings.NumberOfFittestIndividualsAcrossAllGenerations);
         UniformCrossover crossover = new UniformCrossover();
-        DFAMutation mutation = new DFAMutation(alphabet, nonDeterministicBehaviorProbability, changeTargetProbability,
-            changeSourceProbability, removeEdgeProbability, addEdgeProbability, addStateProbability,
-            addAcceptStateProbability, removeAcceptStateProbability, mergeStatesProbability, changeInputProbability);
+        DFAMutation mutation = new DFAMutation(alphabet, settings.NonDeterministicBehaviorProbability,
+            settings.ChangeTargetProbability, settings.ChangeSourceProbability, settings.RemoveEdgeProbability,
+            settings.AddEdgeProbability, settings.AddStateProbability, settings.AddAcceptStateProbability,
+            settings.RemoveAcceptStateProbability, settings.MergeStatesProbability, settings.ChangeInputProbability);
 
         // Specific fitness function for the DFA learning problem.
-        DFAFitness fitness = new DFAFitness(traces, alphabet, weightTruePositive, weightTrueNegative,
-            weightFalsePositive, weightFalseNegative, weightNonDeterministicEdges, weightMissingDeterministicEdges,
-            weightSize);
+        DFAFitness fitness = new DFAFitness(traces, alphabet, settings.WeightTruePositive, settings.WeightTrueNegative,
+            settings.WeightFalsePositive, settings.WeightFalseNegative, settings.WeightNonDeterministicEdges,
+            settings.WeightMissingDeterministicEdges, settings.WeightSize);
         // Specific chromosome (gene) function for the DFA learning problem.
         DFAChromosome chromosome = new DFAChromosome();
 
 
         PerformanceGenerationStrategy generationStrategy = new PerformanceGenerationStrategy(1);
         DFAPopulation population =
-            new DFAPopulation(minPopulation, maxPopulation, chromosome, alphabet, generationStrategy);
+            new DFAPopulation(settings.MinPopulation, settings.MaxPopulation, chromosome, alphabet, generationStrategy);
 
-        OrTermination stoppingCriterion = new OrTermination(new GenerationNumberTermination(maximumGenerationNumber),
-            new AndTermination(new FitnessStagnationTermination(convergenceGenerationNumber),
-                new FitnessThresholdTermination(fitnessLowerBound)));
+        OrTermination stoppingCriterion = new OrTermination(
+            new GenerationNumberTermination(settings.MaximumGenerationNumber),
+            new AndTermination(new FitnessStagnationTermination(settings.ConvergenceGenerationNumber),
+                new FitnessThresholdTermination(settings.FitnessLowerBound)));
 
-        DFAGeneticAlgorithm ga = new DFAGeneticAlgorithm(population, fitness, selection, eliteSelectionScalingFactor,
-            crossover, mutation, stoppingCriterion, maximumGenerationNumber, crossoverProbability, mutationProbability);
+        DFAGeneticAlgorithm ga = new DFAGeneticAlgorithm(population, fitness, selection,
+            settings.EliteSelectionScalingFactor, crossover, mutation, stoppingCriterion,
+            settings.MaximumGenerationNumber, settings.CrossoverProbability, settings.MutationProbability);
 
         // Output continuous evaluation of each generation.
         ga.GenerationRan += (s, e) =>
@@ -79,7 +55,7 @@ class Program
             GraphVisualization.SaveToSvgFile((DFAChromosome) ga.BestChromosome, ga.GenerationsNumber);
 
         ga.TerminationReached += (s, e) => Console.WriteLine("GA has terminated");
-        
+
         // Begin learning.
         Console.WriteLine("GA is learning the DFA...");
         ga.Start();

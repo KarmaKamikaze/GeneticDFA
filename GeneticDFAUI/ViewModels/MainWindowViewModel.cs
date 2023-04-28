@@ -9,7 +9,8 @@ public class MainWindowViewModel : ViewModelBase
 
     public MainWindowViewModel(List<string> list)
     {
-        Content = List = new VisualizationViewModel(list);
+        Visualization = new VisualizationViewModel(list);
+        Content = Settings = new SettingsViewModel();
     }
 
     public ViewModelBase? Content
@@ -18,5 +19,20 @@ public class MainWindowViewModel : ViewModelBase
         private set => this.RaiseAndSetIfChanged(ref _content, value);
     }
 
-    public VisualizationViewModel List { get; }
+    public VisualizationViewModel Visualization { get; }
+
+    public SettingsViewModel Settings { get; }
+
+    public void SwitchContent()
+    {
+        Content = Content == Settings ? Visualization : Settings;
+    }
+
+    private void StartAlgorithm()
+    {
+        // ... code to start the algorithm ...
+        // Use process?
+
+        SwitchContent();
+    }
 }
