@@ -65,35 +65,37 @@ public class DFACrossover : CrossoverBase
 
         // Find the edges from parent 1 that should be copied over to the child
         List<DFAEdge> edgesFromP1 = parent1.Edges.Where(e => selectedStatesP1.Contains(e.Source)).ToList();
-        foreach (DFAEdge edge in edgesFromP1)
+        for (int i = edgesFromP1.Count - 1; i >= 0; i--)
         {
             // If the target state of an edge is not in the selected states from parent 1,
             // randomly select a target state from the not selected states from parent 2.
-            if (!selectedStatesP1.Contains(edge.Target))
+            if (!selectedStatesP1.Contains(edgesFromP1[i].Target))
             {
+                int i1 = i;
                 List<DFAState> possibleTargets = notSelectedStatesP2.Where(s =>
-                    !edgesFromP1.Any(e => e.Source == edge.Source && e.Input == edge.Input && e.Target == s)).ToList();
+                    !edgesFromP1.Any(e => e.Source == edgesFromP1[i1].Source && e.Input == edgesFromP1[i1].Input && e.Target == s)).ToList();
                 if (possibleTargets.Count == 0)
-                    edgesFromP1.Remove(edge);
+                    edgesFromP1.Remove(edgesFromP1[i]);
                 else
-                    edge.Target = possibleTargets[_rnd.GetInt(0, possibleTargets.Count)];
+                    edgesFromP1[i].Target = possibleTargets[_rnd.GetInt(0, possibleTargets.Count)];
             }
         }
-
+        
         // Find the edges from parent 2 that should be copied over to the child (Opposite of the above)
         List<DFAEdge> edgesFromP2 = parent2.Edges.Where(e => notSelectedStatesP2.Contains(e.Source)).ToList();
-        foreach (DFAEdge edge in edgesFromP2)
+        for (int i = edgesFromP2.Count - 1; i >= 0; i--)
         {
             // If the target state of an edge is not in the not selected states from parent 2,
             // randomly select a target state from the selected states from parent 1.
-            if (!notSelectedStatesP2.Contains(edge.Target))
+            if (!notSelectedStatesP2.Contains(edgesFromP2[i].Target))
             {
+                int i1 = i;
                 List<DFAState> possibleTargets = selectedStatesP1.Where(s =>
-                    !edgesFromP2.Any(e => e.Source == edge.Source && e.Input == edge.Input && e.Target == s)).ToList();
+                    !edgesFromP2.Any(e => e.Source == edgesFromP2[i1].Source && e.Input == edgesFromP2[i1].Input && e.Target == s)).ToList();
                 if (possibleTargets.Count == 0)
-                    edgesFromP2.Remove(edge);
+                    edgesFromP2.Remove(edgesFromP2[i]);
                 else
-                    edge.Target = possibleTargets[_rnd.GetInt(0, possibleTargets.Count)];
+                    edgesFromP2[i].Target = possibleTargets[_rnd.GetInt(0, possibleTargets.Count)];
             }
         }
 

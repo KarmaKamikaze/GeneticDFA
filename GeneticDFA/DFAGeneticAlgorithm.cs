@@ -172,8 +172,7 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
             TaskExecutor.Stop();
             TaskExecutor.Clear();
         }
-        
-        
+
         Population.CreateNewGeneration(newPopulation);
         return EndCurrentGeneration();
     }
