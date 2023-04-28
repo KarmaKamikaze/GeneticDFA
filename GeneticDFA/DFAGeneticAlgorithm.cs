@@ -6,14 +6,17 @@ namespace GeneticDFA;
 public class DFAGeneticAlgorithm : IGeneticAlgorithm
 {
     private Stopwatch m_stopwatch;
+    private readonly object m_lock = new object();
 
     public DFAGeneticAlgorithm(
         IPopulation population,
         IFitness fitness,
         ISelection selection,
+        int eliteSelectionScalingFactor,
         ICrossover crossover,
         IMutation mutation,
         ITermination termination,
+        int maxGenerationNumber,
         double crossoverProbability,
         double mutationProbability)
     {
@@ -25,14 +28,16 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
         Population = population;
         Fitness = fitness;
         Selection = selection;
+        EliteSelectionScalingFactor = eliteSelectionScalingFactor;
         Crossover = crossover;
         Mutation = mutation;
         Reinsertion = new ElitistReinsertion();
         Termination = termination;
+        MaxGenerationNumber = maxGenerationNumber;
         CrossoverProbability = crossoverProbability;
         MutationProbability = mutationProbability;
         TimeEvolving = TimeSpan.Zero;
-        TaskExecutor = new ParallelTaskExecutor();
+        TaskExecutor = new ParallelTaskExecutor() {MinThreads = 3000, MaxThreads = 3000};
     }
 
     public event EventHandler GenerationRan;
@@ -44,6 +49,8 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
     private IFitness Fitness { get; }
 
     private ISelection Selection { get; }
+
+    private int EliteSelectionScalingFactor { get; }
 
     private ICrossover Crossover { get; }
 
@@ -59,11 +66,15 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
 
     public int GenerationsNumber => Population.GenerationsNumber;
 
+    private int MaxGenerationNumber { get; }
+
     public IChromosome BestChromosome => Population.BestChromosome;
 
     public TimeSpan TimeEvolving { get; private set; }
 
     private ITaskExecutor TaskExecutor { get; }
+
+    private readonly IRandomization _rnd = RandomizationProvider.Current;
 
     public void Start()
     {
@@ -89,14 +100,78 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
     // Needs proper implementation
     private bool EvolveOneGeneration()
     {
-        throw new NotImplementedException();
+        // First use Elitist selection to include elites
+        IList<IChromosome> selectedElites =
+            Selection.SelectChromosomes(SelectionScale(), Population.CurrentGeneration);
+        // Use roulette wheel selection on the selected elites. This can cause elites to be mutated multiple times
+        IList<IChromosome> selectedForModification =
+            DFARouletteWheelSelection.SelectChromosomes(Population.MaxSize, selectedElites);
+        IList<IChromosome> newPopulation = new List<IChromosome>();
 
-        /*
-        IList<IChromosome> parents = SelectParents();
-        IList<IChromosome> chromosomeList = Cross(parents);
-        Mutate(chromosomeList);
-        Population.CreateNewGeneration(Reinsert(chromosomeList, parents));
-        return EndCurrentGeneration(); */
+        try
+        {
+            for (int i = 0; i < selectedForModification.Count; i++)
+            {
+                if (_rnd.GetDouble(0, 1) < MutationProbability)
+                {
+                    int i1 = i;
+                    TaskExecutor.Add((Action) (() =>
+                    {
+                        IChromosome clone = selectedForModification[i1].Clone();
+                        Mutation.Mutate(clone, 0);
+                        clone.Fitness = null;
+                        // Use mutex since otherwise two threads will attempt to access the shared list at the same time
+                        lock (m_lock)
+                        {
+                            newPopulation.Add(clone);
+                        }
+                    }));
+                }
+                else
+                {
+                    // Replace with crossover
+                    int i1 = i;
+                    TaskExecutor.Add((Action) (() =>
+                    {
+                        IChromosome clone = selectedForModification[i1].Clone();
+                        Mutation.Mutate(clone, 0);
+                        clone.Fitness = null;
+                        lock (m_lock)
+                        {
+                            newPopulation.Add(clone);
+                        }
+                    }));
+                }
+            }
+
+            if (!TaskExecutor.Start())
+                throw new TimeoutException(
+                    "The fitness evaluation reached the {0} timeout.".With(TaskExecutor.Timeout));
+        }
+        finally
+        {
+            TaskExecutor.Stop();
+            TaskExecutor.Clear();
+        }
+
+        Population.CreateNewGeneration(newPopulation);
+        return EndCurrentGeneration();
+    }
+
+    /// <summary>
+    /// Calculates a scaling factor, used to determine how many selections must be considered for mutation
+    /// and crossover.
+    /// </summary>
+    /// <returns>The scaling factor.</returns>
+    private int SelectionScale()
+    {
+        double scale = (GenerationsNumber / ((double) MaxGenerationNumber / EliteSelectionScalingFactor));
+        if (scale < 1)
+        {
+            return Population.MaxSize * scale > 2 ? Convert.ToInt32(Population.MaxSize * scale) : 3;
+        }
+
+        return Population.MaxSize;
     }
 
     private bool EndCurrentGeneration()
@@ -115,15 +190,12 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
         return false;
     }
 
-    // Possibly needs proper implementation since it only evaluates fitness on chromosomes without a value assigned?
-    // Hinting that the fitness of chromosomes are reset after a mutation or crossover.
-    // Depends on how we are going to adjust fitness after mutation and crossover. Probably best to set it to null.
     private void EvaluateFitness()
     {
         try
         {
             List<IChromosome> list = Population.CurrentGeneration.Chromosomes
-                .Where<IChromosome>((c => !c.Fitness.HasValue)).ToList();
+                .Where<IChromosome>(c => !c.Fitness.HasValue).ToList();
             foreach (IChromosome c in list)
             {
                 TaskExecutor.Add((Action) (() => RunEvaluateFitness(c)));
@@ -139,7 +211,6 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
             TaskExecutor.Clear();
         }
 
-        // Scuffed, but the setter on the Chromosomes list is internal :skull:
         List<IChromosome> tempList = Population.CurrentGeneration.Chromosomes
             .OrderByDescending<IChromosome, double>((c => c.Fitness!.Value)).ToList();
         Population.CurrentGeneration.Chromosomes.Clear();
@@ -149,7 +220,6 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
         }
     }
 
-    // Could be changed to just take a IChromosome, but for some reason original implementation is this. Maybe for efficiency?
     private void RunEvaluateFitness(object chromosome)
     {
         IChromosome chromosome1 = (chromosome as IChromosome)!;

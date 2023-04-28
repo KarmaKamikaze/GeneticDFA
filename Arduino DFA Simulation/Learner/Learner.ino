@@ -32,9 +32,7 @@ RHReliableDatagram rf69_manager(rf69, MY_ADDRESS);
  */
 // Test traces
 const byte max_number_of_characters_in_one_trace = 30;
-char array_of_traces[/* Max 30 traces */]
-                    [max_number_of_characters_in_one_trace] = {"10010000110",
-                                                               "011010"};
+char array_of_traces[/* Max 30 traces */][max_number_of_characters_in_one_trace] = {"XYAZXBC","AXBCY","X","AXBCABC","AXBC","XAB","AXYZXYZ","AXYZ","AB","ABCAXBCABCAYZB","XABCYAZ","XABCYZX","XYZAXBCAYZB","A","AXYZX","XYZXYZX","XABCAYZB","AXYZXB","ABC","AX","ZX","ZBXXAABY","CYYBACYBCB","YYBCBAYYXZX","CAABZCXXZXXA","BYBXCBZYCYAB","Z","C","BZYABXXAXAZ","ZACXAYXCCY"};
 const int array_size = sizeof(array_of_traces) / sizeof(array_of_traces[0]);
 bool finished = false;
 
@@ -84,13 +82,14 @@ uint8_t buffer[RH_RF69_MAX_MESSAGE_LEN];
 
 void loop() {
   while (!finished) {
+    delay(5000); // This delay is here, to ensure the user has time to open the Python script which listens to the serial port.
     // Loop over traces
     for (int i = 0; i < array_size; i++) {
       // Loop over char in trace
       for (int j = 0; j <= strlen(array_of_traces[i]); j++) {
         // If at end of a trace, tell blackbox its END
         if (j == strlen(array_of_traces[i])) {
-          uint8_t message[] = "END";
+          uint8_t message[] = "$";
           TransmitMessage(message);
           break;
         } else {
@@ -99,6 +98,8 @@ void loop() {
           TransmitMessage(message);
         }
       }
+      //wait for messagde from blackbox
+      while(!rf69_manager.available()){delay(10);}
 
       // Print result from blackbox
       if (rf69_manager.available()) {
@@ -106,16 +107,17 @@ void loop() {
         uint8_t len = sizeof(buffer);
         uint8_t from;
         if (rf69_manager.recvfromAckTimeout(buffer, &len, TIMEOUT, &from)) {
-          if ((char *)buffer == "Trace Accepted!") {
-            Serial.print(strcat(array_of_traces[i], ":SUCCESS"));
-          } else if ((char *)buffer == "Trace Failed!") {
-            Serial.print(strcat(array_of_traces[i], ":FAILED"));
+          if (((char *)buffer)[0] == 'A') {
+            Serial.print(strcat(array_of_traces[i], ":PASSED\n"));
+          } 
+          else if (((char *)buffer)[0] == 'F')  {
+            Serial.print(strcat(array_of_traces[i], ":FAILED\n"));
           }
         }
       }
     }
     // When no more traces, print "STOP" to stop python monitor
-    Serial.print("STOP");
+    Serial.print("STOP\n");
     finished = true;
   }
   // Once all traces have been tested, indicate that we are finished by blinking

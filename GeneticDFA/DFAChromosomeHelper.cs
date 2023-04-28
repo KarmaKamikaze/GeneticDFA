@@ -26,7 +26,7 @@ public static class DFAChromosomeHelper
         }
     }
 
-    private static List<DFAState> FindReachableStates(DFAChromosome chromosome)
+    public static List<DFAState> FindReachableStates(DFAChromosome chromosome)
     {
         List<DFAState> reachableStates = new List<DFAState> { chromosome.StartState! };
 

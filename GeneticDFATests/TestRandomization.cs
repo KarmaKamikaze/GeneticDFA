@@ -31,11 +31,11 @@ public class TestRandomization : IRandomization
 
     public double GetDouble()
     {
-        throw new System.NotImplementedException();
+        return 0.5;
     }
 
     public double GetDouble(double min, double max)
     {
-        throw new System.NotImplementedException();
+        return min;
     }
 }

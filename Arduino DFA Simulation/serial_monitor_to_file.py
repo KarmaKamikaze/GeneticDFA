@@ -12,7 +12,7 @@ received_messages: list = []
 
 
 def save_to_file(traces: list) -> None:
-    file_name = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+    file_name = datetime.now().strftime("%d-%m-%Y-%H-%M-%S")
     traces_dict = {
         'PASSED': list(),
         'FAILED': list()
@@ -55,9 +55,9 @@ serial_instance.open()
 while 1:
     # message is read from serial
     arduino_data = serial_instance.readline()
-
     # add read message to list
-    received_messages.append(arduino_data.decode().rstrip())
+    if 'STOP' not in str(arduino_data.decode()):
+        received_messages.append(arduino_data.decode().strip())
 
     # if we read STOP, we stream all data to file
     if 'STOP' in str(arduino_data.decode()):

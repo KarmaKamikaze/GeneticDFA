@@ -84,15 +84,17 @@ void loop() {
       Serial.print("Received DFA trace from: 0x");
       Serial.print(from, HEX);
       Serial.print(": ");
-      Serial.println((char *)buffer);
+      Serial.println(((char*)buffer)[0]);
 
-      if ((char *)buffer == "END"){
-      RunSmallDFA('$');
+      if ((char &)buffer == '$'){
+      //RunSmallDFA('$');
+      //RunCarAlarmDFA('$');
+      RunBridgeDFA('$');
       } else {
       // Call simulation
-      RunSmallDFA((char *)buffer);
-      // RunCarAlarmDFA((char*)buffer);
-      // RunBridgeDFA((char*)buffer);
+      //RunSmallDFA((char &)buffer);
+      //RunCarAlarmDFA((char &)buffer);
+      RunBridgeDFA((char *)*buffer);
       }
     }
   }
@@ -102,8 +104,10 @@ void TransmitVerdict(uint8_t reply[]) {
   Serial.print("Transmitting trace verdict: ");
   Serial.println((char *)reply);
 
-  if (!rf69_manager.sendtoWait(reply, sizeof(reply), DEST_ADDRESS))
-    Serial.println("sendtoWait failed.");
+  if(!rf69_manager.sendtoWait(reply, strlen((char *)reply), DEST_ADDRESS)){
+  Serial.println("sendtoWait failed.");
+  }
+
 }
 
 void InStateAction() {}

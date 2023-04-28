@@ -12,6 +12,8 @@ public static class GraphVisualization
     {
         // Construct the graph root (this is not a node)
         RootGraph root = RootGraph.CreateNew($"Gen{generationNumber}", GraphType.Directed);
+        // Introduce shape specification attribute to states to indicate accept states and start state
+        Node.IntroduceAttribute(root, "shape", "circle");
         // Introduce new input attribute to edges and make the default value empty
         Edge.IntroduceAttribute(root, "label", "");
 
@@ -19,7 +21,16 @@ public static class GraphVisualization
         foreach (DFAState state in chromosome.States)
         {
             // The node names are unique identifiers
-            root.GetOrAddNode(state.Id.ToString());
+            Node? newNode = root.GetOrAddNode(state.Id.ToString());
+
+            if (state.IsAccept)
+                newNode.SetAttribute("shape", "doublecircle");
+            if (state.Id == chromosome.StartState!.Id)
+            {
+                Node? startState = root.GetOrAddNode("S");
+                startState.SetAttribute("shape", "point");
+                root.GetOrAddEdge(startState, newNode, "");
+            }
         }
 
         // Add edges between states
