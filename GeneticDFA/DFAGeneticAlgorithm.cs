@@ -146,8 +146,8 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
                         {
                             IList<IChromosome> parents = new List<IChromosome>()
                             {
-                                selectedForModification[i1].Clone(),
-                                selectedForModification[i2].Clone()
+                                selectedForModification[i1],
+                                selectedForModification[i2]
                             };
                             IList<IChromosome> children = Crossover.Cross(parents);
                             children[0].Fitness = null;

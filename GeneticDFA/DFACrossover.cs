@@ -20,7 +20,7 @@ public class DFACrossover : CrossoverBase
 
         // Check if the parent chromosomes have enough states and edges to perform crossover.
         if (parent1.States.Count < 2 || parent2.States.Count < 2 || parent1.Edges.Count < 1 || parent2.Edges.Count < 1)
-            return parents;
+            return new List<IChromosome>() {parents[0].Clone(), parents[1].Clone()};
 
         // Create two new child chromosomes using the CreateChild helper function.
         DFAChromosome child1 = CreateChild((DFAChromosome) parent1.Clone(), (DFAChromosome) parent2.Clone());
