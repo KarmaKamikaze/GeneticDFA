@@ -20,7 +20,10 @@ public class DFACrossoverTests
 
         //Act
         List<DFAChromosome> parents = new List<DFAChromosome>()
-            {(DFAChromosome) population.CurrentGeneration.Chromosomes[0], (DFAChromosome) population.CurrentGeneration.Chromosomes[1]};
+        {
+            (DFAChromosome) population.CurrentGeneration.Chromosomes[0],
+            (DFAChromosome) population.CurrentGeneration.Chromosomes[1]
+        };
         IList<IChromosome> children = crossover.Cross(new List<IChromosome>()
             {parents[0], parents[1]});
         DFAChromosome child1 = (DFAChromosome) children[0];

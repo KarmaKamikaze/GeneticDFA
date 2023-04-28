@@ -73,14 +73,16 @@ public class DFACrossover : CrossoverBase
             {
                 int i1 = i;
                 List<DFAState> possibleTargets = notSelectedStatesP2.Where(s =>
-                    !edgesFromP1.Any(e => e.Source == edgesFromP1[i1].Source && e.Input == edgesFromP1[i1].Input && e.Target == s)).ToList();
+                        !edgesFromP1.Any(e =>
+                            e.Source == edgesFromP1[i1].Source && e.Input == edgesFromP1[i1].Input && e.Target == s))
+                    .ToList();
                 if (possibleTargets.Count == 0)
                     edgesFromP1.Remove(edgesFromP1[i]);
                 else
                     edgesFromP1[i].Target = possibleTargets[_rnd.GetInt(0, possibleTargets.Count)];
             }
         }
-        
+
         // Find the edges from parent 2 that should be copied over to the child (Opposite of the above)
         List<DFAEdge> edgesFromP2 = parent2.Edges.Where(e => notSelectedStatesP2.Contains(e.Source)).ToList();
         for (int i = edgesFromP2.Count - 1; i >= 0; i--)
@@ -91,7 +93,9 @@ public class DFACrossover : CrossoverBase
             {
                 int i1 = i;
                 List<DFAState> possibleTargets = selectedStatesP1.Where(s =>
-                    !edgesFromP2.Any(e => e.Source == edgesFromP2[i1].Source && e.Input == edgesFromP2[i1].Input && e.Target == s)).ToList();
+                        !edgesFromP2.Any(e =>
+                            e.Source == edgesFromP2[i1].Source && e.Input == edgesFromP2[i1].Input && e.Target == s))
+                    .ToList();
                 if (possibleTargets.Count == 0)
                     edgesFromP2.Remove(edgesFromP2[i]);
                 else

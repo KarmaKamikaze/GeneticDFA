@@ -15,7 +15,7 @@ class Program
         const int convergenceGenerationNumber = 20;
         const int maximumGenerationNumber = 100;
         const int eliteSelectionScalingFactor = 2;
-        int numberOfFittestIndividualsAcrossAllGenerations = Convert.ToInt32(0.05*minPopulation);
+        int numberOfFittestIndividualsAcrossAllGenerations = Convert.ToInt32(0.05 * minPopulation);
         const int weightTruePositive = 10;
         const int weightTrueNegative = 10;
         const double weightFalsePositive = 10;
@@ -36,15 +36,16 @@ class Program
         const double removeAcceptStateProbability = 0.1;
         const double mergeStatesProbability = 0.1;
 
-        
+
         string testTracePath = $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/traces.json";
 
         List<TestTrace> traces = DFAUtility.ImportTestTraces(testTracePath);
         List<char> alphabet = DFAUtility.DiscoverAlphabet(traces).ToList();
 
-        double fitnessUpperBound = weightTruePositive * traces.Count(t => t.IsAccepting) + weightTrueNegative * traces.Count(t => !t.IsAccepting);
-        double fitnessLowerBound = 0.8*fitnessUpperBound;
-        
+        double fitnessUpperBound = weightTruePositive * traces.Count(t => t.IsAccepting) +
+                                   weightTrueNegative * traces.Count(t => !t.IsAccepting);
+        double fitnessLowerBound = 0.8 * fitnessUpperBound;
+
         EliteSelection selection = new EliteSelection(numberOfFittestIndividualsAcrossAllGenerations);
         DFACrossover crossover = new DFACrossover(2, 2, 0, alphabet);
         DFAMutation mutation = new DFAMutation(alphabet, nonDeterministicBehaviorProbability, changeTargetProbability,
@@ -73,14 +74,14 @@ class Program
         // Output continuous evaluation of each generation.
         ga.GenerationRan += (s, e) =>
             Console.WriteLine($"Generation {ga.GenerationsNumber}. Best fitness: {ga.BestChromosome.Fitness!.Value}. " +
-                              $"Accuracy: {Math.Round(100*(ga.BestChromosome.Fitness!.Value / fitnessUpperBound),2)}%");
+                              $"Accuracy: {Math.Round(100 * (ga.BestChromosome.Fitness!.Value / fitnessUpperBound), 2)}%");
 
         // Output graph visualizations of the fittest chromosome each generation.
         ga.GenerationRan += (s, e) =>
             GraphVisualization.SaveToSvgFile((DFAChromosome) ga.BestChromosome, ga.GenerationsNumber);
 
         ga.TerminationReached += (s, e) => Console.WriteLine("GA has terminated");
-        
+
         // Begin learning.
         Console.WriteLine("GA is learning the DFA...");
         ga.Start();

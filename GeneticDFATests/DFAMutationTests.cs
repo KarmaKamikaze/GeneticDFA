@@ -13,7 +13,7 @@ public class DFAMutationTests
     public void RemoveEdgeCorrectBehavior(DFAChromosome chromosome, int expected)
     {
         //Arrange
-        List<char> alphabet = new List<char>() { '1', '0' };
+        List<char> alphabet = new List<char>() {'1', '0'};
         DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0);
 
         //Act
@@ -25,8 +25,8 @@ public class DFAMutationTests
 
     public static readonly IEnumerable<object[]> RemoveEdgesTestData = new List<object[]>()
     {
-        new object[] { TestDFAs.SmallDFA.Clone(), 5 },
-        new object[] { TestDFAs.NFA.Clone(), 7 }
+        new object[] {TestDFAs.SmallDFA.Clone(), 5},
+        new object[] {TestDFAs.NFA.Clone(), 7}
     };
 
     [Theory]
@@ -34,7 +34,7 @@ public class DFAMutationTests
     public void AddAcceptStateCorrectBehavior(DFAChromosome chromosome, int expected)
     {
         //Arrange
-        List<char> alphabet = new List<char>() { '1', '0' };
+        List<char> alphabet = new List<char>() {'1', '0'};
         DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0);
 
         //Act
@@ -46,8 +46,8 @@ public class DFAMutationTests
 
     public static readonly IEnumerable<object[]> AddAcceptStateTestData = new List<object[]>()
     {
-        new object[] { TestDFAs.SmallDFA.Clone(), 2 },
-        new object[] { TestDFAs.NFA.Clone(), 2 },
+        new object[] {TestDFAs.SmallDFA.Clone(), 2},
+        new object[] {TestDFAs.NFA.Clone(), 2},
     };
 
     [Theory]
@@ -55,7 +55,7 @@ public class DFAMutationTests
     public void RemoveAcceptStateCorrectNumberOfAcceptState(DFAChromosome chromosome, int expected)
     {
         //Arrange
-        List<char> alphabet = new List<char>() { '1', '0' };
+        List<char> alphabet = new List<char>() {'1', '0'};
         DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0);
 
         //Act
@@ -74,9 +74,9 @@ public class DFAMutationTests
 
     public static readonly IEnumerable<object[]> RemoveAcceptStateCountTestData = new List<object[]>()
     {
-        new object[] { TestDFAs.SmallDFA.Clone(), 1 },
-        new object[] { TestDFAs.NFA.Clone(), 1 },
-        new object[] { new DFAChromosome(States, new List<DFAEdge>(), States[0]), 1 },
+        new object[] {TestDFAs.SmallDFA.Clone(), 1},
+        new object[] {TestDFAs.NFA.Clone(), 1},
+        new object[] {new DFAChromosome(States, new List<DFAEdge>(), States[0]), 1},
     };
 
     [Theory]
@@ -84,7 +84,7 @@ public class DFAMutationTests
     public void RemoveAcceptStateMovesAcceptState(DFAChromosome chromosome)
     {
         //Arrange
-        List<char> alphabet = new List<char>() { '1', '0' };
+        List<char> alphabet = new List<char>() {'1', '0'};
         DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0);
         DFAState currentAcceptState = chromosome.States.First(s => s.IsAccept);
 
@@ -97,8 +97,8 @@ public class DFAMutationTests
 
     public static IEnumerable<object[]> TestDFAsData => new List<object[]>()
     {
-        new object[] { TestDFAs.SmallDFA.Clone() },
-        new object[] { TestDFAs.NFA.Clone() },
+        new object[] {TestDFAs.SmallDFA.Clone()},
+        new object[] {TestDFAs.NFA.Clone()},
     };
 
     [Theory]
@@ -106,7 +106,7 @@ public class DFAMutationTests
     public void AddStateAddsExactlyOneState(DFAChromosome chromosome)
     {
         //Arrange
-        List<char> alphabet = new List<char>() { '1', '0' };
+        List<char> alphabet = new List<char>() {'1', '0'};
         DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0);
         int expected = chromosome.States.Count + 1;
 
@@ -122,7 +122,7 @@ public class DFAMutationTests
     public void AddStateAddsExactlyTwoEdges(DFAChromosome chromosome)
     {
         //Arrange
-        List<char> alphabet = new List<char>() { '1', '0' };
+        List<char> alphabet = new List<char>() {'1', '0'};
         DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0);
         int expected = chromosome.Edges.Count + 2;
 
@@ -138,7 +138,7 @@ public class DFAMutationTests
     public void AddStateAddsNewEdgesAreRelatedToTheNewState(DFAChromosome chromosome)
     {
         //Arrange
-        List<char> alphabet = new List<char>() { '1', '0' };
+        List<char> alphabet = new List<char>() {'1', '0'};
         DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0);
 
         //Act
@@ -154,7 +154,7 @@ public class DFAMutationTests
     public void AddStateOnlyAddsUniqueEdges(DFAChromosome chromosome)
     {
         //Arrange
-        List<char> alphabet = new List<char>() { '1', '0' };
+        List<char> alphabet = new List<char>() {'1', '0'};
         DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0);
 
         //Act
@@ -174,7 +174,7 @@ public class DFAMutationTests
     public void AddStateEnsuresReachability(DFAChromosome chromosome)
     {
         //Arrange
-        List<char> alphabet = new List<char>() { '1', '0' };
+        List<char> alphabet = new List<char>() {'1', '0'};
         DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0);
 
         //Act
@@ -191,7 +191,7 @@ public class DFAMutationTests
     public void AddEdgeAddsExactlyOneEdge(DFAChromosome chromosome, int expected)
     {
         //Arrange
-        List<char> alphabet = new List<char>() { '1', '0' };
+        List<char> alphabet = new List<char>() {'1', '0'};
         DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0);
 
         //Act
@@ -203,8 +203,8 @@ public class DFAMutationTests
 
     public static readonly IEnumerable<object[]> AddEdgeExactlyOneTestData = new List<object[]>()
     {
-        new object[] { TestDFAs.SmallDFA.Clone(), 7 },
-        new object[] { TestDFAs.NFA.Clone(), 9 },
+        new object[] {TestDFAs.SmallDFA.Clone(), 7},
+        new object[] {TestDFAs.NFA.Clone(), 9},
     };
 
     [Theory]
@@ -212,7 +212,7 @@ public class DFAMutationTests
     public void AddEdgeOnlyAddsUniqueEdges(DFAChromosome chromosome)
     {
         //Arrange
-        List<char> alphabet = new List<char>() { '1', '0' };
+        List<char> alphabet = new List<char>() {'1', '0'};
         DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0);
 
         //Act
@@ -231,7 +231,7 @@ public class DFAMutationTests
     public void ChangeSourceEnsuresUniqueness(DFAChromosome chromosome)
     {
         //Arrange
-        List<char> alphabet = new List<char>() { '1', '0' };
+        List<char> alphabet = new List<char>() {'1', '0'};
         DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0);
 
         //Act
@@ -250,7 +250,7 @@ public class DFAMutationTests
     public void ChangeSourceModifiesExactlyOneEdge(DFAChromosome chromosome)
     {
         //Arrange
-        List<char> alphabet = new List<char>() { '1', '0' };
+        List<char> alphabet = new List<char>() {'1', '0'};
         DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0);
         DFAChromosome preMutationChromosome = (DFAChromosome) chromosome.Clone();
 
@@ -268,7 +268,7 @@ public class DFAMutationTests
     public void ChangeTargetEnsuresUniqueness(DFAChromosome chromosome)
     {
         //Arrange
-        List<char> alphabet = new List<char>() { '1', '0' };
+        List<char> alphabet = new List<char>() {'1', '0'};
         DFAMutation mutation = new DFAMutation(alphabet, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0);
 
         //Act
@@ -287,7 +287,7 @@ public class DFAMutationTests
     public void ChangeTargetModifiesExactlyOneEdge(DFAChromosome chromosome)
     {
         //Arrange
-        List<char> alphabet = new List<char>() { '1', '0' };
+        List<char> alphabet = new List<char>() {'1', '0'};
         DFAMutation mutation = new DFAMutation(alphabet, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0);
         DFAChromosome preMutationChromosome = (DFAChromosome) chromosome.Clone();
 
@@ -305,7 +305,7 @@ public class DFAMutationTests
     public void ChangeInputEnsuresUniqueness(DFAChromosome chromosome)
     {
         //Arrange
-        List<char> alphabet = new List<char>() { '1', '0' };
+        List<char> alphabet = new List<char>() {'1', '0'};
         DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
 
         //Act
@@ -324,7 +324,7 @@ public class DFAMutationTests
     public void ChangeInputModifiesExactlyOneEdge(DFAChromosome chromosome)
     {
         //Arrange
-        List<char> alphabet = new List<char>() { '1', '0' };
+        List<char> alphabet = new List<char>() {'1', '0'};
         DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
         DFAChromosome preMutationChromosome = (DFAChromosome) chromosome.Clone();
 
@@ -342,7 +342,7 @@ public class DFAMutationTests
     public void MergeStatesRemovesOneState(DFAChromosome chromosome)
     {
         //Arrange
-        List<char> alphabet = new List<char>() { '1', '0' };
+        List<char> alphabet = new List<char>() {'1', '0'};
         DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0);
         int expected = chromosome.States.Count - 1;
 
@@ -358,7 +358,7 @@ public class DFAMutationTests
     public void MergeStatesNoEdgesRelatedToTheRemovedState(DFAChromosome chromosome)
     {
         //Arrange
-        List<char> alphabet = new List<char>() { '1', '0' };
+        List<char> alphabet = new List<char>() {'1', '0'};
         DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0);
         DFAChromosome preMutationChromosome = (DFAChromosome) chromosome.Clone();
 
@@ -375,7 +375,7 @@ public class DFAMutationTests
     public void MergeStatesEnsuresUniqueness(DFAChromosome chromosome)
     {
         //Arrange
-        List<char> alphabet = new List<char>() { '1', '0' };
+        List<char> alphabet = new List<char>() {'1', '0'};
         DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0);
 
         //Act
@@ -394,7 +394,7 @@ public class DFAMutationTests
     public void MergeStatesChangesIngoingEdgesCorrectly(DFAChromosome chromosome)
     {
         //Arrange
-        List<char> alphabet = new List<char>() { '1', '0' };
+        List<char> alphabet = new List<char>() {'1', '0'};
         RandomizationProvider.Current = new TestRandomization();
         DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0);
         DFAChromosome preMutationChromosome = (DFAChromosome) chromosome.Clone();
@@ -418,7 +418,7 @@ public class DFAMutationTests
     public void MergeStatesChangesOutgoingEdgesCorrectly(DFAChromosome chromosome)
     {
         //Arrange
-        List<char> alphabet = new List<char>() { '1', '0' };
+        List<char> alphabet = new List<char>() {'1', '0'};
         RandomizationProvider.Current = new TestRandomization();
         DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0);
         DFAChromosome preMutationChromosome = (DFAChromosome) chromosome.Clone();

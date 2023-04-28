@@ -31,7 +31,7 @@ public class DFAPopulation : Population
             chromosome.Fitness = null;
             chromosomes.Add(chromosome);
         }
-        
+
         CreateNewGeneration(chromosomes);
     }
 
