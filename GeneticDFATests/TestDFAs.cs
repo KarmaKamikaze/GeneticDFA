@@ -46,4 +46,10 @@ public class TestDFAs
     };
 
     public static readonly DFAChromosome NFA = new DFAChromosome(NFAStates, NFAEdges, NFAStates[0]);
+    
+    
+    
+    
+    
+    
 }

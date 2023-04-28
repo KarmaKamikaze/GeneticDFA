@@ -15,7 +15,6 @@ class Program
         const int convergenceGenerationNumber = 20;
         const int maximumGenerationNumber = 100;
         const int eliteSelectionScalingFactor = 2;
-        const int fitnessLowerBound = 500;
         int numberOfFittestIndividualsAcrossAllGenerations = Convert.ToInt32(0.05*minPopulation);
         const int weightTruePositive = 10;
         const int weightTrueNegative = 10;
@@ -44,6 +43,7 @@ class Program
         List<char> alphabet = DFAUtility.DiscoverAlphabet(traces).ToList();
 
         double fitnessUpperBound = weightTruePositive * traces.Count(t => t.IsAccepting) + weightTrueNegative * traces.Count(t => !t.IsAccepting);
+        double fitnessLowerBound = 0.8*fitnessUpperBound;
         
         EliteSelection selection = new EliteSelection(numberOfFittestIndividualsAcrossAllGenerations);
         DFACrossover crossover = new DFACrossover(2, 2, 0, alphabet);
