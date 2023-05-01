@@ -31,7 +31,7 @@ public static class Setup
         // Specific fitness function for the DFA learning problem.
         DFAFitness fitness = new DFAFitness(traces, alphabet, settings.WeightTruePositive, settings.WeightTrueNegative,
             settings.WeightFalsePositive, settings.WeightFalseNegative, settings.WeightNonDeterministicEdges,
-            settings.WeightMissingDeterministicEdges, settings.WeightSize);
+            settings.WeightUnreachableStates, settings.WeightSize);
         // Specific chromosome (gene) function for the DFA learning problem.
         DFAChromosome chromosome = new DFAChromosome();
 

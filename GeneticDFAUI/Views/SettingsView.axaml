@@ -46,8 +46,8 @@
             <TextBox Text="{Binding WeightFalseNegative}" Margin="0 5"/>
             <TextBlock Text="Non-Deterministic Edges Weight:" FontWeight="Bold" Margin="0 0 0 5"/>
             <TextBox Text="{Binding WeightNonDeterministicEdges}" Margin="0 5"/>
-            <TextBlock Text="Missing Deterministic Edges Weight:" FontWeight="Bold" Margin="0 0 0 5"/>
-            <TextBox Text="{Binding WeightMissingDeterministicEdges}" Margin="0 5"/>
+            <TextBlock Text="Unreachable States Weight:" FontWeight="Bold" Margin="0 0 0 5"/>
+            <TextBox Text="{Binding WeightUnreachableStates}" Margin="0 5"/>
             <TextBlock Text="Non-Deterministic Behavior Probability:" FontWeight="Bold" Margin="0 0 0 5"/>
             <TextBox Text="{Binding NonDeterministicBehaviorProbability}" Margin="0 5"/>
         </StackPanel>

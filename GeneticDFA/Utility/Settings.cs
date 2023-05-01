@@ -13,7 +13,7 @@ public class Settings
     public double WeightFalsePositive { get; set; }
     public double WeightFalseNegative { get; set; }
     public double WeightNonDeterministicEdges { get; set; }
-    public double WeightMissingDeterministicEdges { get; set; }
+    public double WeightUnreachableStates { get; set; }
     public double WeightSize { get; set; }
     public double CrossoverProbability => 1 - MutationProbability;
     public double MutationProbability { get; set; }
@@ -40,8 +40,8 @@ public class Settings
         WeightTrueNegative = 10;
         WeightFalsePositive = 10;
         WeightFalseNegative = 10;
-        WeightNonDeterministicEdges = 1;
-        WeightMissingDeterministicEdges = 0.5;
+        WeightNonDeterministicEdges = 2;
+        WeightUnreachableStates = 100;
         WeightSize = 1;
         MutationProbability = 0.5;
         NonDeterministicBehaviorProbability = 0.5;

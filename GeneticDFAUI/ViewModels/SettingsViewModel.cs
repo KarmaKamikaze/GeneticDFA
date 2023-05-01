@@ -20,7 +20,7 @@ public class SettingsViewModel : ViewModelBase
     private double _weightFalsePositive = 10;
     private double _weightFalseNegative = 10;
     private double _weightNonDeterministicEdges = 0.5;
-    private double _weightMissingDeterministicEdges = 0.5;
+    private double _weightUnreachableStates = 0.5;
     private double _weightSize = 0.5;
     private double _mutationProbability = 0.5;
     private double _nonDeterministicBehaviorProbability = 0.5;
@@ -102,10 +102,10 @@ public class SettingsViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _weightNonDeterministicEdges, value);
     }
 
-    public double WeightMissingDeterministicEdges
+    public double WeightUnreachableStates
     {
-        get => _weightMissingDeterministicEdges;
-        set => this.RaiseAndSetIfChanged(ref _weightMissingDeterministicEdges, value);
+        get => _weightUnreachableStates;
+        set => this.RaiseAndSetIfChanged(ref _weightUnreachableStates, value);
     }
 
     public double WeightSize
@@ -213,7 +213,7 @@ public class SettingsViewModel : ViewModelBase
             WeightFalsePositive = this.WeightFalsePositive,
             WeightFalseNegative = this.WeightFalseNegative,
             WeightNonDeterministicEdges = this.WeightNonDeterministicEdges,
-            WeightMissingDeterministicEdges = this.WeightMissingDeterministicEdges,
+            WeightUnreachableStates = this.WeightUnreachableStates,
             WeightSize = this.WeightSize,
             MutationProbability = this.MutationProbability,
             NonDeterministicBehaviorProbability = this.NonDeterministicBehaviorProbability,
@@ -245,7 +245,7 @@ public class SettingsViewModel : ViewModelBase
         WeightFalsePositive = settings.WeightFalsePositive;
         WeightFalseNegative = settings.WeightFalseNegative;
         WeightNonDeterministicEdges = settings.WeightNonDeterministicEdges;
-        WeightMissingDeterministicEdges = settings.WeightMissingDeterministicEdges;
+        WeightUnreachableStates = settings.WeightUnreachableStates;
         WeightSize = settings.WeightSize;
         MutationProbability = settings.MutationProbability;
         NonDeterministicBehaviorProbability = settings.NonDeterministicBehaviorProbability;
