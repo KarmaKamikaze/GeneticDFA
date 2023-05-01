@@ -19,9 +19,9 @@ class Program
         const int weightTrueNegative = 10;
         const double weightFalsePositive = 10;
         const double weightFalseNegative = 10;
-        const double weightNonDeterministicEdges = 1;
-        const double weightUnreachableStates = 0.5;
-        const double weightSize = 1;
+        const double weightNonDeterministicEdges = 2;
+        const double weightUnreachableStates = 100;
+        const double weightSize = 2;
         const double mutationProbability = 0.5;
         const double crossoverProbability = 1 - mutationProbability;
         const double nonDeterministicBehaviorProbability = 0.5;
