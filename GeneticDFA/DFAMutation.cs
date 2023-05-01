@@ -70,7 +70,10 @@ public class DFAMutation : MutationBase
                     {
                         mutationApplied = EdgeModification(_chromosome, focusOnNonDeterministicBehavior, ChangeTarget);
                         if (mutationApplied)
+                        {
                             DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(_chromosome);
+                            _chromosome.ReachableStates = DFAChromosomeHelper.FindReachableStates(_chromosome);
+                        }
                         mutationOperatorTried[MutationOperator.ChangeTargetProbability] = true;
                     }
 
@@ -80,7 +83,10 @@ public class DFAMutation : MutationBase
                     {
                         mutationApplied = EdgeModification(_chromosome, focusOnNonDeterministicBehavior, ChangeSource);
                         if (mutationApplied)
+                        {
                             DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(_chromosome);
+                            _chromosome.ReachableStates = DFAChromosomeHelper.FindReachableStates(_chromosome);
+                        }
                         mutationOperatorTried[MutationOperator.ChangeSourceProbability] = true;
                     }
 
@@ -90,7 +96,10 @@ public class DFAMutation : MutationBase
                     {
                         mutationApplied = RemoveEdge(_chromosome, focusOnNonDeterministicBehavior);
                         if (mutationApplied)
+                        {
                             DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(_chromosome);
+                            _chromosome.ReachableStates = DFAChromosomeHelper.FindReachableStates(_chromosome);
+                        }
                         mutationOperatorTried[MutationOperator.RemoveEdgeProbability] = true;
                     }
 
@@ -100,7 +109,10 @@ public class DFAMutation : MutationBase
                     {
                         mutationApplied = AddEdge(_chromosome);
                         if (mutationApplied)
+                        {
                             DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(_chromosome);
+                            _chromosome.ReachableStates = DFAChromosomeHelper.FindReachableStates(_chromosome);
+                        }
                         mutationOperatorTried[MutationOperator.AddEdgeProbability] = true;
                     }
 
@@ -110,7 +122,10 @@ public class DFAMutation : MutationBase
                     {
                         mutationApplied = AddState(_chromosome);
                         if (mutationApplied)
+                        {
                             DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(_chromosome);
+                            _chromosome.ReachableStates = DFAChromosomeHelper.FindReachableStates(_chromosome);
+                        }
                         mutationOperatorTried[MutationOperator.AddStateProbability] = true;
                     }
 
@@ -136,7 +151,10 @@ public class DFAMutation : MutationBase
                     {
                         mutationApplied = MergeStates(_chromosome, focusOnNonDeterministicBehavior);
                         if (mutationApplied)
+                        {
                             DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(_chromosome);
+                            _chromosome.ReachableStates = DFAChromosomeHelper.FindReachableStates(_chromosome);
+                        }
                         mutationOperatorTried[MutationOperator.MergeStatesProbability] = true;
                     }
 
@@ -260,9 +278,8 @@ public class DFAMutation : MutationBase
     {
         // Only use reachable states as sources,
         // since there is no benefit to adding an outgoing edge from an unreachable state
-        List<DFAState> reachableStates = DFAChromosomeHelper.FindReachableStates(chromosome);
         // If a state has outgoing edges to each state with each input symbol, it is not a valid source
-        List<DFAState> possibleSources = reachableStates.Where(s =>
+        List<DFAState> possibleSources = chromosome.ReachableStates.Where(s =>
             chromosome.Edges.Count(e => e.Source == s) < chromosome.States.Count * _alphabet.Count).ToList();
         if (possibleSources.Count == 0)
             return false;
@@ -319,8 +336,7 @@ public class DFAMutation : MutationBase
             return false;
 
         // Only use reachable states, since there is no benefit to making an unreachable state an accept state
-        List<DFAState> reachableStates = DFAChromosomeHelper.FindReachableStates(chromosome);
-        List<DFAState> nonAcceptStates = reachableStates.Where(s => s.IsAccept == false).ToList();
+        List<DFAState> nonAcceptStates = chromosome.ReachableStates.Where(s => s.IsAccept == false).ToList();
         // If there is no states that can be made an accept state, return false
         if (nonAcceptStates.Count == 0)
             return false;
@@ -339,8 +355,7 @@ public class DFAMutation : MutationBase
         // If there is only one accept state, we first add an accept state before removing the original accept state
         if (acceptStates.Count == 1)
         {
-            List<DFAState> reachableStates = DFAChromosomeHelper.FindReachableStates(chromosome);
-            List<DFAState> nonAcceptStates = reachableStates.Where(s => s.IsAccept == false).ToList();
+            List<DFAState> nonAcceptStates = chromosome.ReachableStates.Where(s => s.IsAccept == false).ToList();
             if (nonAcceptStates.Count == 0)
                 return false;
             nonAcceptStates[_rnd.GetInt(0, nonAcceptStates.Count)].IsAccept = true;
@@ -357,8 +372,7 @@ public class DFAMutation : MutationBase
         DFAState newState = new DFAState(chromosome.NextStateId++, false);
         // Connect an exiting (source) state with the new (target) state.
         // Only use reachable states to ensure reachability
-        List<DFAState> reachableStates = DFAChromosomeHelper.FindReachableStates(chromosome);
-        DFAState firstSource = reachableStates[_rnd.GetInt(0, reachableStates.Count)];
+        DFAState firstSource = chromosome.ReachableStates[_rnd.GetInt(0, chromosome.ReachableStates.Count)];
         chromosome.Edges.Add(new DFAEdge(chromosome.NextEdgeId++, firstSource, newState,
             _alphabet[_rnd.GetInt(0, _alphabet.Count)]));
 

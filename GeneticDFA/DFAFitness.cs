@@ -6,7 +6,7 @@ public class DFAFitness : IFitness
 {
     public DFAFitness(List<TestTrace> traces, List<char> alphabet, double weightTruePositive,
         double weightTrueNegative, double weightFalsePositive, double weightFalseNegative,
-        double weightNonDeterministicEdges, double weightMissingDeterministicEdges, double weightSize)
+        double weightNonDeterministicEdges, double weightUnreachableStates, double weightSize)
     {
         Traces = traces;
         Alphabet = alphabet;
@@ -15,7 +15,7 @@ public class DFAFitness : IFitness
         WeightFalsePositive = weightFalsePositive;
         WeightFalseNegative = weightFalseNegative;
         WeightNonDeterministicEdges = weightNonDeterministicEdges;
-        WeightMissingDeterministicEdges = weightMissingDeterministicEdges;
+        WeightUnreachableStates = weightUnreachableStates;
         WeightSize = weightSize;
     }
 
@@ -26,7 +26,7 @@ public class DFAFitness : IFitness
     private double WeightFalsePositive { get; }
     private double WeightFalseNegative { get; }
     private double WeightNonDeterministicEdges { get; }
-    private double WeightMissingDeterministicEdges { get; }
+    private double WeightUnreachableStates { get; }
     private double WeightSize { get; }
 
     private enum Verdict
@@ -63,7 +63,7 @@ public class DFAFitness : IFitness
         }
 
         return fitnessScore - WeightNonDeterministicEdges * chromosome.NonDeterministicEdges.Count -
-               WeightMissingDeterministicEdges * NumberOfMissingDeterministicEdges(chromosome) -
+               WeightUnreachableStates * (chromosome.States.Count - chromosome.ReachableStates.Count) -
                WeightSize * chromosome.Size;
     }
 
@@ -107,6 +107,7 @@ public class DFAFitness : IFitness
         return false;
     }
 
+    // Not in use
     private int NumberOfMissingDeterministicEdges(DFAChromosome chromosome)
     {
         int missingDeterministicEdgesCounter = 0;

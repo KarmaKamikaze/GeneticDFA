@@ -31,6 +31,7 @@ public class TestDFAs
         new DFAState(2, false),
         new DFAState(3, true),
         new DFAState(4, false),
+        new DFAState(5, false),
     };
 
     public static readonly List<DFAEdge> NFAEdges = new List<DFAEdge>()

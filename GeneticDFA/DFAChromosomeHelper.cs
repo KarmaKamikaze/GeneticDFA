@@ -11,7 +11,11 @@ public static class DFAChromosomeHelper
         {
             List<DFAState> reachableStates = FindReachableStates(chromosome);
             if (reachableStates.Count == chromosome.States.Count)
+            {
+                chromosome.ReachableStates = reachableStates;
                 break;
+            }
+
             List<DFAState> unreachableStates = chromosome.States.Where(s => !reachableStates.Contains(s)).ToList();
 
             // Note that we do not check whether the edge we are going to add is unique
