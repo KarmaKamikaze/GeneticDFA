@@ -115,6 +115,21 @@ public class DFAChromosomeTests
             && e2.Target == e.Target));
     }
 
+    [Theory]
+    [MemberData(nameof(FindReachableStatesTestData))]
+    public void FindReachableStates(DFAChromosome chromosome, List<int> expectedStateIDs)
+    {
+        //Arrange
+        
+        
+        //Act
+        List<DFAState> actual = DFAChromosomeHelper.FindReachableStates(chromosome);
+        actual.Sort((state1, state2) => state1.Id.CompareTo(state2.Id));
+        
+        //Assert
+        Assert.Equal(chromosome.States.Where(s => expectedStateIDs.Contains(s.Id)).ToList(), actual);
+    }
+
 
     private static readonly DFAState State1 = new DFAState(1, false);
     private static readonly DFAState State2 = new DFAState(2, false);
@@ -388,4 +403,39 @@ public class DFAChromosomeTests
                 }
             },
         };
+    
+    public static readonly IEnumerable<object[]> FindReachableStatesTestData = new List<object[]>()
+    {
+        new object[] {TestDFAs.SmallDFA.Clone(), new List<int>(){1,2,3} },
+        new object[] {TestDFAs.NFA.Clone(), new List<int>(){1,2,3,4}},
+        new object[] {new DFAChromosome(States, new List<DFAEdge>(), State1), new List<int>(){1}},
+        new object[] {new DFAChromosome(States, new List<DFAEdge>()
+        {
+            new DFAEdge(1, State1, State2, '1')
+        }, State1), new List<int>(){1, 2}},
+        new object[] {new DFAChromosome(States, new List<DFAEdge>()
+        {
+            new DFAEdge(1, State1, State2, '1'),
+            new DFAEdge(2, State2, State3, '0')
+            
+        }, State1), new List<int>(){1, 2, 3}},
+        new object[] {new DFAChromosome(States, new List<DFAEdge>()
+        {
+            new DFAEdge(1, State1, State2, '1'),
+            new DFAEdge(2, State1, State3, '0')
+            
+        }, State1), new List<int>(){1, 2, 3}},
+        new object[] {new DFAChromosome(States, new List<DFAEdge>()
+        {
+            new DFAEdge(1, State1, State2, '1'),
+            new DFAEdge(2, State3, State2, '0'),
+            
+        }, State1), new List<int>(){1, 2}},
+        new object[] {new DFAChromosome(States, new List<DFAEdge>()
+        {
+            new DFAEdge(1, State1, State2, '1'),
+            new DFAEdge(2, State3, State2, '0'),
+            new DFAEdge(3, State2, State2, '1'),
+        }, State1), new List<int>(){1, 2}},
+    };
 }
