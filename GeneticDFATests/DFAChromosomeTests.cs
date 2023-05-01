@@ -119,9 +119,6 @@ public class DFAChromosomeTests
     [MemberData(nameof(FindReachableStatesTestData))]
     public void FindReachableStates(DFAChromosome chromosome, List<int> expectedStateIDs)
     {
-        //Arrange
-        
-        
         //Act
         List<DFAState> actual = DFAChromosomeHelper.FindReachableStates(chromosome);
         actual.Sort((state1, state2) => state1.Id.CompareTo(state2.Id));
