@@ -20,7 +20,7 @@ class Program
         const double weightFalsePositive = 10;
         const double weightFalseNegative = 10;
         const double weightNonDeterministicEdges = 1;
-        const double weightMissingDeterministicEdges = 0.5;
+        const double weightUnreachableStates = 0.5;
         const double weightSize = 1;
         const double mutationProbability = 0.5;
         const double crossoverProbability = 1 - mutationProbability;
@@ -53,7 +53,7 @@ class Program
 
         // Specific fitness function for the DFA learning problem.
         DFAFitness fitness = new DFAFitness(traces, alphabet, weightTruePositive, weightTrueNegative,
-            weightFalsePositive, weightFalseNegative, weightNonDeterministicEdges, weightMissingDeterministicEdges,
+            weightFalsePositive, weightFalseNegative, weightNonDeterministicEdges, weightUnreachableStates,
             weightSize);
         // Specific chromosome (gene) function for the DFA learning problem.
         DFAChromosome chromosome = new DFAChromosome();

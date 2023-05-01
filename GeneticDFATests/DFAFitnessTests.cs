@@ -22,7 +22,7 @@ public class DFAFitnessTests
 
     [Theory]
     [MemberData(nameof(MissingDeterministicEdgesTestData))]
-    public void FitnessScoreIsCorrectWhenOnlyNumberOfMissingDeterministicEdgesWeighs(DFAChromosome chromosome,
+    public void FitnessScoreIsCorrectWhenOnlyUnreachableStatesWeighs(DFAChromosome chromosome,
         List<char> alphabet, double expected)
     {
         // Arrange
@@ -74,7 +74,8 @@ public class DFAFitnessTests
         // Arrange
         DFAFitness fitness = new DFAFitness(SampleTraces, alphabet, 1, 1, 1, 1, 1, 1, 1);
         DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(chromosome);
-
+        chromosome.ReachableStates = DFAChromosomeHelper.FindReachableStates(chromosome);
+        
         // Act
         double actual = fitness.Evaluate(chromosome);
 
@@ -86,13 +87,13 @@ public class DFAFitnessTests
     public static readonly IEnumerable<object[]> SizeTestData = new List<object[]>()
     {
         new object[] { TestDFAs.SmallDFA, -9 },
-        new object[] { TestDFAs.NFA, -12 }
+        new object[] { TestDFAs.NFA, -13 }
     };
 
     public static readonly IEnumerable<object[]> MissingDeterministicEdgesTestData = new List<object[]>()
     {
         new object[] { TestDFAs.SmallDFA, new List<char>() { '0', '1' }, 0 },
-        new object[] { TestDFAs.NFA, new List<char>() { '0', '1' }, -2 }
+        new object[] { TestDFAs.NFA, new List<char>() { '0', '1' }, -1 }
     };
 
     public static readonly IEnumerable<object[]> NonDeterministicEdgesTestData = new List<object[]>()

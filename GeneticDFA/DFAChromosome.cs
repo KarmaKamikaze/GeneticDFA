@@ -10,6 +10,7 @@ public class DFAChromosome : IChromosome
     public List<DFAState> States { get; } = new List<DFAState>();
     public List<DFAEdge> Edges { get; } = new List<DFAEdge>();
     public List<DFAEdge> NonDeterministicEdges { get; set; } = new List<DFAEdge>();
+    public List<DFAState> ReachableStates { get; set; } = new List<DFAState>();
     public DFAState? StartState { get; set; }
     public double? Fitness { get; set; }
     public int Size => States.Count + Edges.Count;
@@ -65,7 +66,9 @@ public class DFAChromosome : IChromosome
         chromosome.Fitness = Fitness;
         chromosome.NextStateId = NextStateId;
         chromosome.NextEdgeId = NextEdgeId;
-
+        chromosome.NonDeterministicEdges = chromosome.Edges.Where(e => NonDeterministicEdges.Any(e2 => e2.Id == e.Id)).ToList();
+        chromosome.ReachableStates = chromosome.States.Where(s => ReachableStates.Any(s2 => s2.Id == s.Id)).ToList();
+        
         return chromosome;
     }
 
