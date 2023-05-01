@@ -8,7 +8,7 @@ public class DFAState
         IsAccept = isAccept;
     }
 
-    public int Id { get; }
+    public int Id { get; set; }
     public bool IsAccept { get; set; }
 
     public DFAState Clone()

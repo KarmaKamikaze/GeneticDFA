@@ -1,9 +1,12 @@
 ﻿using GeneticSharp;
+using System.Threading;
 
 namespace GeneticDFA;
 
 public class DFAChromosome : IChromosome
 {
+    private static int _idIncrement;
+
     public List<DFAState> States { get; } = new List<DFAState>();
     public List<DFAEdge> Edges { get; } = new List<DFAEdge>();
     public List<DFAEdge> NonDeterministicEdges { get; set; } = new List<DFAEdge>();
@@ -12,32 +15,44 @@ public class DFAChromosome : IChromosome
     public int Size => States.Count + Edges.Count;
     public int NextStateId { get; set; } = 0;
     public int NextEdgeId { get; set; } = 0;
+    public int Id { get; private set; }
 
     public DFAChromosome(List<DFAState> states, List<DFAEdge> edges, DFAState startState)
     {
+        Id = Interlocked.Increment(ref _idIncrement);
         States = states;
         Edges = edges;
         StartState = startState;
+    }
+
+    public DFAChromosome(List<DFAState> states, List<DFAEdge> edges, DFAState startState, int id)
+        : this(states, edges, startState)
+    {
+        _idIncrement = _idIncrement < id ? id : _idIncrement;
     }
 
     public DFAChromosome()
     {
     }
 
-
     public IChromosome CreateNew()
     {
-        return new DFAChromosome();
+        DFAChromosome chromosome = new DFAChromosome();
+        chromosome.SetNewId();
+        return chromosome;
     }
 
     public IChromosome Clone()
     {
-        DFAChromosome chromosome = (DFAChromosome) CreateNew();
+        DFAChromosome chromosome = new DFAChromosome();
+
+        chromosome.Id = Id;
 
         foreach (DFAState state in States)
         {
             chromosome.States.Add(state.Clone());
         }
+
 
         foreach (DFAEdge edge in Edges)
         {
@@ -68,6 +83,11 @@ public class DFAChromosome : IChromosome
         return !(fitness2.GetValueOrDefault() > nullable1.GetValueOrDefault() & fitness2.HasValue & nullable1.HasValue)
             ? -1
             : 1;
+    }
+
+    public void SetNewId()
+    {
+        Id = Interlocked.Increment(ref _idIncrement);
     }
 
 
