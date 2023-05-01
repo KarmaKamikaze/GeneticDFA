@@ -34,8 +34,6 @@
             <TextBox Text="{Binding MutationProbability}" Margin="0 5"/>
         </StackPanel>
         <StackPanel Grid.Column="1" Grid.Row="0" Margin="10">
-            <TextBlock Text="Fitness Lower Bound:" FontWeight="Bold" Margin="0 0 0 5"/>
-            <TextBox Text="{Binding FitnessLowerBound}" Margin="0 5"/>
             <TextBlock Text="Size Weight:" FontWeight="Bold" Margin="0 0 0 5"/>
             <TextBox Text="{Binding WeightSize}" Margin="0 5"/>
             <TextBlock Text="True Positive Weight:" FontWeight="Bold" Margin="0 0 0 5"/>
@@ -75,7 +73,7 @@
         </StackPanel>
 
         <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal" Margin="10">
-            <Button Content="Run GA" Margin="0 0 10 0" Command="{Binding SaveCommand}"/>
+            <Button Content="Run GA" Margin="0 0 10 0" Command="{Binding RunCommand}"/>
             <Button Content="Reset" Command="{Binding ResetCommand}"/>
         </StackPanel>
     </Grid>

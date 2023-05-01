@@ -6,7 +6,7 @@ using Avalonia.Data.Converters;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 
-namespace GeneticDFAUI;
+namespace GeneticDFAUI.Services;
 
 /// <summary>
 /// <para>

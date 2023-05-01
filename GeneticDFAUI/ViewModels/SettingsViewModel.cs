@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reactive;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using Avalonia.Controls;
-using Avalonia.Input;
+﻿using System.Windows.Input;
+using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
 using GeneticDFA.Utility;
-using GeneticDFAUI.Services;
+using GeneticDFAUI.Views;
 using ReactiveUI;
 
 namespace GeneticDFAUI.ViewModels;
@@ -15,14 +10,11 @@ namespace GeneticDFAUI.ViewModels;
 public class SettingsViewModel : ViewModelBase
 {
     private readonly ISettingsService _settingsService;
-    private readonly INavigationService _navigationService;
     private int _minPopulation = 10000;
     private int _maxPopulation = 10000;
     private int _convergenceGenerationNumber = 30;
     private int _maximumGenerationNumber = 100;
     private int _eliteSelectionScalingFactor = 2;
-    private int _fitnessLowerBound = 500;
-    private int _numberOfFittestIndividualsAcrossAllGenerations = 500;
     private int _weightTruePositive = 10;
     private int _weightTrueNegative = 10;
     private double _weightFalsePositive = 10;
@@ -30,7 +22,6 @@ public class SettingsViewModel : ViewModelBase
     private double _weightNonDeterministicEdges = 0.5;
     private double _weightMissingDeterministicEdges = 0.5;
     private double _weightSize = 0.5;
-    private double _crossoverProbability = 0.5;
     private double _mutationProbability = 0.5;
     private double _nonDeterministicBehaviorProbability = 0.5;
     private double _changeTargetProbability = 0.1;
@@ -46,9 +37,8 @@ public class SettingsViewModel : ViewModelBase
     public SettingsViewModel()
     {
         _settingsService = new SettingsService();
-        _navigationService = new NavigationService();
         LoadSettings();
-        SaveCommand = ReactiveCommand.Create(OnSave);
+        RunCommand = ReactiveCommand.Create(OnRunAlgorithm);
         ResetCommand = ReactiveCommand.Create(OnReset);
     }
 
@@ -80,18 +70,6 @@ public class SettingsViewModel : ViewModelBase
     {
         get => _eliteSelectionScalingFactor;
         set => this.RaiseAndSetIfChanged(ref _eliteSelectionScalingFactor, value);
-    }
-
-    public int FitnessLowerBound
-    {
-        get => _fitnessLowerBound;
-        set => this.RaiseAndSetIfChanged(ref _fitnessLowerBound, value);
-    }
-
-    public int NumberOfFittestIndividualsAcrossAllGenerations
-    {
-        get => _numberOfFittestIndividualsAcrossAllGenerations;
-        set => this.RaiseAndSetIfChanged(ref _numberOfFittestIndividualsAcrossAllGenerations, value);
     }
 
     public int WeightTruePositive
@@ -134,12 +112,6 @@ public class SettingsViewModel : ViewModelBase
     {
         get => _weightSize;
         set => this.RaiseAndSetIfChanged(ref _weightSize, value);
-    }
-
-    public double CrossoverProbability
-    {
-        get => _crossoverProbability;
-        set => this.RaiseAndSetIfChanged(ref _crossoverProbability, value);
     }
 
     public double MutationProbability
@@ -208,12 +180,18 @@ public class SettingsViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _mergeStatesProbability, value);
     }
 
-    public ICommand SaveCommand { get; }
+    public ICommand RunCommand { get; }
     public ICommand ResetCommand { get; }
 
-    private void OnSave()
+    private void OnRunAlgorithm()
     {
         SaveSettings();
+        // App is always available at runtime
+        var app = (ClassicDesktopStyleApplicationLifetime)Application.Current!.ApplicationLifetime!;
+        app.MainWindow.Content = new VisualizationView()
+        {
+            DataContext = new VisualizationViewModel(),
+        };
     }
 
     private void OnReset()
@@ -230,8 +208,6 @@ public class SettingsViewModel : ViewModelBase
             ConvergenceGenerationNumber = this.ConvergenceGenerationNumber,
             MaximumGenerationNumber = this.MaximumGenerationNumber,
             EliteSelectionScalingFactor = this.EliteSelectionScalingFactor,
-            FitnessLowerBound = this.FitnessLowerBound,
-            NumberOfFittestIndividualsAcrossAllGenerations = this.NumberOfFittestIndividualsAcrossAllGenerations,
             WeightTruePositive = this.WeightTruePositive,
             WeightTrueNegative = this.WeightTrueNegative,
             WeightFalsePositive = this.WeightFalsePositive,
@@ -239,7 +215,6 @@ public class SettingsViewModel : ViewModelBase
             WeightNonDeterministicEdges = this.WeightNonDeterministicEdges,
             WeightMissingDeterministicEdges = this.WeightMissingDeterministicEdges,
             WeightSize = this.WeightSize,
-            CrossoverProbability = this.CrossoverProbability,
             MutationProbability = this.MutationProbability,
             NonDeterministicBehaviorProbability = this.NonDeterministicBehaviorProbability,
             ChangeTargetProbability = this.ChangeTargetProbability,
@@ -265,8 +240,6 @@ public class SettingsViewModel : ViewModelBase
         ConvergenceGenerationNumber = settings.ConvergenceGenerationNumber;
         MaximumGenerationNumber = settings.MaximumGenerationNumber;
         EliteSelectionScalingFactor = settings.EliteSelectionScalingFactor;
-        FitnessLowerBound = settings.FitnessLowerBound;
-        NumberOfFittestIndividualsAcrossAllGenerations = settings.NumberOfFittestIndividualsAcrossAllGenerations;
         WeightTruePositive = settings.WeightTruePositive;
         WeightTrueNegative = settings.WeightTrueNegative;
         WeightFalsePositive = settings.WeightFalsePositive;
@@ -274,7 +247,6 @@ public class SettingsViewModel : ViewModelBase
         WeightNonDeterministicEdges = settings.WeightNonDeterministicEdges;
         WeightMissingDeterministicEdges = settings.WeightMissingDeterministicEdges;
         WeightSize = settings.WeightSize;
-        CrossoverProbability = settings.CrossoverProbability;
         MutationProbability = settings.MutationProbability;
         NonDeterministicBehaviorProbability = settings.NonDeterministicBehaviorProbability;
         ChangeTargetProbability = settings.ChangeTargetProbability;

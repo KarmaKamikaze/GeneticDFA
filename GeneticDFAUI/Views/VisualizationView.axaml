@@ -4,13 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:GeneticDFAUI.ViewModels"
              xmlns:geneticDfaui="clr-namespace:GeneticDFAUI"
+             xmlns:services="clr-namespace:GeneticDFAUI.Services"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="GeneticDFAUI.Views.VisualizationView"
              x:DataType="vm:VisualizationViewModel">
 
 
     <UserControl.Resources>
-        <geneticDfaui:BitmapAssetValueConverter x:Key="variableImage"/>
+        <services:BitmapAssetValueConverter x:Key="variableImage"/>
     </UserControl.Resources>
 
     <RelativePanel>
@@ -18,7 +19,7 @@
                    Background="LightGray">
             DFA Visualizations
         </TextBlock>
-        <ListBox x:Name="VisualizationList" Items="{Binding MyItems}"
+        <ListBox x:Name="VisualizationList" Items="{Binding Generations}"
                  RelativePanel.Below="VisualizationText"
                  RelativePanel.AlignLeftWithPanel="True"
                  Width="250">
@@ -48,6 +49,7 @@
             Content="Settings"
             HorizontalContentAlignment="Center"
             FontSize="20"
-            FontStyle="Oblique"></Button>
+            FontStyle="Oblique"
+            Command="{Binding SwitchToSettingsWindow}"></Button>
     </RelativePanel>
 </UserControl>
