@@ -20,7 +20,7 @@ public class DFACrossover : CrossoverBase
 
         // Check if the parent chromosomes have enough states and edges to perform crossover.
         if (parent1.States.Count < 2 || parent2.States.Count < 2 || parent1.Edges.Count < 1 || parent2.Edges.Count < 1)
-            return new List<IChromosome>() {parents[0].Clone(), parents[1].Clone()};
+            return new List<IChromosome>() { parents[0].Clone(), parents[1].Clone() };
 
         // Create two new child chromosomes using the CreateChild helper function.
         DFAChromosome child1 = CreateChild((DFAChromosome) parent1.Clone(), (DFAChromosome) parent2.Clone());
@@ -33,7 +33,7 @@ public class DFACrossover : CrossoverBase
         child1.SetNewId();
         child2.SetNewId();
 
-        return new List<IChromosome>() {child1, child2};
+        return new List<IChromosome>() { child1, child2 };
     }
 
     /// <summary>
@@ -127,7 +127,7 @@ public class DFACrossover : CrossoverBase
     /// <returns>A list, containing half the chromosome's consecutive states.</returns>
     private List<DFAState> SelectStatesBreadthFirst(DFAChromosome chromosome)
     {
-        List<DFAState> selectedStates = new List<DFAState>() {chromosome.StartState!};
+        List<DFAState> selectedStates = new List<DFAState>() { chromosome.StartState! };
         Queue<DFAState> queue = new Queue<DFAState>();
         queue.Enqueue(chromosome.StartState!);
 

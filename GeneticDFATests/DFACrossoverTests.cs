@@ -25,7 +25,7 @@ public class DFACrossoverTests
             (DFAChromosome) population.CurrentGeneration.Chromosomes[1]
         };
         IList<IChromosome> children = crossover.Cross(new List<IChromosome>()
-            {parents[0], parents[1]});
+            { parents[0], parents[1] });
         DFAChromosome child1 = (DFAChromosome) children[0];
         DFAChromosome child2 = (DFAChromosome) children[1];
 
@@ -187,11 +187,11 @@ public class DFACrossoverTests
 
     public static readonly IEnumerable<object[]> Alphabets = new List<object[]>()
     {
-        new object[] {new List<char>() {'0'}},
-        new object[] {new List<char>() {'0', '1'}},
-        new object[] {new List<char>() {'0', '1', '2'}},
-        new object[] {new List<char>() {'0', '1', '2', '3'}},
-        new object[] {new List<char>() {'0', '1', '2', '3', '4'}},
-        new object[] {new List<char>() {'0', '1', '2', '3', '4', '5'}},
+        new object[] { new List<char>() { '0' } },
+        new object[] { new List<char>() { '0', '1' } },
+        new object[] { new List<char>() { '0', '1', '2' } },
+        new object[] { new List<char>() { '0', '1', '2', '3' } },
+        new object[] { new List<char>() { '0', '1', '2', '3', '4' } },
+        new object[] { new List<char>() { '0', '1', '2', '3', '4', '5' } },
     };
 }
