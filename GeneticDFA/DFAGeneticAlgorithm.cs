@@ -37,7 +37,7 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
         CrossoverProbability = crossoverProbability;
         MutationProbability = mutationProbability;
         TimeEvolving = TimeSpan.Zero;
-        TaskExecutor = new ParallelTaskExecutor() {MinThreads = 3000, MaxThreads = 3000};
+        TaskExecutor = new ParallelTaskExecutor() { MinThreads = Population.MinSize, MaxThreads = Population.MaxSize };
     }
 
     public event EventHandler GenerationRan;
@@ -110,35 +110,54 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
 
         try
         {
-            for (int i = 0; i < selectedForModification.Count; i++)
+            for (int i = 0; i < selectedForModification.Count - 1; i++)
             {
                 if (_rnd.GetDouble(0, 1) < MutationProbability)
                 {
                     int i1 = i;
                     TaskExecutor.Add((Action) (() =>
                     {
-                        IChromosome clone = selectedForModification[i1].Clone();
-                        Mutation.Mutate(clone, 0);
-                        clone.Fitness = null;
+                        IChromosome chromosome = MutateChromosome(selectedForModification[i1].Clone());
                         // Use mutex since otherwise two threads will attempt to access the shared list at the same time
                         lock (m_lock)
                         {
-                            newPopulation.Add(clone);
+                            newPopulation.Add(chromosome);
                         }
                     }));
                 }
                 else
                 {
-                    // Replace with crossover
-                    int i1 = i;
+                    int i1 = i++;
+                    int i2 = i;
                     TaskExecutor.Add((Action) (() =>
                     {
-                        IChromosome clone = selectedForModification[i1].Clone();
-                        Mutation.Mutate(clone, 0);
-                        clone.Fitness = null;
-                        lock (m_lock)
+                        if (((DFAChromosome) selectedForModification[i1]).Id ==
+                            ((DFAChromosome) selectedForModification[i2]).Id)
                         {
-                            newPopulation.Add(clone);
+                            IChromosome chromosome1 = MutateChromosome(selectedForModification[i1].Clone());
+                            IChromosome chromosome2 = MutateChromosome(selectedForModification[i2].Clone());
+                            lock (m_lock)
+                            {
+                                newPopulation.Add(chromosome1);
+                                newPopulation.Add(chromosome2);
+                            }
+                        }
+                        else
+                        {
+                            IList<IChromosome> parents = new List<IChromosome>()
+                            {
+                                selectedForModification[i1],
+                                selectedForModification[i2]
+                            };
+                            IList<IChromosome> children = Crossover.Cross(parents);
+                            children[0].Fitness = null;
+                            children[1].Fitness = null;
+
+                            lock (m_lock)
+                            {
+                                newPopulation.Add(children[0]);
+                                newPopulation.Add(children[1]);
+                            }
                         }
                     }));
                 }
@@ -157,6 +176,14 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
         Population.CreateNewGeneration(newPopulation);
         return EndCurrentGeneration();
     }
+
+    private IChromosome MutateChromosome(IChromosome chromosome)
+    {
+        Mutation.Mutate(chromosome, 0);
+        chromosome.Fitness = null;
+        return chromosome;
+    }
+
 
     /// <summary>
     /// Calculates a scaling factor, used to determine how many selections must be considered for mutation

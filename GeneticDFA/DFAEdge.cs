@@ -10,7 +10,7 @@ public class DFAEdge
         Input = input;
     }
 
-    public int Id { get; }
+    public int Id { get; set; }
     public DFAState Source { get; set; }
     public DFAState Target { get; set; }
     public char Input { get; set; }

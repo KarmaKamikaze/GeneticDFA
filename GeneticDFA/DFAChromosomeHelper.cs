@@ -30,6 +30,7 @@ public static class DFAChromosomeHelper
     {
         List<DFAState> reachableStates = new List<DFAState> { chromosome.StartState! };
 
+
         while (true)
         {
             List<DFAEdge> edgesFromReachableStates =

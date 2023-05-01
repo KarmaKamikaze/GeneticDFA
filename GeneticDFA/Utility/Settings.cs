@@ -7,8 +7,7 @@ public class Settings
     public int ConvergenceGenerationNumber { get; set; }
     public int MaximumGenerationNumber { get; set; }
     public int EliteSelectionScalingFactor { get; set; }
-    public int FitnessLowerBound { get; set; }
-    public int NumberOfFittestIndividualsAcrossAllGenerations { get; set; }
+    public int NumberOfFittestIndividualsAcrossAllGenerations => Convert.ToInt32(0.05 * MinPopulation);
     public int WeightTruePositive { get; set; }
     public int WeightTrueNegative { get; set; }
     public double WeightFalsePositive { get; set; }
@@ -16,7 +15,7 @@ public class Settings
     public double WeightNonDeterministicEdges { get; set; }
     public double WeightMissingDeterministicEdges { get; set; }
     public double WeightSize { get; set; }
-    public double CrossoverProbability { get; set; }
+    public double CrossoverProbability => 1 - MutationProbability;
     public double MutationProbability { get; set; }
     public double NonDeterministicBehaviorProbability { get; set; }
     public double ChangeTargetProbability { get; set; }
@@ -34,19 +33,16 @@ public class Settings
         // Default values
         MinPopulation = 10000;
         MaxPopulation = 10000;
-        ConvergenceGenerationNumber = 30;
+        ConvergenceGenerationNumber = 20;
         MaximumGenerationNumber = 100;
         EliteSelectionScalingFactor = 2;
-        FitnessLowerBound = 500;
-        NumberOfFittestIndividualsAcrossAllGenerations = 500;
         WeightTruePositive = 10;
         WeightTrueNegative = 10;
         WeightFalsePositive = 10;
         WeightFalseNegative = 10;
-        WeightNonDeterministicEdges = 0.5;
+        WeightNonDeterministicEdges = 1;
         WeightMissingDeterministicEdges = 0.5;
-        WeightSize = 0.5;
-        CrossoverProbability = 0.5;
+        WeightSize = 1;
         MutationProbability = 0.5;
         NonDeterministicBehaviorProbability = 0.5;
         ChangeTargetProbability = 0.1;

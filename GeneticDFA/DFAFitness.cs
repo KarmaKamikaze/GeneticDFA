@@ -70,7 +70,7 @@ public class DFAFitness : IFitness
     private Verdict CheckTrace(DFAChromosome chromosome, TestTrace testTrace)
     {
         DFAState startState = chromosome.StartState!;
-        bool isTraceAccepted = ExploreState(chromosome, startState, testTrace.Trace);
+        bool isTraceAccepted = ExploreState(chromosome, startState, testTrace.Trace, 0);
 
         switch (isTraceAccepted)
         {
@@ -85,21 +85,21 @@ public class DFAFitness : IFitness
         }
     }
 
-    private bool ExploreState(DFAChromosome chromosome, DFAState state, string traceString)
+    private bool ExploreState(DFAChromosome chromosome, DFAState state, string traceString, int traceStringIndex)
     {
-        if (traceString == "")
+        if (traceStringIndex == traceString.Length)
         {
             return state.IsAccept;
         }
 
         // Assuming inputs are chars
-        char nextInput = traceString[0];
-        string remainingTrace = traceString[1..];
+        char nextInput = traceString[traceStringIndex];
+        traceStringIndex++;
         foreach (DFAEdge edge in chromosome.Edges)
         {
             if (edge.Source.Id == state.Id && edge.Input == nextInput)
             {
-                if (ExploreState(chromosome, edge.Target, remainingTrace))
+                if (ExploreState(chromosome, edge.Target, traceString, traceStringIndex))
                     return true;
             }
         }

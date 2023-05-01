@@ -30,10 +30,6 @@
             <TextBox Text="{Binding ConvergenceGenerationNumber}" Margin="0 5"/>
             <TextBlock Text="Elite Selection Scaling Factor:" FontWeight="Bold" Margin="0 0 0 5"/>
             <TextBox Text="{Binding EliteSelectionScalingFactor}" Margin="0 5"/>
-            <TextBlock Text="Fittest Individuals Access All Generations:" FontWeight="Bold" Margin="0 0 0 5"/>
-            <TextBox Text="{Binding NumberOfFittestIndividualsAcrossAllGenerations}" Margin="0 5"/>
-            <TextBlock Text="Crossover Probability:" FontWeight="Bold" Margin="0 0 0 5"/>
-            <TextBox Text="{Binding CrossoverProbability}" Margin="0 5"/>
             <TextBlock Text="Mutation Probability:" FontWeight="Bold" Margin="0 0 0 5"/>
             <TextBox Text="{Binding MutationProbability}" Margin="0 5"/>
         </StackPanel>
