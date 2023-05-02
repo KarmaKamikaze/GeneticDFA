@@ -8,10 +8,10 @@ public class Settings
     public int MaximumGenerationNumber { get; set; }
     public int EliteSelectionScalingFactor { get; set; }
     public int NumberOfFittestIndividualsAcrossAllGenerations => Convert.ToInt32(0.05 * MinPopulation);
-    public int WeightTruePositive { get; set; }
-    public int WeightTrueNegative { get; set; }
-    public double WeightFalsePositive { get; set; }
-    public double WeightFalseNegative { get; set; }
+    public int RewardTruePositive { get; set; }
+    public int RewardTrueNegative { get; set; }
+    public double PenaltyFalsePositive { get; set; }
+    public double PenaltyFalseNegative { get; set; }
     public double WeightNonDeterministicEdges { get; set; }
     public double WeightUnreachableStates { get; set; }
     public double WeightSize { get; set; }
@@ -31,28 +31,28 @@ public class Settings
     public Settings()
     {
         // Default values
-        MinPopulation = 10000;
-        MaxPopulation = 10000;
-        ConvergenceGenerationNumber = 20;
-        MaximumGenerationNumber = 100;
+        MinPopulation = 3500;
+        MaxPopulation = 3500;
+        ConvergenceGenerationNumber = 100;
+        MaximumGenerationNumber = 400;
         EliteSelectionScalingFactor = 2;
-        WeightTruePositive = 10;
-        WeightTrueNegative = 10;
-        WeightFalsePositive = 10;
-        WeightFalseNegative = 10;
+        RewardTruePositive = 10;
+        RewardTrueNegative = 10;
+        PenaltyFalsePositive = 10;
+        PenaltyFalseNegative = 10;
         WeightNonDeterministicEdges = 2;
-        WeightUnreachableStates = 100;
-        WeightSize = 1;
+        WeightUnreachableStates = 5;
+        WeightSize = 5;
         MutationProbability = 0.5;
         NonDeterministicBehaviorProbability = 0.5;
-        ChangeTargetProbability = 0.1;
-        ChangeSourceProbability = 0.1;
-        ChangeInputProbability = 0.1;
-        RemoveEdgeProbability = 0.1;
-        AddEdgeProbability = 0.2;
-        AddStateProbability = 0.1;
-        AddAcceptStateProbability = 0.1;
-        RemoveAcceptStateProbability = 0.1;
-        MergeStatesProbability = 0.1;
+        ChangeTargetProbability = 0.11;
+        ChangeSourceProbability = 0.11;
+        ChangeInputProbability = 0.11;
+        RemoveEdgeProbability = 0.11;
+        AddEdgeProbability = 0.12;
+        AddStateProbability = 0.11;
+        AddAcceptStateProbability = 0.11;
+        RemoveAcceptStateProbability = 0.11;
+        MergeStatesProbability = 0.11;
     }
 }

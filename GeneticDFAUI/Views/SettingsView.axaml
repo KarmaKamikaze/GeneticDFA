@@ -36,14 +36,14 @@
         <StackPanel Grid.Column="1" Grid.Row="0" Margin="10">
             <TextBlock Text="Size Weight:" FontWeight="Bold" Margin="0 0 0 5"/>
             <TextBox Text="{Binding WeightSize}" Margin="0 5"/>
-            <TextBlock Text="True Positive Weight:" FontWeight="Bold" Margin="0 0 0 5"/>
-            <TextBox Text="{Binding WeightTruePositive}" Margin="0 5"/>
-            <TextBlock Text="True Negative Weight:" FontWeight="Bold" Margin="0 0 0 5"/>
-            <TextBox Text="{Binding WeightTrueNegative}" Margin="0 5"/>
-            <TextBlock Text="False Positive Weight:" FontWeight="Bold" Margin="0 0 0 5"/>
-            <TextBox Text="{Binding WeightFalsePositive}" Margin="0 5"/>
-            <TextBlock Text="False Negative Weight:" FontWeight="Bold" Margin="0 0 0 5"/>
-            <TextBox Text="{Binding WeightFalseNegative}" Margin="0 5"/>
+            <TextBlock Text="True Positive Reward:" FontWeight="Bold" Margin="0 0 0 5"/>
+            <TextBox Text="{Binding RewardTruePositive}" Margin="0 5"/>
+            <TextBlock Text="True Negative Reward:" FontWeight="Bold" Margin="0 0 0 5"/>
+            <TextBox Text="{Binding RewardTrueNegative}" Margin="0 5"/>
+            <TextBlock Text="False Positive Penalty:" FontWeight="Bold" Margin="0 0 0 5"/>
+            <TextBox Text="{Binding PenaltyFalsePositive}" Margin="0 5"/>
+            <TextBlock Text="False Negative Penalty:" FontWeight="Bold" Margin="0 0 0 5"/>
+            <TextBox Text="{Binding PenaltyFalseNegative}" Margin="0 5"/>
             <TextBlock Text="Non-Deterministic Edges Weight:" FontWeight="Bold" Margin="0 0 0 5"/>
             <TextBox Text="{Binding WeightNonDeterministicEdges}" Margin="0 5"/>
             <TextBlock Text="Unreachable States Weight:" FontWeight="Bold" Margin="0 0 0 5"/>

@@ -17,8 +17,8 @@ public static class Setup
         List<TestTrace> traces = DFAUtility.ImportTestTraces(testTracePath);
         List<char> alphabet = DFAUtility.DiscoverAlphabet(traces).ToList();
 
-        double fitnessUpperBound = settings.WeightTruePositive * traces.Count(t => t.IsAccepting) +
-                                   settings.WeightTrueNegative * traces.Count(t => !t.IsAccepting);
+        double fitnessUpperBound = settings.RewardTruePositive * traces.Count(t => t.IsAccepting) +
+                                   settings.RewardTrueNegative * traces.Count(t => !t.IsAccepting);
         double fitnessLowerBound = 0.8 * fitnessUpperBound;
 
         EliteSelection selection = new EliteSelection(settings.NumberOfFittestIndividualsAcrossAllGenerations);
@@ -29,8 +29,8 @@ public static class Setup
             settings.RemoveAcceptStateProbability, settings.MergeStatesProbability, settings.ChangeInputProbability);
 
         // Specific fitness function for the DFA learning problem.
-        DFAFitness fitness = new DFAFitness(traces, alphabet, settings.WeightTruePositive, settings.WeightTrueNegative,
-            settings.WeightFalsePositive, settings.WeightFalseNegative, settings.WeightNonDeterministicEdges,
+        DFAFitness fitness = new DFAFitness(traces, alphabet, settings.RewardTruePositive, settings.RewardTrueNegative,
+            settings.PenaltyFalsePositive, settings.PenaltyFalseNegative, settings.WeightNonDeterministicEdges,
             settings.WeightUnreachableStates, settings.WeightSize);
         // Specific chromosome (gene) function for the DFA learning problem.
         DFAChromosome chromosome = new DFAChromosome();
@@ -52,7 +52,8 @@ public static class Setup
         // Output continuous evaluation of each generation.
         ga.GenerationRan += (s, e) =>
             Console.WriteLine($"Generation {ga.GenerationsNumber}. Best fitness: {ga.BestChromosome.Fitness!.Value}. " +
-                              $"Accuracy: {Math.Round(100 * (ga.BestChromosome.Fitness!.Value / fitnessUpperBound), 2)}%");
+                              $"Accuracy: {Math.Round(100 * (ga.BestChromosome.Fitness!.Value / fitnessUpperBound), 2)}%." +
+                              $" Time: {DateTime.Now:d} {DateTime.Now:HH:mm:ss}");
 
         // Output graph visualizations of the fittest chromosome each generation.
         ga.GenerationRan += (s, e) =>
@@ -68,7 +69,7 @@ public static class Setup
         DFAGeneticAlgorithm ga = Prepare();
 
         // Begin learning.
-        Console.WriteLine("GA is learning the DFA...");
+        Console.WriteLine($"GA is learning the DFA. Time started: {DateTime.Now:d} {DateTime.Now:HH:mm:ss}");
         ga.Start();
 
         Console.WriteLine();

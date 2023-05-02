@@ -4,9 +4,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using GeneticDFA.Utility;
 using GeneticDFAUI.Views;
 using ReactiveUI;
-using System.Diagnostics;
 using System.Threading;
-using System.Threading.Tasks;
 using GeneticDFA;
 
 namespace GeneticDFAUI.ViewModels;
@@ -14,29 +12,29 @@ namespace GeneticDFAUI.ViewModels;
 public class SettingsViewModel : ViewModelBase
 {
     private readonly ISettingsService _settingsService;
-    private int _minPopulation = 10000;
-    private int _maxPopulation = 10000;
-    private int _convergenceGenerationNumber = 30;
-    private int _maximumGenerationNumber = 100;
+    private int _minPopulation = 3500;
+    private int _maxPopulation = 3500;
+    private int _convergenceGenerationNumber = 100;
+    private int _maximumGenerationNumber = 400;
     private int _eliteSelectionScalingFactor = 2;
-    private int _weightTruePositive = 10;
-    private int _weightTrueNegative = 10;
-    private double _weightFalsePositive = 10;
-    private double _weightFalseNegative = 10;
+    private int _rewardTruePositive = 10;
+    private int _rewardTrueNegative = 10;
+    private double _penaltyFalsePositive = 10;
+    private double _penaltyFalseNegative = 10;
     private double _weightNonDeterministicEdges = 2;
-    private double _weightUnreachableStates = 100;
-    private double _weightSize = 0.5;
+    private double _weightUnreachableStates = 5;
+    private double _weightSize = 5;
     private double _mutationProbability = 0.5;
     private double _nonDeterministicBehaviorProbability = 0.5;
-    private double _changeTargetProbability = 0.1;
-    private double _changeSourceProbability = 0.1;
-    private double _changeInputProbability = 0.1;
-    private double _removeEdgeProbability = 0.1;
-    private double _addEdgeProbability = 0.2;
-    private double _addStateProbability = 0.1;
-    private double _addAcceptStateProbability = 0.1;
-    private double _removeAcceptStateProbability = 0.1;
-    private double _mergeStatesProbability = 0.1;
+    private double _changeTargetProbability = 0.11;
+    private double _changeSourceProbability = 0.11;
+    private double _changeInputProbability = 0.11;
+    private double _removeEdgeProbability = 0.11;
+    private double _addEdgeProbability = 0.12;
+    private double _addStateProbability = 0.11;
+    private double _addAcceptStateProbability = 0.11;
+    private double _removeAcceptStateProbability = 0.11;
+    private double _mergeStatesProbability = 0.11;
 
     public SettingsViewModel()
     {
@@ -76,28 +74,28 @@ public class SettingsViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _eliteSelectionScalingFactor, value);
     }
 
-    public int WeightTruePositive
+    public int RewardTruePositive
     {
-        get => _weightTruePositive;
-        set => this.RaiseAndSetIfChanged(ref _weightTruePositive, value);
+        get => _rewardTruePositive;
+        set => this.RaiseAndSetIfChanged(ref _rewardTruePositive, value);
     }
 
-    public int WeightTrueNegative
+    public int RewardTrueNegative
     {
-        get => _weightTrueNegative;
-        set => this.RaiseAndSetIfChanged(ref _weightTrueNegative, value);
+        get => _rewardTrueNegative;
+        set => this.RaiseAndSetIfChanged(ref _rewardTrueNegative, value);
     }
 
-    public double WeightFalsePositive
+    public double PenaltyFalsePositive
     {
-        get => _weightFalsePositive;
-        set => this.RaiseAndSetIfChanged(ref _weightFalsePositive, value);
+        get => _penaltyFalsePositive;
+        set => this.RaiseAndSetIfChanged(ref _penaltyFalsePositive, value);
     }
 
-    public double WeightFalseNegative
+    public double PenaltyFalseNegative
     {
-        get => _weightFalseNegative;
-        set => this.RaiseAndSetIfChanged(ref _weightFalseNegative, value);
+        get => _penaltyFalseNegative;
+        set => this.RaiseAndSetIfChanged(ref _penaltyFalseNegative, value);
     }
 
     public double WeightNonDeterministicEdges
@@ -219,10 +217,10 @@ public class SettingsViewModel : ViewModelBase
             ConvergenceGenerationNumber = this.ConvergenceGenerationNumber,
             MaximumGenerationNumber = this.MaximumGenerationNumber,
             EliteSelectionScalingFactor = this.EliteSelectionScalingFactor,
-            WeightTruePositive = this.WeightTruePositive,
-            WeightTrueNegative = this.WeightTrueNegative,
-            WeightFalsePositive = this.WeightFalsePositive,
-            WeightFalseNegative = this.WeightFalseNegative,
+            RewardTruePositive = this.RewardTruePositive,
+            RewardTrueNegative = this.RewardTrueNegative,
+            PenaltyFalsePositive = this.PenaltyFalsePositive,
+            PenaltyFalseNegative = this.PenaltyFalseNegative,
             WeightNonDeterministicEdges = this.WeightNonDeterministicEdges,
             WeightUnreachableStates = this.WeightUnreachableStates,
             WeightSize = this.WeightSize,
@@ -251,10 +249,10 @@ public class SettingsViewModel : ViewModelBase
         ConvergenceGenerationNumber = settings.ConvergenceGenerationNumber;
         MaximumGenerationNumber = settings.MaximumGenerationNumber;
         EliteSelectionScalingFactor = settings.EliteSelectionScalingFactor;
-        WeightTruePositive = settings.WeightTruePositive;
-        WeightTrueNegative = settings.WeightTrueNegative;
-        WeightFalsePositive = settings.WeightFalsePositive;
-        WeightFalseNegative = settings.WeightFalseNegative;
+        RewardTruePositive = settings.RewardTruePositive;
+        RewardTrueNegative = settings.RewardTrueNegative;
+        PenaltyFalsePositive = settings.PenaltyFalsePositive;
+        PenaltyFalseNegative = settings.PenaltyFalseNegative;
         WeightNonDeterministicEdges = settings.WeightNonDeterministicEdges;
         WeightUnreachableStates = settings.WeightUnreachableStates;
         WeightSize = settings.WeightSize;
