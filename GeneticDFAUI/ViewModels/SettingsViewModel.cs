@@ -4,6 +4,10 @@ using Avalonia.Controls.ApplicationLifetimes;
 using GeneticDFA.Utility;
 using GeneticDFAUI.Views;
 using ReactiveUI;
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
+using GeneticDFA;
 
 namespace GeneticDFAUI.ViewModels;
 
@@ -19,8 +23,8 @@ public class SettingsViewModel : ViewModelBase
     private int _weightTrueNegative = 10;
     private double _weightFalsePositive = 10;
     private double _weightFalseNegative = 10;
-    private double _weightNonDeterministicEdges = 0.5;
-    private double _weightUnreachableStates = 0.5;
+    private double _weightNonDeterministicEdges = 2;
+    private double _weightUnreachableStates = 100;
     private double _weightSize = 0.5;
     private double _mutationProbability = 0.5;
     private double _nonDeterministicBehaviorProbability = 0.5;
@@ -186,6 +190,7 @@ public class SettingsViewModel : ViewModelBase
     private void OnRunAlgorithm()
     {
         SaveSettings();
+        StartGeneticAlgorithm();
         // App is always available at runtime
         var app = (ClassicDesktopStyleApplicationLifetime)Application.Current!.ApplicationLifetime!;
         app.MainWindow.Content = new VisualizationView()
@@ -197,6 +202,12 @@ public class SettingsViewModel : ViewModelBase
     private void OnReset()
     {
         LoadSettings();
+    }
+
+    public void StartGeneticAlgorithm()
+    {
+        Thread thread = new Thread(Setup.ProcessRun);
+        thread.Start();
     }
 
     private void SaveSettings()

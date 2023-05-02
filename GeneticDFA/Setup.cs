@@ -77,18 +77,9 @@ public static class Setup
         Console.ReadKey();
     }
 
-    public static bool ProcessRun()
+    public static void ProcessRun()
     {
-        try
-        {
-            DFAGeneticAlgorithm ga = Prepare();
-            ga.Start();
-        }
-        catch
-        {
-            return false;
-        }
-
-        return true;
+        DFAGeneticAlgorithm ga = Prepare();
+        ga.Start();
     }
 }
