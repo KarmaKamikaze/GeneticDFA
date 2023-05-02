@@ -9,31 +9,31 @@ class Program
 {
     static void Main(string[] args)
     {
-        const int minPopulation = 10000;
-        const int maxPopulation = 10000;
-        const int convergenceGenerationNumber = 20;
-        const int maximumGenerationNumber = 100;
+        const int minPopulation = 3500;
+        const int maxPopulation = 3500;
+        const int convergenceGenerationNumber = 100;
+        const int maximumGenerationNumber = 400;
         const int eliteSelectionScalingFactor = 2;
         int numberOfFittestIndividualsAcrossAllGenerations = Convert.ToInt32(0.05 * minPopulation);
-        const int weightTruePositive = 10;
-        const int weightTrueNegative = 10;
-        const double weightFalsePositive = 10;
-        const double weightFalseNegative = 10;
+        const int rewardTruePositive = 10;
+        const int rewardTrueNegative = 10;
+        const double penaltyFalsePositive = 10;
+        const double penaltyFalseNegative = 10;
         const double weightNonDeterministicEdges = 2;
-        const double weightUnreachableStates = 100;
-        const double weightSize = 2;
+        const double weightUnreachableStates = 5;
+        const double weightSize = 5;
         const double mutationProbability = 0.5;
         const double crossoverProbability = 1 - mutationProbability;
         const double nonDeterministicBehaviorProbability = 0.5;
-        const double changeTargetProbability = 0.1;
-        const double changeSourceProbability = 0.1;
-        const double changeInputProbability = 0.1;
-        const double removeEdgeProbability = 0.1;
-        const double addEdgeProbability = 0.2;
-        const double addStateProbability = 0.1;
-        const double addAcceptStateProbability = 0.1;
-        const double removeAcceptStateProbability = 0.1;
-        const double mergeStatesProbability = 0.1;
+        const double changeTargetProbability = 0.11;
+        const double changeSourceProbability = 0.11;
+        const double changeInputProbability = 0.11;
+        const double removeEdgeProbability = 0.11;
+        const double addEdgeProbability = 0.12;
+        const double addStateProbability = 0.11;
+        const double addAcceptStateProbability = 0.11;
+        const double removeAcceptStateProbability = 0.11;
+        const double mergeStatesProbability = 0.11;
 
 
         string testTracePath = $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/traces.json";
@@ -41,9 +41,9 @@ class Program
         List<TestTrace> traces = DFAUtility.ImportTestTraces(testTracePath);
         List<char> alphabet = DFAUtility.DiscoverAlphabet(traces).ToList();
 
-        double fitnessUpperBound = weightTruePositive * traces.Count(t => t.IsAccepting) +
-                                   weightTrueNegative * traces.Count(t => !t.IsAccepting);
-        double fitnessLowerBound = 0.8 * fitnessUpperBound;
+        double fitnessUpperBound = rewardTruePositive * traces.Count(t => t.IsAccepting) +
+                                   rewardTrueNegative * traces.Count(t => !t.IsAccepting);
+        double fitnessLowerBound = 0.95 * fitnessUpperBound;
 
         EliteSelection selection = new EliteSelection(numberOfFittestIndividualsAcrossAllGenerations);
         DFACrossover crossover = new DFACrossover(2, 2, 0, alphabet);
@@ -52,8 +52,8 @@ class Program
             addAcceptStateProbability, removeAcceptStateProbability, mergeStatesProbability, changeInputProbability);
 
         // Specific fitness function for the DFA learning problem.
-        DFAFitness fitness = new DFAFitness(traces, alphabet, weightTruePositive, weightTrueNegative,
-            weightFalsePositive, weightFalseNegative, weightNonDeterministicEdges, weightUnreachableStates,
+        DFAFitness fitness = new DFAFitness(traces, alphabet, rewardTruePositive, rewardTrueNegative,
+            penaltyFalsePositive, penaltyFalseNegative, weightNonDeterministicEdges, weightUnreachableStates,
             weightSize);
         // Specific chromosome (gene) function for the DFA learning problem.
         DFAChromosome chromosome = new DFAChromosome();
@@ -73,7 +73,7 @@ class Program
         // Output continuous evaluation of each generation.
         ga.GenerationRan += (s, e) =>
             Console.WriteLine($"Generation {ga.GenerationsNumber}. Best fitness: {ga.BestChromosome.Fitness!.Value}. " +
-                              $"Accuracy: {Math.Round(100 * (ga.BestChromosome.Fitness!.Value / fitnessUpperBound), 2)}%");
+                              $"Accuracy: {Math.Round(100 * (ga.BestChromosome.Fitness!.Value / fitnessUpperBound), 2)}%. Time: {DateTime.Now:d} {DateTime.Now:HH:mm:ss}");
 
         // Output graph visualizations of the fittest chromosome each generation.
         ga.GenerationRan += (s, e) =>
@@ -82,7 +82,7 @@ class Program
         ga.TerminationReached += (s, e) => Console.WriteLine("GA has terminated");
 
         // Begin learning.
-        Console.WriteLine("GA is learning the DFA...");
+        Console.WriteLine($"GA is learning the DFA. Time started: {DateTime.Now:d} {DateTime.Now:HH:mm:ss}");
         ga.Start();
 
         Console.WriteLine();

@@ -155,6 +155,6 @@ public class DFACrossover : CrossoverBase
             }
         }
 
-        throw new CrossoverException(this, "Error when determining states to select with breadth first search.");
+        return selectedStates;
     }
 }
