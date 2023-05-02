@@ -69,6 +69,9 @@ public class Setup
     {
         DFAGeneticAlgorithm ga = Prepare();
 
+        GraphVisualization.DeleteFolderRecursive("./Visualizations/", true); // Clean up previous runs
+        Directory.CreateDirectory("./Visualizations/");
+
         // Begin learning.
         Console.WriteLine($"GA is learning the DFA. Time started: {DateTime.Now:d} {DateTime.Now:HH:mm:ss}");
         ga.Start();
@@ -82,6 +85,8 @@ public class Setup
     public void ProcessRun()
     {
         DFAGeneticAlgorithm ga = Prepare();
+        GraphVisualization.DeleteFolderRecursive("./Visualizations/", true); // Clean up previous runs
+        Directory.CreateDirectory("./Visualizations/");
         ga.Start();
     }
 

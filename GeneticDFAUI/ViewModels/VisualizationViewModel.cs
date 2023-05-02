@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Threading;
+using System.IO;
 using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Media.Imaging;
-using Avalonia.Styling;
 using GeneticDFA;
 using GeneticDFAUI.Views;
 using ReactiveUI;
@@ -13,13 +12,18 @@ namespace GeneticDFAUI.ViewModels;
 
 public class VisualizationViewModel : ViewModelBase
 {
+    private readonly FileSystemWatcher _watcher;
+
     public VisualizationViewModel(Setup geneticAlgorithmThread)
     {
         GeneticAlgorithmThread = geneticAlgorithmThread;
         SwitchToSettingsWindow = ReactiveCommand.Create(OnSwitchToSettings);
-    }
 
-    public Setup GeneticAlgorithmThread { get; set; }
+        _watcher = new FileSystemWatcher("./Visualizations/");
+        _watcher.EnableRaisingEvents = true;
+        _watcher.Created += SetGenerationList;
+    }
+    public Setup GeneticAlgorithmThread { get; }
     public List<string> Generations { get; set; } = new List<string>();
 
     public Bitmap Image { get; set; }
@@ -33,5 +37,10 @@ public class VisualizationViewModel : ViewModelBase
         {
             DataContext = new SettingsViewModel(),
         };
+    }
+
+    private void SetGenerationList(object sender, FileSystemEventArgs e)
+    {
+        Generations.Add(e.Name!);
     }
 }

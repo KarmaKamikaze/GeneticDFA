@@ -46,7 +46,7 @@
             RelativePanel.AlignBottomWithPanel="True"
             HorizontalAlignment="Stretch"
             Width="250"
-            Content="Settings"
+            Content="Settings (Stop)"
             HorizontalContentAlignment="Center"
             FontSize="20"
             FontStyle="Oblique"
