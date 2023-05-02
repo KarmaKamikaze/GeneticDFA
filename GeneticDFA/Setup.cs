@@ -5,9 +5,10 @@ using GeneticSharp;
 
 namespace GeneticDFA;
 
-public static class Setup
+public class Setup
 {
-    private static DFAGeneticAlgorithm Prepare()
+    private ThreadTermination ThreadAbort { get; set; } = new ThreadTermination();
+    private DFAGeneticAlgorithm Prepare()
     {
         SettingsService settingsService = new SettingsService();
         Settings settings = settingsService.LoadSettings();
@@ -43,7 +44,7 @@ public static class Setup
         OrTermination stoppingCriterion = new OrTermination(
             new GenerationNumberTermination(settings.MaximumGenerationNumber),
             new AndTermination(new FitnessStagnationTermination(settings.ConvergenceGenerationNumber),
-                new FitnessThresholdTermination(fitnessLowerBound)));
+                new FitnessThresholdTermination(fitnessLowerBound)), ThreadAbort);
 
         DFAGeneticAlgorithm ga = new DFAGeneticAlgorithm(population, fitness, selection,
             settings.EliteSelectionScalingFactor, crossover, mutation, stoppingCriterion,
@@ -64,7 +65,7 @@ public static class Setup
         return ga;
     }
 
-    public static void TerminalRun()
+    public void TerminalRun()
     {
         DFAGeneticAlgorithm ga = Prepare();
 
@@ -78,9 +79,14 @@ public static class Setup
         Console.ReadKey();
     }
 
-    public static void ProcessRun()
+    public void ProcessRun()
     {
         DFAGeneticAlgorithm ga = Prepare();
         ga.Start();
+    }
+
+    public void Kill()
+    {
+        ThreadAbort.KillThread = true;
     }
 }

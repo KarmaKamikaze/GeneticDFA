@@ -188,24 +188,49 @@ public class SettingsViewModel : ViewModelBase
     private void OnRunAlgorithm()
     {
         SaveSettings();
-        StartGeneticAlgorithm();
+        Setup ga = StartGeneticAlgorithm();
         // App is always available at runtime
         var app = (ClassicDesktopStyleApplicationLifetime)Application.Current!.ApplicationLifetime!;
         app.MainWindow.Content = new VisualizationView()
         {
-            DataContext = new VisualizationViewModel(),
+            DataContext = new VisualizationViewModel(ga),
         };
+    }
+
+    public Setup StartGeneticAlgorithm()
+    {
+        Setup ga = new Setup();
+        Thread thread = new Thread(ga.ProcessRun);
+        thread.Start();
+
+        return ga;
     }
 
     private void OnReset()
     {
-        LoadSettings();
-    }
-
-    public void StartGeneticAlgorithm()
-    {
-        Thread thread = new Thread(Setup.ProcessRun);
-        thread.Start();
+        MinPopulation = 3500;
+        MaxPopulation = 3500;
+        ConvergenceGenerationNumber = 100;
+        MaximumGenerationNumber = 400;
+        EliteSelectionScalingFactor = 2;
+        RewardTruePositive = 10;
+        RewardTrueNegative = 10;
+        PenaltyFalsePositive = 10;
+        PenaltyFalseNegative = 10;
+        WeightNonDeterministicEdges = 2;
+        WeightUnreachableStates = 5;
+        WeightSize = 5;
+        MutationProbability = 0.5;
+        NonDeterministicBehaviorProbability = 0.5;
+        ChangeTargetProbability = 0.11;
+        ChangeSourceProbability = 0.11;
+        ChangeInputProbability = 0.11;
+        RemoveEdgeProbability = 0.11;
+        AddEdgeProbability = 0.12;
+        AddStateProbability = 0.11;
+        AddAcceptStateProbability = 0.11;
+        RemoveAcceptStateProbability = 0.11;
+        MergeStatesProbability = 0.11;
     }
 
     private void SaveSettings()

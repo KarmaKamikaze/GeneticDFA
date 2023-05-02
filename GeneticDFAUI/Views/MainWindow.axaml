@@ -9,7 +9,8 @@
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="GeneticDFA"
-        Content="{Binding Content}">
+        Content="{Binding Content}"
+        Width="810" Height="750">
 
 
     <Design.DataContext>
