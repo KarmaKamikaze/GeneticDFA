@@ -4,16 +4,16 @@ namespace GeneticDFA;
 
 public class DFAFitness : IFitness
 {
-    public DFAFitness(List<TestTrace> traces, List<char> alphabet, double weightTruePositive,
-        double weightTrueNegative, double weightFalsePositive, double weightFalseNegative,
+    public DFAFitness(List<TestTrace> traces, List<char> alphabet, double rewardTruePositive,
+        double rewardTrueNegative, double penaltyFalsePositive, double penaltyFalseNegative,
         double weightNonDeterministicEdges, double weightUnreachableStates, double weightSize)
     {
         Traces = traces;
         Alphabet = alphabet;
-        WeightTruePositive = weightTruePositive;
-        WeightTrueNegative = weightTrueNegative;
-        WeightFalsePositive = weightFalsePositive;
-        WeightFalseNegative = weightFalseNegative;
+        RewardTruePositive = rewardTruePositive;
+        RewardTrueNegative = rewardTrueNegative;
+        PenaltyFalsePositive = penaltyFalsePositive;
+        PenaltyFalseNegative = penaltyFalseNegative;
         WeightNonDeterministicEdges = weightNonDeterministicEdges;
         WeightUnreachableStates = weightUnreachableStates;
         WeightSize = weightSize;
@@ -21,10 +21,10 @@ public class DFAFitness : IFitness
 
     private List<TestTrace> Traces { get; }
     private List<char> Alphabet { get; }
-    private double WeightTruePositive { get; }
-    private double WeightTrueNegative { get; }
-    private double WeightFalsePositive { get; }
-    private double WeightFalseNegative { get; }
+    private double RewardTruePositive { get; }
+    private double RewardTrueNegative { get; }
+    private double PenaltyFalsePositive { get; }
+    private double PenaltyFalseNegative { get; }
     private double WeightNonDeterministicEdges { get; }
     private double WeightUnreachableStates { get; }
     private double WeightSize { get; }
@@ -48,16 +48,16 @@ public class DFAFitness : IFitness
             switch (verdict)
             {
                 case Verdict.TruePositive:
-                    fitnessScore += WeightTruePositive;
+                    fitnessScore += RewardTruePositive;
                     break;
                 case Verdict.TrueNegative:
-                    fitnessScore += WeightTrueNegative;
+                    fitnessScore += RewardTrueNegative;
                     break;
                 case Verdict.FalsePositive:
-                    fitnessScore -= WeightFalsePositive;
+                    fitnessScore -= PenaltyFalsePositive;
                     break;
                 default:
-                    fitnessScore -= WeightFalseNegative;
+                    fitnessScore -= PenaltyFalseNegative;
                     break;
             }
         }
