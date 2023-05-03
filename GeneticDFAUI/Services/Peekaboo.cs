@@ -107,7 +107,7 @@ public class Peekaboo
         bool newFiles = false;
         foreach (string file in filesInDirectory)
         {
-            string fileName = System.IO.Path.GetFileName(file);
+            string fileName = System.IO.Path.GetFileName(file).Split('.')[0];
             if (!_fileNames.Contains(fileName))
             {
                 newFiles = true;
@@ -131,6 +131,7 @@ public class Peekaboo
     {
         _timer = new Timer(intervalInMilliseconds);
         _timer.Elapsed += OnTimerElapsed;
+        _timer.AutoReset = true;
         _timer.Start();
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Input;
 using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Media.Imaging;
 using GeneticDFA;
@@ -27,13 +26,6 @@ public class VisualizationViewModel : ViewModelBase
         _watcher.IncludeSubDirectories = false;
         _watcher.FileCreated += OnGenerationListCreateUpdate;
         _watcher.StartScanning(10000);
-
-        /*_watcher = new FileSystemWatcher("./Visualizations/");
-        _watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.CreationTime;
-        _watcher.Filter = "*.svg";
-        _watcher.Created += OnGenerationListCreateUpdate;
-        _watcher.IncludeSubdirectories = false;
-        _watcher.EnableRaisingEvents = true;*/
     }
 
     public List<string> Generations
@@ -65,9 +57,5 @@ public class VisualizationViewModel : ViewModelBase
     private void OnGenerationListCreateUpdate(List<string> fileNames)
     {
         Generations = fileNames;
-        var app = (ClassicDesktopStyleApplicationLifetime) Application.Current!.ApplicationLifetime!;
-        ListBox? listbox = app.MainWindow.FindControl<ListBox>("VisualizationList");
-        listbox.Items = Generations;
-        listbox.InvalidateMeasure(); // Queries to reload listbox
     }
 }
