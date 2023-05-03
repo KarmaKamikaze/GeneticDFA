@@ -42,10 +42,21 @@
                RelativePanel.RightOf="VisualizationList">
         </Image>
         <Button
+            RelativePanel.AlignBottomWithPanel="True"
+            RelativePanel.LeftOf="SettingsButton"
+            HorizontalAlignment="Stretch"
+            Width="150"
+            Content="Stop GA"
+            HorizontalContentAlignment="Center"
+            FontSize="20"
+            FontStyle="Oblique"
+            Command="{Binding StopGa}"></Button>
+        <Button
+            x:Name="SettingsButton"
             RelativePanel.AlignRightWithPanel="True"
             RelativePanel.AlignBottomWithPanel="True"
             HorizontalAlignment="Stretch"
-            Width="250"
+            Width="200"
             Content="Settings (Stop)"
             HorizontalContentAlignment="Center"
             FontSize="20"

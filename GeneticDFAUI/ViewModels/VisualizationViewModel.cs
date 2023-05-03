@@ -22,12 +22,14 @@ public class VisualizationViewModel : ViewModelBase
     {
         _geneticAlgorithmThread = geneticAlgorithmThread;
         SwitchToSettingsWindow = ReactiveCommand.Create(OnSwitchToSettings);
+        StopGa = ReactiveCommand.Create(OnStopGa);
 
         _watcher = new FileSystemWatcher("./Visualizations/");
+        _watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.CreationTime;
         _watcher.Filter = "*.svg";
         _watcher.Created += OnGenerationListCreateUpdate;
-        _watcher.EnableRaisingEvents = true;
         _watcher.IncludeSubdirectories = false;
+        _watcher.EnableRaisingEvents = true;
     }
 
     public List<string> Generations
@@ -39,8 +41,9 @@ public class VisualizationViewModel : ViewModelBase
     public Bitmap Image { get; set; }
 
     public ICommand SwitchToSettingsWindow { get; }
+    public ICommand StopGa { get; }
 
-    public void OnSwitchToSettings()
+    private void OnSwitchToSettings()
     {
         _geneticAlgorithmThread.Kill();
         var app = (ClassicDesktopStyleApplicationLifetime) Application.Current!.ApplicationLifetime!;
@@ -48,6 +51,11 @@ public class VisualizationViewModel : ViewModelBase
         {
             DataContext = new SettingsViewModel(),
         };
+    }
+
+    private void OnStopGa()
+    {
+        _geneticAlgorithmThread.Kill();
     }
 
     private void OnGenerationListCreateUpdate(object sender, FileSystemEventArgs e)
