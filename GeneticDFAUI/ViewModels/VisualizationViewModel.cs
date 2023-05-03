@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
 using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Media.Imaging;
 using GeneticDFA;
+using GeneticDFAUI.Services;
 using GeneticDFAUI.Views;
 using ReactiveUI;
 
@@ -14,7 +13,7 @@ namespace GeneticDFAUI.ViewModels;
 
 public class VisualizationViewModel : ViewModelBase
 {
-    private readonly FileSystemWatcher _watcher;
+    private readonly Peekaboo _watcher;
     private readonly Setup _geneticAlgorithmThread;
     private List<string> _generations = new List<string>();
 
@@ -24,12 +23,17 @@ public class VisualizationViewModel : ViewModelBase
         SwitchToSettingsWindow = ReactiveCommand.Create(OnSwitchToSettings);
         StopGa = ReactiveCommand.Create(OnStopGa);
 
-        _watcher = new FileSystemWatcher("./Visualizations/");
+        _watcher = new Peekaboo("./Visualizations/", "*.svg");
+        _watcher.IncludeSubDirectories = false;
+        _watcher.FileCreated += OnGenerationListCreateUpdate;
+        _watcher.StartScanning(10000);
+
+        /*_watcher = new FileSystemWatcher("./Visualizations/");
         _watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.CreationTime;
         _watcher.Filter = "*.svg";
         _watcher.Created += OnGenerationListCreateUpdate;
         _watcher.IncludeSubdirectories = false;
-        _watcher.EnableRaisingEvents = true;
+        _watcher.EnableRaisingEvents = true;*/
     }
 
     public List<string> Generations
@@ -58,9 +62,9 @@ public class VisualizationViewModel : ViewModelBase
         _geneticAlgorithmThread.Kill();
     }
 
-    private void OnGenerationListCreateUpdate(object sender, FileSystemEventArgs e)
+    private void OnGenerationListCreateUpdate(List<string> fileNames)
     {
-        Generations.Add(e.Name!);
+        Generations = fileNames;
         var app = (ClassicDesktopStyleApplicationLifetime) Application.Current!.ApplicationLifetime!;
         ListBox? listbox = app.MainWindow.FindControl<ListBox>("VisualizationList");
         listbox.Items = Generations;
