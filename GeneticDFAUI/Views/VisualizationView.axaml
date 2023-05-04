@@ -9,17 +9,14 @@
              x:Class="GeneticDFAUI.Views.VisualizationView"
              x:DataType="vm:VisualizationViewModel">
 
-
-    <UserControl.Resources>
-        <services:BitmapAssetValueConverter x:Key="variableImage"/>
-    </UserControl.Resources>
-
     <RelativePanel>
         <TextBlock x:Name="VisualizationText" FontSize="20" FontStyle="Oblique" Width="250" TextAlignment="Center"
                    Background="LightGray">
             DFA Visualizations
         </TextBlock>
         <ListBox x:Name="VisualizationList" Items="{Binding Generations}"
+                 SelectionMode="Single"
+                 SelectedItem="{Binding SelectedImage}"
                  RelativePanel.Below="VisualizationText"
                  RelativePanel.AlignLeftWithPanel="True"
                  Width="250">
@@ -35,11 +32,11 @@
             </ListBox.ItemTemplate>
         </ListBox>
         <Image x:Name="VisualizationImage"
-               Source="{Binding Image, Converter={StaticResource variableImage}}"
+               Source="{Binding Image}"
                RelativePanel.AlignTopWithPanel="True"
                RelativePanel.AlignRightWithPanel="True"
-               RelativePanel.AlignBottomWithPanel="True"
-               RelativePanel.RightOf="VisualizationList">
+               RelativePanel.RightOf="VisualizationList"
+               RelativePanel.Above="SettingsButton">
         </Image>
         <Button
             RelativePanel.AlignBottomWithPanel="True"

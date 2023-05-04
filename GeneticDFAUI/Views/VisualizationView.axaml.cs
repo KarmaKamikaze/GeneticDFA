@@ -16,4 +16,3 @@ public partial class VisualizationView : UserControl
         AvaloniaXamlLoader.Load(this);
     }
 }
-

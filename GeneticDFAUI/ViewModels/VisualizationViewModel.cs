@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -14,7 +16,9 @@ public class VisualizationViewModel : ViewModelBase
 {
     private readonly Peekaboo _watcher;
     private readonly Setup _geneticAlgorithmThread;
+    private string _selectedImage = string.Empty;
     private ObservableCollection<string> _generations = new ObservableCollection<string>();
+    private Bitmap? _image;
 
     public VisualizationViewModel(Setup geneticAlgorithmThread)
     {
@@ -28,13 +32,27 @@ public class VisualizationViewModel : ViewModelBase
         _watcher.StartScanning(10000);
     }
 
+    public string SelectedImage
+    {
+        get => _selectedImage;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _selectedImage, value);
+            LoadImage(value);
+        }
+    }
+
     public ObservableCollection<string> Generations
     {
         get => _generations;
         set => this.RaiseAndSetIfChanged(ref _generations, value);
     }
 
-    public Bitmap Image { get; set; }
+    public Bitmap? Image
+    {
+        get => _image;
+        private set => this.RaiseAndSetIfChanged(ref _image, value);
+    }
 
     public ICommand SwitchToSettingsWindow { get; }
     public ICommand StopGa { get; }
@@ -57,5 +75,22 @@ public class VisualizationViewModel : ViewModelBase
     private void OnGenerationListCreateUpdate(ObservableCollection<string> fileNames)
     {
         Generations = fileNames;
+    }
+
+    private FileStream LoadImageBitmapAsync(string fileName)
+    {
+        string path = $"./Visualization/{fileName}.svg";
+        if (File.Exists(path))
+        {
+            throw new ArgumentException($"The following path is not valid: {path}");
+        }
+
+        return File.OpenRead(path);
+    }
+
+    private void LoadImage(string fileName)
+    {
+        using FileStream imageStream =  LoadImageBitmapAsync(fileName);
+        Image = Bitmap.DecodeToWidth(imageStream, 550);
     }
 }
