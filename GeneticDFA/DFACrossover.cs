@@ -30,6 +30,9 @@ public class DFACrossover : CrossoverBase
         DFAChromosomeHelper.FixUnreachability(child1, Alphabet);
         DFAChromosomeHelper.FixUnreachability(child2, Alphabet);
 
+        DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(child1);
+        DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(child2);
+        
         child1.SetNewId();
         child2.SetNewId();
 
