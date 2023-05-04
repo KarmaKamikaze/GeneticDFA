@@ -16,17 +16,19 @@ public class VisualizationViewModel : ViewModelBase
 {
     private readonly Peekaboo _watcher;
     private readonly Setup _geneticAlgorithmThread;
-    private string _selectedImage = string.Empty;
-    private ObservableCollection<string> _generations = new ObservableCollection<string>();
+    private bool _gaIsRunning;
+    private string _selectedImage;
+    private ObservableCollection<string> _generations = new ObservableCollection<string>() { "Gen0", "Gen1" };
     private Bitmap? _image;
 
     public VisualizationViewModel(Setup geneticAlgorithmThread)
     {
+        _gaIsRunning = true;
         _geneticAlgorithmThread = geneticAlgorithmThread;
         SwitchToSettingsWindow = ReactiveCommand.Create(OnSwitchToSettings);
         StopGa = ReactiveCommand.Create(OnStopGa);
 
-        _watcher = new Peekaboo("./Visualizations/", "*.svg");
+        _watcher = new Peekaboo("./Visualizations/", "*.png");
         _watcher.IncludeSubDirectories = false;
         _watcher.FileCreated += OnGenerationListCreateUpdate;
         _watcher.StartScanning(10000);
@@ -54,6 +56,12 @@ public class VisualizationViewModel : ViewModelBase
         private set => this.RaiseAndSetIfChanged(ref _image, value);
     }
 
+    public bool GaIsRunning
+    {
+        get => _gaIsRunning;
+        set => this.RaiseAndSetIfChanged(ref _gaIsRunning, value);
+    }
+
     public ICommand SwitchToSettingsWindow { get; }
     public ICommand StopGa { get; }
 
@@ -70,6 +78,7 @@ public class VisualizationViewModel : ViewModelBase
     private void OnStopGa()
     {
         _geneticAlgorithmThread.Kill();
+        GaIsRunning = false;
     }
 
     private void OnGenerationListCreateUpdate(ObservableCollection<string> fileNames)
@@ -79,8 +88,8 @@ public class VisualizationViewModel : ViewModelBase
 
     private FileStream LoadImageBitmapAsync(string fileName)
     {
-        string path = $"./Visualization/{fileName}.svg";
-        if (File.Exists(path))
+        string path = $"./Visualizations/{fileName}.png";
+        if (!File.Exists(path))
         {
             throw new ArgumentException($"The following path is not valid: {path}");
         }
@@ -90,7 +99,7 @@ public class VisualizationViewModel : ViewModelBase
 
     private void LoadImage(string fileName)
     {
-        using FileStream imageStream =  LoadImageBitmapAsync(fileName);
+        using FileStream imageStream = LoadImageBitmapAsync(fileName);
         Image = Bitmap.DecodeToWidth(imageStream, 550);
     }
 }

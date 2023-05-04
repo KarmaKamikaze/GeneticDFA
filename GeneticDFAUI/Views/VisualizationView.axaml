@@ -15,7 +15,7 @@
             DFA Visualizations
         </TextBlock>
         <ListBox x:Name="VisualizationList" Items="{Binding Generations}"
-                 SelectionMode="Single"
+                 SelectionMode="Single, AlwaysSelected"
                  SelectedItem="{Binding SelectedImage}"
                  RelativePanel.Below="VisualizationText"
                  RelativePanel.AlignLeftWithPanel="True"
@@ -36,7 +36,7 @@
                RelativePanel.AlignTopWithPanel="True"
                RelativePanel.AlignRightWithPanel="True"
                RelativePanel.RightOf="VisualizationList"
-               RelativePanel.Above="SettingsButton">
+               RelativePanel.AlignBottomWith="SettingsButton">
         </Image>
         <Button
             RelativePanel.AlignBottomWithPanel="True"
@@ -47,6 +47,7 @@
             HorizontalContentAlignment="Center"
             FontSize="20"
             FontStyle="Oblique"
+            IsVisible="{Binding GaIsRunning}"
             Command="{Binding StopGa}"></Button>
         <Button
             x:Name="SettingsButton"
