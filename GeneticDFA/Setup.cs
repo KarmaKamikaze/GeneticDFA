@@ -56,10 +56,6 @@ public class Setup
                               $"Accuracy: {Math.Round(100 * (ga.BestChromosome.Fitness!.Value / fitnessUpperBound), 2)}%." +
                               $" Time: {DateTime.Now:d} {DateTime.Now:HH:mm:ss}");
 
-        // Output graph visualizations of the fittest chromosome each generation.
-        ga.GenerationRan += (s, e) =>
-            GraphVisualization.SaveToSvgFile((DFAChromosome) ga.BestChromosome, ga.GenerationsNumber);
-
         ga.TerminationReached += (s, e) => Console.WriteLine("GA has terminated");
 
         return ga;
@@ -68,6 +64,10 @@ public class Setup
     public void TerminalRun()
     {
         DFAGeneticAlgorithm ga = Prepare();
+        
+        // Output graph visualizations of the fittest chromosome each generation.
+        ga.GenerationRan += (s, e) =>
+            GraphVisualization.SaveToSvgFile((DFAChromosome) ga.BestChromosome, ga.GenerationsNumber);
 
         GraphVisualization.DeleteFolderRecursive("./Visualizations/", true); // Clean up previous runs
         Directory.CreateDirectory("./Visualizations/");
@@ -85,6 +85,11 @@ public class Setup
     public void ProcessRun()
     {
         DFAGeneticAlgorithm ga = Prepare();
+        
+        // Output graph visualizations of the fittest chromosome each generation.
+        ga.GenerationRan += (s, e) =>
+            GraphVisualization.SaveToPngFile((DFAChromosome) ga.BestChromosome, ga.GenerationsNumber);
+        
         GraphVisualization.DeleteFolderRecursive("./Visualizations/", true); // Clean up previous runs
         Directory.CreateDirectory("./Visualizations/");
         ga.Start();

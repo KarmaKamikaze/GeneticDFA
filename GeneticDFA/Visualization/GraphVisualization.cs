@@ -66,6 +66,13 @@ public static class GraphVisualization
         graph.ToSvgFile($"./Visualizations/{graph.GetName()}.svg");
     }
 
+    public static void SaveToPngFile(DFAChromosome chromosome, int generationNumber)
+    {
+        RootGraph graph = ConstructGraph(chromosome, generationNumber);
+        graph.ComputeLayout(); // default is 'dot' layout
+        graph.ToPngFile($"./Visualizations/{graph.GetName()}.png");
+    }
+
     /// <summary>
     /// Deletes a folder and all files within if specified.
     /// </summary>
