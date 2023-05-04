@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Timers;
 
 namespace GeneticDFAUI.Services;
 
-public delegate void FileCreationEvent(List<string> fileNames);
+public delegate void FileCreationEvent(ObservableCollection<string> fileNames);
 
 /// <summary>
 /// A file watcher that will detect changes in a folder. Inspiration for this class comes from FileSystemWatcher.
@@ -16,7 +17,7 @@ public class Peekaboo
     private Timer _timer;
     private string _directory;
     private FileCreationEvent? _onFileCreationHandler;
-    private readonly List<string> _fileNames = new List<string>();
+    private readonly ObservableCollection<string> _fileNames = new ObservableCollection<string>();
 
     private enum HandlerTypes
     {
@@ -91,7 +92,7 @@ public class Peekaboo
         return null;
     }
 
-    private void OnFilesChanged(List<string> fileNames, FileCreationEvent? handler)
+    private void OnFilesChanged(ObservableCollection<string> fileNames, FileCreationEvent? handler)
     {
         if (handler != null)
         {

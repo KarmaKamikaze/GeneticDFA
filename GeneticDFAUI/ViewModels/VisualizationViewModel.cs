@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -14,7 +14,7 @@ public class VisualizationViewModel : ViewModelBase
 {
     private readonly Peekaboo _watcher;
     private readonly Setup _geneticAlgorithmThread;
-    private List<string> _generations = new List<string>();
+    private ObservableCollection<string> _generations = new ObservableCollection<string>();
 
     public VisualizationViewModel(Setup geneticAlgorithmThread)
     {
@@ -28,7 +28,7 @@ public class VisualizationViewModel : ViewModelBase
         _watcher.StartScanning(10000);
     }
 
-    public List<string> Generations
+    public ObservableCollection<string> Generations
     {
         get => _generations;
         set => this.RaiseAndSetIfChanged(ref _generations, value);
@@ -54,7 +54,7 @@ public class VisualizationViewModel : ViewModelBase
         _geneticAlgorithmThread.Kill();
     }
 
-    private void OnGenerationListCreateUpdate(List<string> fileNames)
+    private void OnGenerationListCreateUpdate(ObservableCollection<string> fileNames)
     {
         Generations = fileNames;
     }
