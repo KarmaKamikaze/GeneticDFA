@@ -5,6 +5,7 @@ using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Media.Imaging;
+using DynamicData;
 using GeneticDFA;
 using GeneticDFAUI.Services;
 using GeneticDFAUI.Views;
@@ -17,8 +18,8 @@ public class VisualizationViewModel : ViewModelBase
     private readonly Peekaboo _watcher;
     private readonly Setup _geneticAlgorithmThread;
     private bool _gaIsRunning;
-    private string _selectedImage;
-    private ObservableCollection<string> _generations = new ObservableCollection<string>() { "Gen0", "Gen1" };
+    private string? _selectedImage;
+    private ObservableCollection<string> _generations = new ObservableCollection<string>();
     private Bitmap? _image;
 
     public VisualizationViewModel(Setup geneticAlgorithmThread)
@@ -34,7 +35,7 @@ public class VisualizationViewModel : ViewModelBase
         _watcher.StartScanning(10000);
     }
 
-    public string SelectedImage
+    public string? SelectedImage
     {
         get => _selectedImage;
         set
@@ -83,23 +84,16 @@ public class VisualizationViewModel : ViewModelBase
 
     private void OnGenerationListCreateUpdate(ObservableCollection<string> fileNames)
     {
-        Generations = fileNames;
+        Generations.AddRange(fileNames);
     }
 
-    private FileStream LoadImageBitmapAsync(string fileName)
+    private void LoadImage(string? fileName)
     {
         string path = $"./Visualizations/{fileName}.png";
         if (!File.Exists(path))
-        {
             throw new ArgumentException($"The following path is not valid: {path}");
-        }
 
-        return File.OpenRead(path);
-    }
-
-    private void LoadImage(string fileName)
-    {
-        using FileStream imageStream = LoadImageBitmapAsync(fileName);
+        using FileStream imageStream = File.OpenRead(path);
         Image = Bitmap.DecodeToWidth(imageStream, 550);
     }
 }

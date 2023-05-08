@@ -17,7 +17,8 @@ public class Peekaboo
     private Timer _timer;
     private string _directory;
     private FileCreationEvent? _onFileCreationHandler;
-    private readonly ObservableCollection<string> _fileNames = new ObservableCollection<string>();
+    private readonly ObservableCollection<string> _allObservedFileNames = new ObservableCollection<string>();
+    private readonly ObservableCollection<string> _newFileNames = new ObservableCollection<string>();
 
     private enum HandlerTypes
     {
@@ -105,14 +106,18 @@ public class Peekaboo
         SearchOption searchOption = IncludeSubDirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
         List<string> filesInDirectory = Directory.GetFiles(_directory, Filter, searchOption).ToList();
 
+        // Reset newly observed file names
+        _newFileNames.Clear();
+
         bool newFiles = false;
         foreach (string file in filesInDirectory)
         {
             string fileName = System.IO.Path.GetFileName(file).Split('.')[0];
-            if (!_fileNames.Contains(fileName))
+            if (!_allObservedFileNames.Contains(fileName))
             {
                 newFiles = true;
-                _fileNames.Add(fileName);
+                _allObservedFileNames.Add(fileName);
+                _newFileNames.Add(fileName);
             }
         }
 
@@ -124,7 +129,7 @@ public class Peekaboo
         bool newFiles = ScanDirectory();
         if (newFiles)
         {
-            OnFilesChanged(_fileNames, GetHandler(HandlerTypes.Created));
+            OnFilesChanged(_newFileNames, GetHandler(HandlerTypes.Created));
         }
     }
 
