@@ -103,7 +103,8 @@ public class DFAGeneticAlgorithm : IGeneticAlgorithm
         // First use Elitist selection to include elites
         IList<IChromosome> selectedElites =
             Selection.SelectChromosomes(SelectionScale(), Population.CurrentGeneration);
-        // Use roulette wheel selection on the selected elites. This can cause elites to be mutated multiple times
+        // Use roulette wheel selection on the selected elites.
+        // This can cause elites to be mutated or crossed multiple times
         IList<IChromosome> selectedForModification =
             DFARouletteWheelSelection.SelectChromosomes(Population.MaxSize, selectedElites);
         IList<IChromosome> newPopulation = new List<IChromosome>();

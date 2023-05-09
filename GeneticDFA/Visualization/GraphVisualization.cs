@@ -63,6 +63,24 @@ public static class GraphVisualization
     {
         RootGraph graph = ConstructGraph(chromosome, generationNumber);
         graph.ComputeLayout(); // default is 'dot' layout
-        graph.ToSvgFile($"./{graph.GetName()}.svg");
+        graph.ToSvgFile($"./Visualizations/{graph.GetName()}.svg");
+    }
+
+    public static void SaveToPngFile(DFAChromosome chromosome, int generationNumber)
+    {
+        RootGraph graph = ConstructGraph(chromosome, generationNumber);
+        graph.ComputeLayout(); // default is 'dot' layout
+        graph.ToPngFile($"./Visualizations/{graph.GetName()}.png");
+    }
+
+    /// <summary>
+    /// Deletes a folder and all files within if specified.
+    /// </summary>
+    /// <param name="path">The path to the folder which must be deleted.</param>
+    /// <param name="recursive">Determines if all files inside will be recursively deleted.</param>
+    public static void DeleteFolderRecursive(string path, bool recursive)
+    {
+        if (Directory.Exists(path))
+            Directory.Delete(path, recursive);
     }
 }
