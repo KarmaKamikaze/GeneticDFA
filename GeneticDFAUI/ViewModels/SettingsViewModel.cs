@@ -188,22 +188,25 @@ public class SettingsViewModel : ViewModelBase
     private void OnRunAlgorithm()
     {
         SaveSettings();
-        Setup ga = StartGeneticAlgorithm();
+        Setup ga = new Setup();
+        Thread thread = StartGeneticAlgorithm(ga);
         // App is always available at runtime
-        var app = (ClassicDesktopStyleApplicationLifetime)Application.Current!.ApplicationLifetime!;
+        var app = (ClassicDesktopStyleApplicationLifetime) Application.Current!.ApplicationLifetime!;
         app.MainWindow.Content = new VisualizationView()
         {
-            DataContext = new VisualizationViewModel(ga),
+            DataContext = new VisualizationViewModel(ga, thread),
         };
     }
 
-    public Setup StartGeneticAlgorithm()
+    private Thread StartGeneticAlgorithm(Setup ga)
     {
-        Setup ga = new Setup();
-        Thread thread = new Thread(ga.ProcessRun);
+        Thread thread = new Thread(ga.ProcessRun)
+        {
+            IsBackground = true
+        };
         thread.Start();
 
-        return ga;
+        return thread;
     }
 
     private void OnReset()

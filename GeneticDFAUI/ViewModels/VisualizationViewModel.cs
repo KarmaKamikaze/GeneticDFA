@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Threading;
+using System.Timers;
 using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -10,22 +12,26 @@ using GeneticDFA;
 using GeneticDFAUI.Services;
 using GeneticDFAUI.Views;
 using ReactiveUI;
+using Timer = System.Timers.Timer;
 
 namespace GeneticDFAUI.ViewModels;
 
 public class VisualizationViewModel : ViewModelBase
 {
     private readonly Peekaboo _watcher;
-    private readonly Setup _geneticAlgorithmThread;
+    private readonly Timer _threadCheckTimer;
+    private readonly Setup _geneticAlgorithm;
+    private readonly Thread _geneticAlgorithmThread;
     private bool _gaIsRunning;
     private string? _selectedImage;
     private ObservableCollection<string> _generations = new ObservableCollection<string>();
     private Bitmap? _image;
 
-    public VisualizationViewModel(Setup geneticAlgorithmThread)
+    public VisualizationViewModel(Setup geneticAlgorithm, Thread geneticThread)
     {
         _gaIsRunning = true;
-        _geneticAlgorithmThread = geneticAlgorithmThread;
+        _geneticAlgorithm = geneticAlgorithm;
+        _geneticAlgorithmThread = geneticThread;
         SwitchToSettingsWindow = ReactiveCommand.Create(OnSwitchToSettings);
         StopGa = ReactiveCommand.Create(OnStopGa);
 
@@ -33,6 +39,11 @@ public class VisualizationViewModel : ViewModelBase
         _watcher.IncludeSubDirectories = false;
         _watcher.FileCreated += OnGenerationListCreateUpdate;
         _watcher.StartScanning(10000);
+
+        _threadCheckTimer = new Timer(10000);
+        _threadCheckTimer.Elapsed += OnTimerCheckGaStopped;
+        _threadCheckTimer.AutoReset = true;
+        _threadCheckTimer.Start(); // Check if GA thread has stopped every 10 seconds
     }
 
     public string? SelectedImage
@@ -68,7 +79,7 @@ public class VisualizationViewModel : ViewModelBase
 
     private void OnSwitchToSettings()
     {
-        _geneticAlgorithmThread.Kill();
+        _geneticAlgorithm.Kill();
         var app = (ClassicDesktopStyleApplicationLifetime) Application.Current!.ApplicationLifetime!;
         app.MainWindow.Content = new SettingsView()
         {
@@ -78,8 +89,14 @@ public class VisualizationViewModel : ViewModelBase
 
     private void OnStopGa()
     {
-        _geneticAlgorithmThread.Kill();
+        _geneticAlgorithm.Kill();
         GaIsRunning = false;
+    }
+
+    private void OnTimerCheckGaStopped(object? sender, ElapsedEventArgs e)
+    {
+        if (!_geneticAlgorithmThread.IsAlive)
+            GaIsRunning = false;
     }
 
     private void OnGenerationListCreateUpdate(ObservableCollection<string> fileNames)

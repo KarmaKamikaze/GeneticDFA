@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:progRing="clr-namespace:AvaloniaProgressRing;assembly=AvaloniaProgressRing"
              xmlns:vm="using:GeneticDFAUI.ViewModels"
              xmlns:geneticDfaui="clr-namespace:GeneticDFAUI"
              xmlns:services="clr-namespace:GeneticDFAUI.Services"
@@ -22,7 +23,7 @@
                  Width="250">
             <ListBox.Styles>
                 <Style Selector="ListBoxItem">
-                    <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
                 </Style>
             </ListBox.Styles>
             <ListBox.ItemTemplate>
@@ -38,7 +39,17 @@
                RelativePanel.RightOf="VisualizationList"
                RelativePanel.AlignBottomWith="SettingsButton">
         </Image>
+        <progRing:ProgressRing Width="40"
+                               Height="40"
+                               IsActive="{Binding GaIsRunning}"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Top"
+                               Foreground="MediumPurple"
+                               Margin="10,20,10,0"
+                               RelativePanel.AlignBottomWithPanel="True"
+                               RelativePanel.LeftOf="StopButton" />
         <Button
+            x:Name="StopButton"
             RelativePanel.AlignBottomWithPanel="True"
             RelativePanel.LeftOf="SettingsButton"
             HorizontalAlignment="Stretch"
@@ -48,7 +59,8 @@
             FontSize="20"
             FontStyle="Oblique"
             IsVisible="{Binding GaIsRunning}"
-            Command="{Binding StopGa}"></Button>
+            Command="{Binding StopGa}">
+        </Button>
         <Button
             x:Name="SettingsButton"
             RelativePanel.AlignRightWithPanel="True"
@@ -59,6 +71,7 @@
             HorizontalContentAlignment="Center"
             FontSize="20"
             FontStyle="Oblique"
-            Command="{Binding SwitchToSettingsWindow}"></Button>
+            Command="{Binding SwitchToSettingsWindow}">
+        </Button>
     </RelativePanel>
 </UserControl>
