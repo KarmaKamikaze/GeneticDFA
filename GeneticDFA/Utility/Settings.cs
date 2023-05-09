@@ -19,7 +19,7 @@ public class Settings
     public double WeightNonDeterministicEdges { get; set; }
     public double WeightUnreachableStates { get; set; }
     public double WeightSize { get; set; }
-    public double FitnessLowerBound { get; set; }
+    public double FitnessLowerBoundPercentage { get; set; }
     public double CrossoverProbability => 1 - MutationProbability;
     public double MutationProbability { get; set; }
     public double NonDeterministicBehaviorProbability { get; set; }
@@ -49,7 +49,7 @@ public class Settings
         WeightNonDeterministicEdges = 1;
         WeightUnreachableStates = 1;
         WeightSize = 1;
-        FitnessLowerBound = 0.95;
+        FitnessLowerBoundPercentage = 0.95;
         MutationProbability = 0.75;
         NonDeterministicBehaviorProbability = 0.65;
         ChangeTargetProbability = 0.11;

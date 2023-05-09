@@ -21,7 +21,7 @@ public class Setup
 
         double fitnessUpperBound = settings.RewardTruePositive * traces.Count(t => t.IsAccepting) +
                                    settings.RewardTrueNegative * traces.Count(t => !t.IsAccepting);
-        double fitnessLowerBound = 0.95 * fitnessUpperBound;
+        double fitnessLowerBound = settings.FitnessLowerBoundPercentage * fitnessUpperBound;
 
         EliteSelection selection = new EliteSelection(settings.NumberOfFittestIndividualsAcrossAllGenerations);
         DFACrossover crossover = new DFACrossover(2, 2, 0, alphabet);

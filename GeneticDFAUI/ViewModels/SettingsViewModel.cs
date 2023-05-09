@@ -25,7 +25,7 @@ public class SettingsViewModel : ViewModelBase
     private double _weightNonDeterministicEdges = 1;
     private double _weightUnreachableStates = 1;
     private double _weightSize = 1;
-    private double _fitnessLowerBound = 0.95;
+    private double _fitnessLowerBoundPercentage = 0.95;
     private double _mutationProbability = 0.75;
     private double _nonDeterministicBehaviorProbability = 0.65;
     private double _changeTargetProbability = 0.11;
@@ -124,10 +124,10 @@ public class SettingsViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _weightSize, value);
     }
 
-    public double FitnessLowerBound
+    public double FitnessLowerBoundPercentage
     {
-        get => _fitnessLowerBound;
-        set => this.RaiseAndSetIfChanged(ref _fitnessLowerBound, value);
+        get => _fitnessLowerBoundPercentage;
+        set => this.RaiseAndSetIfChanged(ref _fitnessLowerBoundPercentage, value);
     }
 
     public double MutationProbability
@@ -238,7 +238,7 @@ public class SettingsViewModel : ViewModelBase
         WeightNonDeterministicEdges = 1;
         WeightUnreachableStates = 1;
         WeightSize = 1;
-        FitnessLowerBound = 0.95;
+        FitnessLowerBoundPercentage = 0.95;
         MutationProbability = 0.75;
         NonDeterministicBehaviorProbability = 0.65;
         ChangeTargetProbability = 0.11;
@@ -269,7 +269,7 @@ public class SettingsViewModel : ViewModelBase
             WeightNonDeterministicEdges = this.WeightNonDeterministicEdges,
             WeightUnreachableStates = this.WeightUnreachableStates,
             WeightSize = this.WeightSize,
-            FitnessLowerBound = this.FitnessLowerBound,
+            FitnessLowerBoundPercentage = this.FitnessLowerBoundPercentage,
             MutationProbability = this.MutationProbability,
             NonDeterministicBehaviorProbability = this.NonDeterministicBehaviorProbability,
             ChangeTargetProbability = this.ChangeTargetProbability,
@@ -303,7 +303,7 @@ public class SettingsViewModel : ViewModelBase
         WeightNonDeterministicEdges = settings.WeightNonDeterministicEdges;
         WeightUnreachableStates = settings.WeightUnreachableStates;
         WeightSize = settings.WeightSize;
-        FitnessLowerBound = settings.FitnessLowerBound;
+        FitnessLowerBoundPercentage = settings.FitnessLowerBoundPercentage;
         MutationProbability = settings.MutationProbability;
         NonDeterministicBehaviorProbability = settings.NonDeterministicBehaviorProbability;
         ChangeTargetProbability = settings.ChangeTargetProbability;

@@ -34,7 +34,7 @@
                 <TextBlock Text="Stagnation Convergence:" FontWeight="Bold" Margin="0 0 0 5" />
                 <TextBox Text="{Binding ConvergenceGenerationNumber}" Margin="0 5" />
                 <TextBlock Text="Fitness Accuracy Lower Bound:" FontWeight="Bold" Margin="0 0 0 5" />
-                <TextBox Text="{Binding FitnessLowerBound}" Margin="0 5" />
+                <TextBox Text="{Binding FitnessLowerBoundPercentage}" Margin="0 5" />
                 <TextBlock Text="Elite Carry-Over Percentage:" FontWeight="Bold" Margin="0 0 0 5" />
                 <TextBox Text="{Binding EliteCarryOverPercentage}" Margin="0 5" />
                 <TextBlock Text="Elite Selection Scaling Factor:" FontWeight="Bold" Margin="0 0 0 5" />
