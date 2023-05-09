@@ -40,11 +40,11 @@ public class Settings
         RewardTrueNegative = 10;
         PenaltyFalsePositive = 10;
         PenaltyFalseNegative = 10;
-        WeightNonDeterministicEdges = 2;
-        WeightUnreachableStates = 5;
-        WeightSize = 5;
-        MutationProbability = 0.5;
-        NonDeterministicBehaviorProbability = 0.5;
+        WeightNonDeterministicEdges = 1;
+        WeightUnreachableStates = 1;
+        WeightSize = 1;
+        MutationProbability = 0.75;
+        NonDeterministicBehaviorProbability = 0.65;
         ChangeTargetProbability = 0.11;
         ChangeSourceProbability = 0.11;
         ChangeInputProbability = 0.11;
