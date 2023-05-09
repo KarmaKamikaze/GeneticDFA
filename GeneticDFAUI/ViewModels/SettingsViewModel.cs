@@ -16,6 +16,7 @@ public class SettingsViewModel : ViewModelBase
     private int _maxPopulation = 3500;
     private int _convergenceGenerationNumber = 100;
     private int _maximumGenerationNumber = 400;
+    private double _eliteCarryOverPercentage = 0.05;
     private int _eliteSelectionScalingFactor = 2;
     private int _rewardTruePositive = 10;
     private int _rewardTrueNegative = 10;
@@ -24,6 +25,7 @@ public class SettingsViewModel : ViewModelBase
     private double _weightNonDeterministicEdges = 1;
     private double _weightUnreachableStates = 1;
     private double _weightSize = 1;
+    private double _fitnessLowerBound = 0.95;
     private double _mutationProbability = 0.75;
     private double _nonDeterministicBehaviorProbability = 0.65;
     private double _changeTargetProbability = 0.11;
@@ -66,6 +68,12 @@ public class SettingsViewModel : ViewModelBase
     {
         get => _maximumGenerationNumber;
         set => this.RaiseAndSetIfChanged(ref _maximumGenerationNumber, value);
+    }
+
+    public double EliteCarryOverPercentage
+    {
+        get => _eliteCarryOverPercentage;
+        set => this.RaiseAndSetIfChanged(ref _eliteCarryOverPercentage, value);
     }
 
     public int EliteSelectionScalingFactor
@@ -114,6 +122,12 @@ public class SettingsViewModel : ViewModelBase
     {
         get => _weightSize;
         set => this.RaiseAndSetIfChanged(ref _weightSize, value);
+    }
+
+    public double FitnessLowerBound
+    {
+        get => _fitnessLowerBound;
+        set => this.RaiseAndSetIfChanged(ref _fitnessLowerBound, value);
     }
 
     public double MutationProbability
@@ -215,6 +229,7 @@ public class SettingsViewModel : ViewModelBase
         MaxPopulation = 3500;
         ConvergenceGenerationNumber = 100;
         MaximumGenerationNumber = 400;
+        EliteCarryOverPercentage = 0.05;
         EliteSelectionScalingFactor = 2;
         RewardTruePositive = 10;
         RewardTrueNegative = 10;
@@ -223,6 +238,7 @@ public class SettingsViewModel : ViewModelBase
         WeightNonDeterministicEdges = 1;
         WeightUnreachableStates = 1;
         WeightSize = 1;
+        FitnessLowerBound = 0.95;
         MutationProbability = 0.75;
         NonDeterministicBehaviorProbability = 0.65;
         ChangeTargetProbability = 0.11;
@@ -244,6 +260,7 @@ public class SettingsViewModel : ViewModelBase
             MaxPopulation = this.MaxPopulation,
             ConvergenceGenerationNumber = this.ConvergenceGenerationNumber,
             MaximumGenerationNumber = this.MaximumGenerationNumber,
+            EliteCarryOverPercentage = this.EliteCarryOverPercentage,
             EliteSelectionScalingFactor = this.EliteSelectionScalingFactor,
             RewardTruePositive = this.RewardTruePositive,
             RewardTrueNegative = this.RewardTrueNegative,
@@ -252,6 +269,7 @@ public class SettingsViewModel : ViewModelBase
             WeightNonDeterministicEdges = this.WeightNonDeterministicEdges,
             WeightUnreachableStates = this.WeightUnreachableStates,
             WeightSize = this.WeightSize,
+            FitnessLowerBound = this.FitnessLowerBound,
             MutationProbability = this.MutationProbability,
             NonDeterministicBehaviorProbability = this.NonDeterministicBehaviorProbability,
             ChangeTargetProbability = this.ChangeTargetProbability,
@@ -276,6 +294,7 @@ public class SettingsViewModel : ViewModelBase
         MaxPopulation = settings.MaxPopulation;
         ConvergenceGenerationNumber = settings.ConvergenceGenerationNumber;
         MaximumGenerationNumber = settings.MaximumGenerationNumber;
+        EliteCarryOverPercentage = settings.EliteCarryOverPercentage;
         EliteSelectionScalingFactor = settings.EliteSelectionScalingFactor;
         RewardTruePositive = settings.RewardTruePositive;
         RewardTrueNegative = settings.RewardTrueNegative;
@@ -284,6 +303,7 @@ public class SettingsViewModel : ViewModelBase
         WeightNonDeterministicEdges = settings.WeightNonDeterministicEdges;
         WeightUnreachableStates = settings.WeightUnreachableStates;
         WeightSize = settings.WeightSize;
+        FitnessLowerBound = settings.FitnessLowerBound;
         MutationProbability = settings.MutationProbability;
         NonDeterministicBehaviorProbability = settings.NonDeterministicBehaviorProbability;
         ChangeTargetProbability = settings.ChangeTargetProbability;

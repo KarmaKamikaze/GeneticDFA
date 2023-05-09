@@ -7,7 +7,11 @@ public class Settings
     public int ConvergenceGenerationNumber { get; set; }
     public int MaximumGenerationNumber { get; set; }
     public int EliteSelectionScalingFactor { get; set; }
-    public int NumberOfFittestIndividualsAcrossAllGenerations => Convert.ToInt32(0.05 * MinPopulation);
+    public double EliteCarryOverPercentage { get; set; }
+
+    public int NumberOfFittestIndividualsAcrossAllGenerations =>
+        Convert.ToInt32(EliteCarryOverPercentage * MinPopulation);
+
     public int RewardTruePositive { get; set; }
     public int RewardTrueNegative { get; set; }
     public double PenaltyFalsePositive { get; set; }
@@ -15,6 +19,7 @@ public class Settings
     public double WeightNonDeterministicEdges { get; set; }
     public double WeightUnreachableStates { get; set; }
     public double WeightSize { get; set; }
+    public double FitnessLowerBound { get; set; }
     public double CrossoverProbability => 1 - MutationProbability;
     public double MutationProbability { get; set; }
     public double NonDeterministicBehaviorProbability { get; set; }
@@ -35,6 +40,7 @@ public class Settings
         MaxPopulation = 3500;
         ConvergenceGenerationNumber = 100;
         MaximumGenerationNumber = 400;
+        EliteCarryOverPercentage = 0.05;
         EliteSelectionScalingFactor = 2;
         RewardTruePositive = 10;
         RewardTrueNegative = 10;
@@ -43,6 +49,7 @@ public class Settings
         WeightNonDeterministicEdges = 1;
         WeightUnreachableStates = 1;
         WeightSize = 1;
+        FitnessLowerBound = 0.95;
         MutationProbability = 0.75;
         NonDeterministicBehaviorProbability = 0.65;
         ChangeTargetProbability = 0.11;
