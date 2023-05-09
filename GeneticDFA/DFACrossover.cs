@@ -32,7 +32,7 @@ public class DFACrossover : CrossoverBase
 
         DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(child1);
         DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(child2);
-        
+
         child1.SetNewId();
         child2.SetNewId();
 

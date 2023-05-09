@@ -8,6 +8,7 @@ namespace GeneticDFA;
 public class Setup
 {
     private ThreadTermination ThreadAbort { get; set; } = new ThreadTermination();
+
     private DFAGeneticAlgorithm Prepare()
     {
         SettingsService settingsService = new SettingsService();
@@ -64,7 +65,7 @@ public class Setup
     public void TerminalRun()
     {
         DFAGeneticAlgorithm ga = Prepare();
-        
+
         // Output graph visualizations of the fittest chromosome each generation.
         ga.GenerationRan += (s, e) =>
             GraphVisualization.SaveToSvgFile((DFAChromosome) ga.BestChromosome, ga.GenerationsNumber);
@@ -85,11 +86,11 @@ public class Setup
     public void ProcessRun()
     {
         DFAGeneticAlgorithm ga = Prepare();
-        
+
         // Output graph visualizations of the fittest chromosome each generation.
         ga.GenerationRan += (s, e) =>
             GraphVisualization.SaveToPngFile((DFAChromosome) ga.BestChromosome, ga.GenerationsNumber);
-        
+
         GraphVisualization.DeleteFolderRecursive("./Visualizations/", true); // Clean up previous runs
         Directory.CreateDirectory("./Visualizations/");
         ga.Start();

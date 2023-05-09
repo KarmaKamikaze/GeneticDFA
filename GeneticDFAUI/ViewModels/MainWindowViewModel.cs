@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using ReactiveUI;
+﻿using ReactiveUI;
 
 namespace GeneticDFAUI.ViewModels;
 

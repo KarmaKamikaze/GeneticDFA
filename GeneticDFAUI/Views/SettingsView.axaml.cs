@@ -1,5 +1,4 @@
-﻿using Avalonia;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
 namespace GeneticDFAUI.Views;
@@ -16,4 +15,3 @@ public partial class SettingsView : UserControl
         AvaloniaXamlLoader.Load(this);
     }
 }
-
