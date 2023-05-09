@@ -19,6 +19,4 @@
         <vm:MainWindowViewModel />
     </Design.DataContext>
 
-    <!--<views:Visualization/>-->
-
 </Window>
