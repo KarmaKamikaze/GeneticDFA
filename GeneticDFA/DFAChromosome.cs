@@ -1,5 +1,4 @@
 ﻿using GeneticSharp;
-using System.Threading;
 
 namespace GeneticDFA;
 
@@ -66,9 +65,10 @@ public class DFAChromosome : IChromosome
         chromosome.Fitness = Fitness;
         chromosome.NextStateId = NextStateId;
         chromosome.NextEdgeId = NextEdgeId;
-        chromosome.NonDeterministicEdges = chromosome.Edges.Where(e => NonDeterministicEdges.Any(e2 => e2.Id == e.Id)).ToList();
+        chromosome.NonDeterministicEdges =
+            chromosome.Edges.Where(e => NonDeterministicEdges.Any(e2 => e2.Id == e.Id)).ToList();
         chromosome.ReachableStates = chromosome.States.Where(s => ReachableStates.Any(s2 => s2.Id == s.Id)).ToList();
-        
+
         return chromosome;
     }
 

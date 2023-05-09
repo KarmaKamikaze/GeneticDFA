@@ -37,7 +37,7 @@ public class DFAMutationTests
         List<char> alphabet = new List<char>() { '1', '0' };
         DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0);
         chromosome.ReachableStates = DFAChromosomeHelper.FindReachableStates(chromosome);
-        
+
         //Act
         mutation.Mutate(chromosome, 0);
 
@@ -59,7 +59,7 @@ public class DFAMutationTests
         List<char> alphabet = new List<char>() { '1', '0' };
         DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0);
         chromosome.ReachableStates = DFAChromosomeHelper.FindReachableStates(chromosome);
-        
+
         //Act
         mutation.Mutate(chromosome, 0);
 
@@ -90,7 +90,7 @@ public class DFAMutationTests
         DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0);
         DFAState currentAcceptState = chromosome.States.First(s => s.IsAccept);
         chromosome.ReachableStates = DFAChromosomeHelper.FindReachableStates(chromosome);
-        
+
         //Act
         mutation.Mutate(chromosome, 0);
 
@@ -146,7 +146,7 @@ public class DFAMutationTests
         List<char> alphabet = new List<char>() { '1', '0' };
         DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0);
         chromosome.ReachableStates = DFAChromosomeHelper.FindReachableStates(chromosome);
-        
+
         //Act
         mutation.Mutate(chromosome, 0);
 
@@ -163,7 +163,7 @@ public class DFAMutationTests
         List<char> alphabet = new List<char>() { '1', '0' };
         DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0);
         chromosome.ReachableStates = DFAChromosomeHelper.FindReachableStates(chromosome);
-        
+
         //Act
         mutation.Mutate(chromosome, 0);
 
@@ -184,7 +184,7 @@ public class DFAMutationTests
         List<char> alphabet = new List<char>() { '1', '0' };
         DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0);
         chromosome.ReachableStates = DFAChromosomeHelper.FindReachableStates(chromosome);
-        
+
         //Act
         mutation.Mutate(chromosome, 0);
 
@@ -202,7 +202,7 @@ public class DFAMutationTests
         List<char> alphabet = new List<char>() { '1', '0' };
         DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0);
         chromosome.ReachableStates = DFAChromosomeHelper.FindReachableStates(chromosome);
-        
+
         //Act
         mutation.Mutate(chromosome, 0);
 
@@ -224,7 +224,7 @@ public class DFAMutationTests
         List<char> alphabet = new List<char>() { '1', '0' };
         DFAMutation mutation = new DFAMutation(alphabet, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0);
         chromosome.ReachableStates = DFAChromosomeHelper.FindReachableStates(chromosome);
-        
+
         //Act
         mutation.Mutate(chromosome, 0);
 

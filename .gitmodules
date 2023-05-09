@@ -1,0 +1,3 @@
+[submodule "Graphviz.NetWrapper"]
+	path = Graphviz.NetWrapper
+	url = https://github.com/Rubjerg/Graphviz.NetWrapper.git

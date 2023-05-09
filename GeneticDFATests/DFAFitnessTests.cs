@@ -75,7 +75,7 @@ public class DFAFitnessTests
         DFAFitness fitness = new DFAFitness(SampleTraces, alphabet, 1, 1, 1, 1, 1, 1, 1);
         DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(chromosome);
         chromosome.ReachableStates = DFAChromosomeHelper.FindReachableStates(chromosome);
-        
+
         // Act
         double actual = fitness.Evaluate(chromosome);
 

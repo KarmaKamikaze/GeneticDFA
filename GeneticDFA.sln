@@ -4,6 +4,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeneticDFA", "GeneticDFA\Ge
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeneticDFATests", "GeneticDFATests\GeneticDFATests.csproj", "{1BE76724-387E-4A55-AB9C-CE1A1A28167C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeneticDFAUI", "GeneticDFAUI\GeneticDFAUI.csproj", "{CE392595-6E1C-473B-B495-62FD02F24916}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubjerg.Graphviz", "Graphviz.NetWrapper\Rubjerg.Graphviz\Rubjerg.Graphviz.csproj", "{DC8EAFEC-AF7D-46EA-B5E5-1614FE59AE8B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GraphvizWrapper", "Graphviz.NetWrapper\GraphvizWrapper\GraphvizWrapper.vcxproj", "{F9BC5523-352D-469F-8DBB-97ECA9D70648}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +24,17 @@ Global
 		{1BE76724-387E-4A55-AB9C-CE1A1A28167C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1BE76724-387E-4A55-AB9C-CE1A1A28167C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1BE76724-387E-4A55-AB9C-CE1A1A28167C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE392595-6E1C-473B-B495-62FD02F24916}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE392595-6E1C-473B-B495-62FD02F24916}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE392595-6E1C-473B-B495-62FD02F24916}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE392595-6E1C-473B-B495-62FD02F24916}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC8EAFEC-AF7D-46EA-B5E5-1614FE59AE8B}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{DC8EAFEC-AF7D-46EA-B5E5-1614FE59AE8B}.Debug|Any CPU.Build.0 = Debug|x64
+		{DC8EAFEC-AF7D-46EA-B5E5-1614FE59AE8B}.Release|Any CPU.ActiveCfg = Release|x64
+		{DC8EAFEC-AF7D-46EA-B5E5-1614FE59AE8B}.Release|Any CPU.Build.0 = Release|x64
+		{F9BC5523-352D-469F-8DBB-97ECA9D70648}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{F9BC5523-352D-469F-8DBB-97ECA9D70648}.Debug|Any CPU.Build.0 = Debug|x64
+		{F9BC5523-352D-469F-8DBB-97ECA9D70648}.Release|Any CPU.ActiveCfg = Release|x64
+		{F9BC5523-352D-469F-8DBB-97ECA9D70648}.Release|Any CPU.Build.0 = Release|x64
 	EndGlobalSection
 EndGlobal

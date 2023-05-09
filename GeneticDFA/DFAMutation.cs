@@ -74,6 +74,7 @@ public class DFAMutation : MutationBase
                             DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(_chromosome);
                             _chromosome.ReachableStates = DFAChromosomeHelper.FindReachableStates(_chromosome);
                         }
+
                         mutationOperatorTried[MutationOperator.ChangeTargetProbability] = true;
                     }
 
@@ -87,6 +88,7 @@ public class DFAMutation : MutationBase
                             DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(_chromosome);
                             _chromosome.ReachableStates = DFAChromosomeHelper.FindReachableStates(_chromosome);
                         }
+
                         mutationOperatorTried[MutationOperator.ChangeSourceProbability] = true;
                     }
 
@@ -100,6 +102,7 @@ public class DFAMutation : MutationBase
                             DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(_chromosome);
                             _chromosome.ReachableStates = DFAChromosomeHelper.FindReachableStates(_chromosome);
                         }
+
                         mutationOperatorTried[MutationOperator.RemoveEdgeProbability] = true;
                     }
 
@@ -113,6 +116,7 @@ public class DFAMutation : MutationBase
                             DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(_chromosome);
                             _chromosome.ReachableStates = DFAChromosomeHelper.FindReachableStates(_chromosome);
                         }
+
                         mutationOperatorTried[MutationOperator.AddEdgeProbability] = true;
                     }
 
@@ -126,6 +130,7 @@ public class DFAMutation : MutationBase
                             DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(_chromosome);
                             _chromosome.ReachableStates = DFAChromosomeHelper.FindReachableStates(_chromosome);
                         }
+
                         mutationOperatorTried[MutationOperator.AddStateProbability] = true;
                     }
 
@@ -155,6 +160,7 @@ public class DFAMutation : MutationBase
                             DFAChromosomeHelper.FindAndAssignNonDeterministicEdges(_chromosome);
                             _chromosome.ReachableStates = DFAChromosomeHelper.FindReachableStates(_chromosome);
                         }
+
                         mutationOperatorTried[MutationOperator.MergeStatesProbability] = true;
                     }
 
