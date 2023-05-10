@@ -385,6 +385,7 @@ public class DFAMutation : MutationBase
         // Add new state to collection. Adding the state at this point ensures that our first edge cannot self-loop and
         // that there will always be an incoming connection. Hereafter, the second connection can be a self-loop.
         chromosome.States.Add(newState);
+        chromosome.ReachableStates.Add(newState);
 
         // Decide if newState will have a possible outgoing or another incoming edge
         bool outgoingEdge = _rnd.GetInt(0, 1) != 0;
@@ -397,7 +398,7 @@ public class DFAMutation : MutationBase
         else
         {
             // Find another state than firstSource
-            List<DFAState> possibleStates = chromosome.States.Where(s => s.Id != firstSource.Id).ToList();
+            List<DFAState> possibleStates = chromosome.ReachableStates.Where(s => s.Id != firstSource.Id).ToList();
             DFAState secondSource = possibleStates[_rnd.GetInt(0, possibleStates.Count)];
             chromosome.Edges.Add(new DFAEdge(chromosome.NextEdgeId++, secondSource, newState,
                 _alphabet[_rnd.GetInt(0, _alphabet.Count)]));
